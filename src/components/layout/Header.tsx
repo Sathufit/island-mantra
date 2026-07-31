@@ -100,16 +100,19 @@ export default function Header() {
               </button>
 
               {collectionsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-52 bg-white shadow-lg py-2 z-50">
-                  {collections.map((c) => (
-                    <Link
-                      key={c.slug}
-                      href={`/collections/${c.slug}`}
-                      className="block px-5 py-2.5 text-[#1F2A2B] text-xs tracking-widest uppercase hover:bg-[#F4EDE1] transition-colors"
-                    >
-                      {c.name}
-                    </Link>
-                  ))}
+                /* pt-2 keeps the gap inside the hoverable parent — no mouse-leave gap */
+                <div className="absolute top-full left-0 pt-2 w-52 z-50">
+                  <div className="bg-white shadow-lg py-2">
+                    {collections.map((c) => (
+                      <Link
+                        key={c.slug}
+                        href={`/collections/${c.slug}`}
+                        className="block px-5 py-2.5 text-[#1F2A2B] text-xs tracking-widest uppercase hover:bg-[#F4EDE1] transition-colors"
+                      >
+                        {c.name}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

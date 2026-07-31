@@ -22,14 +22,14 @@ export default function ProductCard({ product }: Props) {
           src={image.src}
           alt={image.alt}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105 group-hover:opacity-0"
+          className="object-cover transition-opacity duration-700 ease-in-out group-hover:opacity-0"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
         <Image
           src={hoverImage.src}
           alt={hoverImage.alt}
           fill
-          className="object-cover transition-transform duration-500 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100"
+          className="object-cover transition-opacity duration-700 ease-in-out opacity-0 group-hover:opacity-100"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
 
