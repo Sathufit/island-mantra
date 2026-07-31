@@ -70,7 +70,7 @@ export default function ProductPage({
   }
 
   return (
-    <div className="pt-16">
+    <div className="pt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Breadcrumb */}
         <nav className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B]/50 mb-8 flex gap-2 flex-wrap">

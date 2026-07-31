@@ -42,8 +42,11 @@ export default function RootLayout({
       className={`${playfair.variable} ${inter.variable}`}
     >
       <body className="min-h-screen flex flex-col">
-        <AnnouncementBar />
-        <Header />
+        {/* Single fixed unit: announcement bar + nav sit together at the top */}
+        <div className="fixed top-0 left-0 right-0 z-40">
+          <AnnouncementBar />
+          <Header />
+        </div>
         <main className="flex-1">{children}</main>
         <Footer />
         <CartDrawer />

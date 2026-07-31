@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="pt-16">
-      {/* Hero */}
+    <div className="pt-0">
+      {/* Full-bleed hero — starts at y=0, sits behind the fixed bar */}
       <div className="relative h-80 md:h-[500px] flex items-end">
         <Image
           src="https://images.unsplash.com/photo-1551803091-e20673f15770?w=1600&q=85"

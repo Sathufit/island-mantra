@@ -78,8 +78,8 @@ export default function CollectionPage({
   }
 
   return (
-    <div className="pt-16">
-      {/* Header */}
+    <div className="pt-0">
+      {/* Full-bleed hero — starts at y=0, sits behind the fixed bar */}
       <div className="relative h-64 md:h-80 flex items-end">
         <Image
           src={collection.image}

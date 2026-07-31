@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/src/store/cart";
 import MobileNav from "./MobileNav";
 
@@ -12,24 +13,42 @@ const collections = [
   { name: "Accessories", slug: "accessories" },
 ];
 
+// Pages that have a full-bleed dark hero — header starts transparent here
+function isHeroPage(pathname: string) {
+  return (
+    pathname === "/" ||
+    pathname.startsWith("/collections/") ||
+    pathname === "/about"
+  );
+}
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [collectionsOpen, setCollectionsOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { toggleCart, totalItems } = useCart();
+  const pathname = usePathname();
   const count = totalItems();
+
+  const hero = isHeroPage(pathname);
+  // Show transparent background only on hero pages when not scrolled
+  const transparent = hero && !scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
+    // Reset scroll state on route change
+    setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled ? "bg-[#0E4F52] shadow-sm" : "bg-transparent"
+        className={`transition-all duration-300 ${
+          transparent
+            ? "bg-gradient-to-b from-black/50 to-transparent"
+            : "bg-[#0E4F52] shadow-sm"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
