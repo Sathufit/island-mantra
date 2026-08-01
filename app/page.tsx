@@ -8,17 +8,26 @@ import {
 import ProductCard from "@/src/components/product/ProductCard";
 import NewsletterForm from "@/src/components/ui/NewsletterForm";
 
+const trustItems = [
+  "Free delivery on orders over Rs 5,000",
+  "Islandwide delivery in 2–4 days",
+  "Handcrafted in Sri Lanka",
+  "Easy 14-day returns",
+  "New arrivals every week",
+  "Linen · Cotton · Natural fibres",
+];
+
 const instagramImages = [
   {
-    src: "https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=600&q=80",
-    alt: "Island lifestyle",
+    src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",
+    alt: "Hikkaduwa beach",
   },
   {
     src: "https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=600&q=80",
     alt: "Coastal fashion",
   },
   {
-    src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80",
+    src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80",
     alt: "Island Mantra style",
   },
   {
@@ -26,11 +35,11 @@ const instagramImages = [
     alt: "Linen collection",
   },
   {
-    src: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+    src: "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=600&q=80",
     alt: "Resort wear",
   },
   {
-    src: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600&q=80",
+    src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80",
     alt: "Accessories",
   },
 ];
@@ -44,81 +53,286 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative h-[90vh] min-h-[560px] flex items-end pb-16 md:pb-24">
-        <Image
-          src="https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=1800&q=85"
-          alt="Island Mantra — coastal fashion in Sri Lanka"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0E4F52]/70 via-[#0E4F52]/20 to-transparent" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-          <p className="font-sans text-xs tracking-[0.3em] uppercase text-white/80 mb-4">
+      {/* ── HERO ────────────────────────────────────────── */}
+
+      {/* Desktop: split panel hero */}
+      <section
+        className="hidden md:grid"
+        style={{ gridTemplateColumns: "45% 55%", height: "95vh", minHeight: "640px", maxHeight: "900px" }}
+      >
+        {/* Left: text panel */}
+        <div className="bg-[#0E4F52] relative flex flex-col justify-end px-14 xl:px-20 pb-20 overflow-hidden">
+          {/* Subtle vertical rule */}
+          <div className="absolute top-0 right-0 w-px h-full bg-white/10" />
+
+          <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#E1704B] mb-5 animate-fade-up">
             New Collection · 2025
           </p>
-          <h1 className="font-serif text-5xl md:text-7xl text-white leading-[1.05] mb-6 max-w-xl">
+          <h1 className="font-serif text-6xl xl:text-[5.25rem] text-white leading-[0.88] animate-fade-up delay-200">
+            Wear<br />the<br />Island.
+          </h1>
+          <p className="font-sans text-base text-white/60 leading-relaxed mt-7 mb-10 max-w-[280px] animate-fade-up delay-300">
+            Coastal fashion born in Hikkaduwa. Linen, cotton, and handcraft — made for the Sri Lankan way of life.
+          </p>
+          <div className="flex gap-6 items-center animate-fade-up delay-400">
+            <Link
+              href="/collections/linen-edit"
+              className="bg-white text-[#0E4F52] font-sans text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-[#F4EDE1] transition-colors"
+            >
+              Shop Collection
+            </Link>
+            <Link
+              href="/about"
+              className="font-sans text-xs tracking-[0.15em] uppercase text-white/55 hover:text-white transition-colors flex items-center gap-2"
+            >
+              Our Story
+              <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          </div>
+
+          {/* Bottom location tag */}
+          <div className="absolute bottom-9 left-14 xl:left-20 flex items-center gap-3 animate-fade-in delay-600">
+            <div className="w-8 h-px bg-white/25" />
+            <p className="font-sans text-[10px] tracking-[0.25em] uppercase text-white/25">
+              Hikkaduwa, Sri Lanka
+            </p>
+          </div>
+        </div>
+
+        {/* Right: image */}
+        <div className="relative overflow-hidden">
+          <Image
+            src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85"
+            alt="Island Mantra coastal fashion"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="55vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+
+          {/* Floating info card */}
+          <div className="absolute bottom-10 right-10 bg-white/95 backdrop-blur-sm p-5 animate-fade-in delay-600">
+            <p className="font-sans text-[9px] tracking-[0.25em] uppercase text-[#1F2A2B]/45 mb-1">
+              Now Available
+            </p>
+            <p className="font-serif text-xl text-[#0E4F52]">2025 Collection</p>
+            <p className="font-sans text-xs text-[#1F2A2B]/45 mt-1">
+              16 new pieces · Islandwide delivery
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile: full-bleed hero */}
+      <section className="md:hidden relative h-screen min-h-[600px] flex items-end pb-16">
+        <Image
+          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=85"
+          alt="Island Mantra — Hikkaduwa beach, Sri Lanka"
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0E4F52]/80 via-[#0E4F52]/15 to-transparent" />
+
+        <div className="relative z-10 px-6 w-full">
+          <p className="font-sans text-[11px] tracking-[0.3em] uppercase text-[#E1704B] mb-4 animate-fade-up">
+            New Collection · 2025
+          </p>
+          <h1 className="font-serif text-5xl text-white leading-[0.95] mb-5 animate-fade-up delay-200">
             Wear<br />the Island.
           </h1>
-          <p className="font-sans text-base md:text-lg text-white/80 mb-8 max-w-md leading-relaxed">
-            Coastal fashion born in Hikkaduwa. Linen, cotton, and handcraft — made for the Sri Lankan way of life.
+          <p className="font-sans text-sm text-white/70 mb-7 max-w-xs leading-relaxed animate-fade-up delay-300">
+            Coastal fashion born in Hikkaduwa. Linen, cotton, and handcraft.
           </p>
           <Link
             href="/collections/linen-edit"
-            className="inline-block bg-white text-[#0E4F52] font-sans text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-[#F4EDE1] transition-colors"
+            className="inline-block bg-white text-[#0E4F52] font-sans text-xs tracking-[0.2em] uppercase px-7 py-3.5 hover:bg-[#F4EDE1] transition-colors animate-fade-up delay-400"
           >
-            Shop the Collection
+            Shop Collection
           </Link>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-10 scroll-bounce">
+          <svg width="20" height="20" fill="none" stroke="white" strokeWidth="1.5" viewBox="0 0 24 24" style={{ opacity: 0.5 }}>
+            <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
       </section>
 
-      {/* New In */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/50 mb-2">
-              Just Arrived
-            </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-[#0E4F52]">
-              New In
-            </h2>
-          </div>
-          <Link
-            href="/search?filter=new"
-            className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border-b border-[#0E4F52] pb-0.5 hover:text-[#2E7D7B] transition-colors hidden md:block"
-          >
-            View All New
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {newIn.map((product) => (
-            <ProductCard key={product.id} product={product} />
+      {/* ── TRUST MARQUEE STRIP ─────────────────────────── */}
+      <div className="bg-[#F4EDE1] border-b border-[#E7DCC8] overflow-hidden py-3">
+        <div className="marquee-track flex items-center whitespace-nowrap">
+          {[...trustItems, ...trustItems].map((item, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-2.5 px-7 font-sans text-[11px] tracking-[0.16em] text-[#0E4F52]"
+            >
+              <span className="text-[#E1704B]" style={{ fontSize: "7px" }}>◆</span>
+              {item}
+            </span>
           ))}
         </div>
-        <div className="mt-8 md:hidden text-center">
-          <Link
-            href="/search?filter=new"
-            className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border-b border-[#0E4F52] pb-0.5"
-          >
-            View All New
-          </Link>
+      </div>
+
+      {/* ── NEW IN ──────────────────────────────────────── */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/45 mb-2">
+                Just Arrived
+              </p>
+              <h2 className="font-serif text-3xl md:text-4xl text-[#0E4F52]">New In</h2>
+            </div>
+            <Link
+              href="/search?filter=new"
+              className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border-b border-[#0E4F52] pb-0.5 hover:text-[#2E7D7B] transition-colors hidden md:block"
+            >
+              View All New
+            </Link>
+          </div>
+        </div>
+
+        {/* Mobile: horizontal scroll carousel */}
+        <div className="md:hidden -mx-0 px-4 sm:px-6">
+          <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-3">
+            {newIn.map((product) => (
+              <div key={product.id} className="flex-shrink-0 w-[72vw] snap-start">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 text-center">
+            <Link
+              href="/search?filter=new"
+              className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border-b border-[#0E4F52] pb-0.5"
+            >
+              View All New
+            </Link>
+          </div>
+        </div>
+
+        {/* Desktop: 4-col grid */}
+        <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-4 gap-6">
+            {newIn.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Collections Grid */}
+      {/* ── COLLECTIONS (EDITORIAL GRID) ────────────────── */}
       <section className="bg-[#F4EDE1] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/50 mb-2">
+            <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/45 mb-2">
               Browse
             </p>
             <h2 className="font-serif text-3xl md:text-4xl text-[#0E4F52]">
               Our Collections
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+
+          {/* Desktop: editorial asymmetric grid */}
+          <div
+            className="hidden md:grid gap-2"
+            style={{ gridTemplateColumns: "5fr 7fr", height: "600px" }}
+          >
+            {/* Featured: Linen Edit */}
+            <Link
+              href={`/collections/${collections[0]?.slug ?? "linen-edit"}`}
+              className="group relative overflow-hidden"
+            >
+              <Image
+                src={collections[0]?.image ?? ""}
+                alt={collections[0]?.imageAlt ?? ""}
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                sizes="40vw"
+              />
+              <div className="absolute inset-0 bg-[#0E4F52]/20 group-hover:bg-[#0E4F52]/45 transition-colors duration-400" />
+              <div className="absolute inset-0 flex items-end p-8">
+                <div>
+                  <p className="font-sans text-[10px] tracking-[0.22em] uppercase text-white/60 mb-2">
+                    Collection
+                  </p>
+                  <h3 className="font-serif text-3xl text-white leading-tight">
+                    {collections[0]?.name}
+                  </h3>
+                  <p className="font-sans text-xs text-white/60 mt-3 leading-relaxed max-w-[200px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {collections[0]?.description?.slice(0, 70)}…
+                  </p>
+                  <span className="mt-4 inline-block font-sans text-[10px] tracking-[0.2em] uppercase text-white border-b border-white/50 pb-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Shop Now
+                  </span>
+                </div>
+              </div>
+            </Link>
+
+            {/* Right: 3 collections */}
+            <div className="grid gap-2" style={{ gridTemplateRows: "1fr 1fr" }}>
+              {/* Top row: 2 collections */}
+              <div className="grid grid-cols-2 gap-2">
+                {collections.slice(1, 3).map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/collections/${c.slug}`}
+                    className="group relative overflow-hidden"
+                  >
+                    <Image
+                      src={c.image}
+                      alt={c.imageAlt}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="28vw"
+                    />
+                    <div className="absolute inset-0 bg-[#0E4F52]/20 group-hover:bg-[#0E4F52]/45 transition-colors duration-300" />
+                    <div className="absolute inset-0 flex items-end p-5">
+                      <div>
+                        <p className="font-sans text-[9px] tracking-widest uppercase text-white/55 mb-1">
+                          Collection
+                        </p>
+                        <h3 className="font-serif text-xl text-white">{c.name}</h3>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              {/* Bottom: full-width Accessories */}
+              <Link
+                href={`/collections/${collections[3]?.slug ?? "accessories"}`}
+                className="group relative overflow-hidden"
+              >
+                <Image
+                  src={collections[3]?.image ?? ""}
+                  alt={collections[3]?.imageAlt ?? ""}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="55vw"
+                />
+                <div className="absolute inset-0 bg-[#0E4F52]/20 group-hover:bg-[#0E4F52]/45 transition-colors duration-300" />
+                <div className="absolute inset-0 flex items-center px-8">
+                  <div>
+                    <p className="font-sans text-[10px] tracking-[0.22em] uppercase text-white/60 mb-2">
+                      Collection
+                    </p>
+                    <h3 className="font-serif text-3xl text-white">
+                      {collections[3]?.name}
+                    </h3>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Mobile: 2x2 grid */}
+          <div className="grid md:hidden grid-cols-2 gap-2">
             {collections.map((c) => (
               <Link
                 key={c.slug}
@@ -130,17 +344,15 @@ export default async function HomePage() {
                   alt={c.imageAlt}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 50vw, 25vw"
+                  sizes="50vw"
                 />
-                <div className="absolute inset-0 bg-[#0E4F52]/30 group-hover:bg-[#0E4F52]/50 transition-colors duration-300" />
-                <div className="absolute inset-0 flex items-end p-4 md:p-6">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0E4F52]/65 via-[#0E4F52]/10 to-transparent" />
+                <div className="absolute inset-0 flex items-end p-4">
                   <div>
-                    <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-white/70 mb-1">
+                    <p className="font-sans text-[9px] tracking-[0.2em] uppercase text-white/55 mb-1">
                       Collection
                     </p>
-                    <h3 className="font-serif text-lg md:text-xl text-white leading-tight">
-                      {c.name}
-                    </h3>
+                    <h3 className="font-serif text-lg text-white leading-tight">{c.name}</h3>
                   </div>
                 </div>
               </Link>
@@ -149,35 +361,113 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Best Sellers */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/50 mb-2">
-              Most Loved
-            </p>
-            <h2 className="font-serif text-3xl md:text-4xl text-[#0E4F52]">
-              Best Sellers
-            </h2>
+      {/* ── FEATURES / PILLARS ──────────────────────────── */}
+      <section className="py-14 border-b border-[#E7DCC8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0 md:divide-x divide-[#E7DCC8]">
+            {[
+              {
+                icon: (
+                  <svg width="20" height="20" fill="none" stroke="#0E4F52" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M3 16s0 2 2 2h14c2 0 2-2 2-2" strokeLinecap="round" />
+                  </svg>
+                ),
+                title: "Islandwide Delivery",
+                sub: "Free on orders over Rs 5,000. Delivered in 2–4 business days.",
+              },
+              {
+                icon: (
+                  <svg width="20" height="20" fill="none" stroke="#0E4F52" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path d="M9 14l-4-4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M5 10h11a4 4 0 010 8h-1" strokeLinecap="round" />
+                  </svg>
+                ),
+                title: "Easy Returns",
+                sub: "14-day hassle-free returns. No questions asked.",
+              },
+              {
+                icon: (
+                  <svg width="20" height="20" fill="none" stroke="#0E4F52" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" strokeLinecap="round" />
+                  </svg>
+                ),
+                title: "Made in Sri Lanka",
+                sub: "Every piece handcrafted by local artisans on the south coast.",
+              },
+            ].map((f, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center text-center md:px-12"
+              >
+                <div className="w-12 h-12 rounded-full bg-[#F4EDE1] flex items-center justify-center mb-4">
+                  {f.icon}
+                </div>
+                <h3 className="font-serif text-lg text-[#0E4F52] mb-1.5">{f.title}</h3>
+                <p className="font-sans text-xs text-[#1F2A2B]/55 leading-relaxed max-w-[200px]">
+                  {f.sub}
+                </p>
+              </div>
+            ))}
           </div>
-          <Link
-            href="/search?filter=bestseller"
-            className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border-b border-[#0E4F52] pb-0.5 hover:text-[#2E7D7B] transition-colors hidden md:block"
-          >
-            View All
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {bestSellers.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
         </div>
       </section>
 
-      {/* Brand Story Block */}
+      {/* ── BEST SELLERS ────────────────────────────────── */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/45 mb-2">
+                Most Loved
+              </p>
+              <h2 className="font-serif text-3xl md:text-4xl text-[#0E4F52]">
+                Best Sellers
+              </h2>
+            </div>
+            <Link
+              href="/search?filter=bestseller"
+              className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border-b border-[#0E4F52] pb-0.5 hover:text-[#2E7D7B] transition-colors hidden md:block"
+            >
+              View All
+            </Link>
+          </div>
+        </div>
+
+        {/* Mobile: horizontal scroll carousel */}
+        <div className="md:hidden px-4 sm:px-6">
+          <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-3">
+            {bestSellers.map((product) => (
+              <div key={product.id} className="flex-shrink-0 w-[72vw] snap-start">
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 text-center">
+            <Link
+              href="/search?filter=bestseller"
+              className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border-b border-[#0E4F52] pb-0.5"
+            >
+              View All
+            </Link>
+          </div>
+        </div>
+
+        {/* Desktop: 4-col grid */}
+        <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-4 gap-6">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── BRAND STORY ─────────────────────────────────── */}
       <section className="bg-[#0E4F52]">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2">
-          <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[500px]">
+          <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[520px]">
             <Image
               src="https://images.unsplash.com/photo-1551803091-e20673f15770?w=900&q=80"
               alt="Island Mantra — Hikkaduwa boutique"
@@ -185,23 +475,45 @@ export default async function HomePage() {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
+            {/* Overlay quote */}
+            <div className="absolute inset-0 bg-[#0E4F52]/30" />
+            <div className="absolute bottom-8 left-8 right-8">
+              <p className="font-serif text-2xl md:text-3xl text-white/90 leading-snug italic">
+                "Unhurried, intentional,<br />and rooted in the landscape."
+              </p>
+            </div>
           </div>
           <div className="flex flex-col justify-center px-8 md:px-16 py-16 md:py-20">
-            <p className="font-sans text-xs tracking-[0.3em] uppercase text-white/50 mb-4">
+            <p className="font-sans text-xs tracking-[0.3em] uppercase text-white/40 mb-4">
               Our Story
             </p>
             <h2 className="font-serif text-3xl md:text-4xl text-white leading-snug mb-6">
               Born on the<br />South Coast
             </h2>
-            <p className="font-sans text-base text-white/75 leading-relaxed mb-4">
-              Island Mantra began with a simple idea: that clothes should feel as good as the moment you&apos;re in. We design each piece with the pace of Sri Lankan coastal life in mind — unhurried, intentional, and rooted in the landscape.
+            <p className="font-sans text-sm text-white/65 leading-relaxed mb-4">
+              Island Mantra began with a simple idea: that clothes should feel as good as the moment you&apos;re in. We design each piece with the pace of Sri Lankan coastal life in mind.
             </p>
-            <p className="font-sans text-base text-white/75 leading-relaxed mb-8">
+            <p className="font-sans text-sm text-white/65 leading-relaxed mb-10">
               Everything is made locally, with natural fabrics and a commitment to craft. No fast fashion, no shortcuts.
             </p>
+            {/* Stats row */}
+            <div className="flex gap-10 mb-10 border-t border-white/10 pt-8">
+              {[
+                { num: "100%", label: "Natural fabrics" },
+                { num: "2025", label: "Founded" },
+                { num: "SL", label: "Made here" },
+              ].map((s) => (
+                <div key={s.label}>
+                  <p className="font-serif text-2xl text-white">{s.num}</p>
+                  <p className="font-sans text-[10px] tracking-widest uppercase text-white/40 mt-0.5">
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
             <Link
               href="/about"
-              className="self-start font-sans text-xs tracking-[0.2em] uppercase text-white border-b border-white/50 pb-0.5 hover:border-white transition-colors"
+              className="self-start font-sans text-xs tracking-[0.2em] uppercase text-white border-b border-white/40 pb-0.5 hover:border-white transition-colors"
             >
               Read Our Story
             </Link>
@@ -209,95 +521,38 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Visit us in Hikkaduwa */}
-      <section className="bg-[#F4EDE1] py-20">
+      {/* ── INSTAGRAM STRIP ─────────────────────────────── */}
+      <section className="py-16 bg-[#FAFAF8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/50 mb-4">
-                Find Us
-              </p>
-              <h2 className="font-serif text-3xl md:text-4xl text-[#0E4F52] mb-6">
-                Visit Us in Hikkaduwa
-              </h2>
-              <address className="font-sans text-base text-[#1F2A2B] not-italic leading-relaxed mb-6">
-                <strong className="font-semibold">Island Mantra</strong><br />
-                22 Galle Road<br />
-                Hikkaduwa, Galle District<br />
-                Sri Lanka 80240
-              </address>
-              <div className="space-y-1 font-sans text-sm text-[#1F2A2B]/70 mb-8">
-                <p>Mon–Fri: 10:00 AM – 7:00 PM</p>
-                <p>Sat–Sun: 9:00 AM – 8:00 PM</p>
-              </div>
-              <a
-                href="https://wa.me/94771234567"
-                className="inline-flex items-center gap-2 font-sans text-sm text-[#0E4F52] border border-[#0E4F52] px-5 py-2.5 hover:bg-[#0E4F52] hover:text-white transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
-                WhatsApp Us
-              </a>
-            </div>
-            {/* Map placeholder */}
-            <div className="relative h-72 md:h-96 bg-[#E7DCC8] flex items-center justify-center overflow-hidden">
-              <div className="text-center">
-                <div className="w-10 h-10 rounded-full bg-[#0E4F52] flex items-center justify-center mx-auto mb-3">
-                  <svg
-                    width="18"
-                    height="18"
-                    fill="white"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                  </svg>
-                </div>
-                <p className="font-sans text-sm text-[#1F2A2B]/60">
-                  22 Galle Road, Hikkaduwa
-                </p>
-                <p className="font-sans text-xs text-[#1F2A2B]/40 mt-1">
-                  Map coming soon
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Instagram Strip */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-8">
-            <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/50 mb-2">
+          <div className="text-center mb-10">
+            <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/45 mb-2">
               Follow Along
             </p>
-            <h2 className="font-serif text-2xl text-[#0E4F52]">
-              @islandmantra.lk
-            </h2>
+            <h2 className="font-serif text-2xl text-[#0E4F52]">@islandmantra.lk</h2>
+            <p className="font-sans text-xs text-[#1F2A2B]/45 mt-2">
+              Tag us to be featured
+            </p>
           </div>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-1">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-1.5">
             {instagramImages.map((img, i) => (
               <a
                 key={i}
                 href="https://instagram.com/islandmantra.lk"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative aspect-square overflow-hidden group"
+                className="relative aspect-square overflow-hidden group block"
               >
                 <Image
                   src={img.src}
                   alt={img.alt}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-cover transition-transform duration-600 group-hover:scale-108"
                   sizes="(max-width: 640px) 33vw, 16vw"
                 />
-                <div className="absolute inset-0 bg-[#0E4F52]/0 group-hover:bg-[#0E4F52]/30 transition-colors duration-300 flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#0E4F52]/0 group-hover:bg-[#0E4F52]/35 transition-colors duration-300 flex items-center justify-center">
                   <svg
-                    width="24"
-                    height="24"
+                    width="22"
+                    height="22"
                     fill="white"
                     viewBox="0 0 24 24"
                     className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -311,19 +566,32 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="bg-[#0E4F52] py-16">
-        <div className="max-w-xl mx-auto px-4 sm:px-6 text-center">
-          <p className="font-sans text-xs tracking-[0.3em] uppercase text-white/50 mb-3">
+      {/* ── NEWSLETTER ──────────────────────────────────── */}
+      <section className="bg-[#0E4F52] py-20 relative overflow-hidden">
+        {/* Decorative circle */}
+        <div
+          className="absolute -right-24 -top-24 w-64 h-64 rounded-full"
+          style={{ background: "rgba(46,125,123,0.3)" }}
+        />
+        <div
+          className="absolute -left-12 -bottom-12 w-40 h-40 rounded-full"
+          style={{ background: "rgba(225,112,75,0.15)" }}
+        />
+
+        <div className="relative z-10 max-w-xl mx-auto px-4 sm:px-6 text-center">
+          <p className="font-sans text-xs tracking-[0.3em] uppercase text-white/40 mb-3">
             Stay Connected
           </p>
-          <h2 className="font-serif text-2xl md:text-3xl text-white mb-3">
+          <h2 className="font-serif text-3xl md:text-4xl text-white mb-3 leading-snug">
             Join the Island
           </h2>
-          <p className="font-sans text-sm text-white/70 mb-8 leading-relaxed">
+          <p className="font-sans text-sm text-white/55 mb-9 leading-relaxed">
             New arrivals, stories from Hikkaduwa, and exclusive offers — straight to your inbox.
           </p>
           <NewsletterForm />
+          <p className="font-sans text-[11px] text-white/30 mt-4">
+            No spam. Unsubscribe anytime.
+          </p>
         </div>
       </section>
     </>

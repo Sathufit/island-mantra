@@ -78,7 +78,7 @@ export const products: Product[] = [
     price: 8990,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1594938298603-c8148c4b4b50?w=800&q=80",
         alt: "Weligama Linen Pants — front",
       },
       {
@@ -116,7 +116,7 @@ export const products: Product[] = [
     compareAtPrice: 15000,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
         alt: "Galle Linen Co-ord Set — front",
       },
       {
@@ -193,11 +193,11 @@ export const products: Product[] = [
         alt: "Coral Bay Maxi Dress — full length",
       },
       {
-        src: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=800&q=80",
         alt: "Coral Bay Maxi Dress — detail",
       },
       {
-        src: "https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
         alt: "Coral Bay Maxi Dress — beach",
       },
     ],
@@ -235,7 +235,7 @@ export const products: Product[] = [
         alt: "Mirissa Wrap Dress — detail",
       },
       {
-        src: "https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
         alt: "Mirissa Wrap Dress — styled",
       },
     ],
@@ -264,7 +264,7 @@ export const products: Product[] = [
     price: 6500,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=800&q=80",
         alt: "Tangalle Slip Dress — front",
       },
       {
@@ -300,11 +300,11 @@ export const products: Product[] = [
     price: 10500,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
         alt: "Arugam Kaftan Dress — full view",
       },
       {
-        src: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=800&q=80",
         alt: "Arugam Kaftan Dress — detail",
       },
       {
@@ -487,15 +487,15 @@ export const products: Product[] = [
     price: 4500,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
         alt: "Hikka Palm Straw Hat — front",
       },
       {
-        src: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=800&q=80",
         alt: "Hikka Palm Straw Hat — detail weave",
       },
       {
-        src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
         alt: "Hikka Palm Straw Hat — worn on beach",
       },
     ],
@@ -524,15 +524,15 @@ export const products: Product[] = [
     price: 5990,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=800&q=80",
         alt: "Southside Woven Tote — front",
       },
       {
-        src: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
         alt: "Southside Woven Tote — interior",
       },
       {
-        src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
         alt: "Southside Woven Tote — beach styled",
       },
     ],
@@ -560,15 +560,15 @@ export const products: Product[] = [
     price: 2500,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
         alt: "Pandan Shell Bracelet — close-up",
       },
       {
-        src: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
         alt: "Pandan Shell Bracelet — worn",
       },
       {
-        src: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=800&q=80",
         alt: "Pandan Shell Bracelet — collection",
       },
     ],
@@ -597,15 +597,15 @@ export const products: Product[] = [
     price: 6500,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1594938298603-c8148c4b4b50?w=800&q=80",
         alt: "Ocean Road Sunglasses — front",
       },
       {
-        src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
         alt: "Ocean Road Sunglasses — side",
       },
       {
-        src: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
         alt: "Ocean Road Sunglasses — detail",
       },
     ],

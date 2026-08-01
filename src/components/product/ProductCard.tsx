@@ -1,18 +1,36 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { type Product } from "@/src/lib/data/products";
 import { formatPrice } from "@/src/lib/utils";
 import Badge from "@/src/components/ui/Badge";
+import { useCart } from "@/src/store/cart";
 
-interface Props {
-  product: Product;
-}
-
-export default function ProductCard({ product }: Props) {
+export default function ProductCard({ product }: { product: Product }) {
   const image = product.images[0];
   const hoverImage = product.images[1] ?? product.images[0];
+  const [quickSize, setQuickSize] = useState(product.sizes[0] ?? "");
+  const [quickAdded, setQuickAdded] = useState(false);
+  const { addItem } = useCart();
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!quickSize) return;
+    addItem({
+      productSlug: product.slug,
+      productName: product.name,
+      price: product.price,
+      image: image.src,
+      imageAlt: image.alt,
+      size: quickSize,
+      color: product.variants[0]?.color ?? "",
+    });
+    setQuickAdded(true);
+    setTimeout(() => setQuickAdded(false), 2000);
+  };
 
   return (
     <Link href={`/products/${product.slug}`} className="group block">
@@ -41,14 +59,52 @@ export default function ProductCard({ product }: Props) {
             <Badge variant="bestseller">Best Seller</Badge>
           )}
         </div>
+
+        {/* Quick-add overlay — desktop hover only */}
+        <div
+          className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out bg-white/96 backdrop-blur-sm p-3 hidden sm:block"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {product.sizes[0] !== "One Size" && (
+            <div className="flex gap-1 justify-center mb-2 flex-wrap">
+              {product.sizes.slice(0, 5).map((size) => (
+                <button
+                  key={size}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setQuickSize(size);
+                  }}
+                  className={`w-8 h-7 text-[10px] font-sans border transition-colors ${
+                    quickSize === size
+                      ? "border-[#0E4F52] bg-[#0E4F52] text-white"
+                      : "border-[#E7DCC8] text-[#1F2A2B] hover:border-[#0E4F52]"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          )}
+          <button
+            onClick={handleQuickAdd}
+            className={`w-full py-2 text-[10px] font-sans tracking-widest uppercase transition-colors duration-200 ${
+              quickAdded
+                ? "bg-[#2E7D7B] text-white"
+                : "bg-[#0E4F52] text-white hover:bg-[#2E7D7B]"
+            }`}
+          >
+            {quickAdded ? "Added ✓" : "Quick Add"}
+          </button>
+        </div>
       </div>
 
       {/* Info */}
-      <div className="mt-3 px-1">
-        <p className="font-sans text-[10px] tracking-widest uppercase text-[#1F2A2B]/50 mb-1">
+      <div className="mt-3 px-0.5">
+        <p className="font-sans text-[10px] tracking-widest uppercase text-[#1F2A2B]/45 mb-1">
           {product.collectionName}
         </p>
-        <h3 className="font-serif text-base text-[#1F2A2B] leading-snug">
+        <h3 className="font-serif text-base text-[#1F2A2B] leading-snug group-hover:text-[#0E4F52] transition-colors duration-200">
           {product.name}
         </h3>
         <div className="flex items-baseline gap-2 mt-1.5">
@@ -56,12 +112,11 @@ export default function ProductCard({ product }: Props) {
             {formatPrice(product.price)}
           </span>
           {product.compareAtPrice && (
-            <span className="font-sans text-xs text-[#1F2A2B]/40 line-through">
+            <span className="font-sans text-xs text-[#1F2A2B]/35 line-through">
               {formatPrice(product.compareAtPrice)}
             </span>
           )}
         </div>
-        {/* Colour dots */}
         {product.variants.length > 1 && (
           <div className="flex gap-1.5 mt-2">
             {product.variants.map((v) => (

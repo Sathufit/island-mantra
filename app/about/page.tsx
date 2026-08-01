@@ -103,7 +103,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="relative aspect-square">
               <Image
-                src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600&q=80"
+                src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80"
                 alt="Handmade accessories"
                 fill
                 className="object-cover"
@@ -121,7 +121,7 @@ export default function AboutPage() {
             </div>
             <div className="relative aspect-square md:col-span-2 md:aspect-[2/1]">
               <Image
-                src="https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=900&q=80"
+                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&q=80"
                 alt="Island lifestyle"
                 fill
                 className="object-cover"

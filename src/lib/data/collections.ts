@@ -45,7 +45,7 @@ export const collections: Collection[] = [
     description:
       "The finishing touches. Straw hats, woven bags, and handcrafted jewellery sourced from local artisans around the south coast.",
     image:
-      "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=900&q=80",
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=900&q=80",
     imageAlt: "Accessories collection — island accessories",
   },
 ];

@@ -142,6 +142,33 @@ export default function CartDrawer() {
           )}
         </div>
 
+        {/* Free shipping progress */}
+        {items.length > 0 && (
+          <div className="px-6 py-3 bg-[#F4EDE1]">
+            {total < 5000 ? (
+              <>
+                <p className="font-sans text-xs text-[#1F2A2B]/65 mb-2 text-center">
+                  Add{" "}
+                  <strong className="text-[#0E4F52]">
+                    {formatPrice(5000 - total)}
+                  </strong>{" "}
+                  more for free shipping
+                </p>
+                <div className="w-full bg-[#E7DCC8] rounded-full h-1">
+                  <div
+                    className="bg-[#0E4F52] h-1 rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min((total / 5000) * 100, 100)}%` }}
+                  />
+                </div>
+              </>
+            ) : (
+              <p className="font-sans text-xs text-[#0E4F52] text-center font-medium">
+                ✓ You qualify for free shipping!
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Footer */}
         {items.length > 0 && (
           <div className="px-6 py-5 border-t border-[#E7DCC8] space-y-4">

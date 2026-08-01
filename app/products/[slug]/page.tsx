@@ -70,7 +70,7 @@ export default function ProductPage({
   }
 
   return (
-    <div className="pt-28">
+    <div className="pt-28 pb-24 md:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Breadcrumb */}
         <nav className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B]/50 mb-8 flex gap-2 flex-wrap">
@@ -269,6 +269,35 @@ export default function ProductPage({
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Sticky mobile add-to-cart bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-[#E7DCC8] px-4 py-3 flex gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        {product.sizes[0] !== "One Size" ? (
+          <select
+            value={selectedSize}
+            onChange={(e) => setSelectedSize(e.target.value)}
+            className="flex-1 border border-[#E7DCC8] px-3 py-3 font-sans text-xs text-[#1F2A2B] focus:outline-none focus:border-[#0E4F52] bg-white"
+          >
+            {product.sizes.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        ) : (
+          <div className="flex-1 flex items-center px-3 border border-[#E7DCC8]">
+            <span className="font-sans text-xs text-[#1F2A2B]/60">One Size</span>
+          </div>
+        )}
+        <button
+          onClick={handleAddToCart}
+          className={`flex-[2] py-3 font-sans text-xs tracking-widest uppercase transition-all duration-200 ${
+            addedMessage
+              ? "bg-[#2E7D7B] text-white"
+              : "bg-[#0E4F52] text-white"
+          }`}
+        >
+          {addedMessage ? "Added ✓" : "Add to Bag"}
+        </button>
       </div>
 
       {/* Related Products */}
