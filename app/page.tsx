@@ -133,7 +133,8 @@ export default async function HomePage() {
           src="https://images.unsplash.com/photo-1572804013427-4d7ca7268217?w=1800&q=85"
           alt="Island Mantra — south coast"
           fill
-          className="object-cover object-center"
+          className="object-cover"
+          style={{ objectPosition: "center 12%" }}
           sizes="100vw"
         />
       </div>
@@ -257,6 +258,7 @@ export default async function HomePage() {
               alt="Island Mantra, Hikkaduwa"
               fill
               className="object-cover"
+              style={{ objectPosition: "center 8%" }}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>

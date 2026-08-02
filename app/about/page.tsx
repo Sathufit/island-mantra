@@ -18,6 +18,7 @@ export default function AboutPage() {
           fill
           priority
           className="object-cover"
+          style={{ objectPosition: "center 5%" }}
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

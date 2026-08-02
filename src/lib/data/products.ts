@@ -78,7 +78,7 @@ export const products: Product[] = [
     price: 8990,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1594938298603-c8148c4b4b50?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1715233749622-3216fe49e682?w=800&q=80",
         alt: "Weligama Linen Pants — front",
       },
       {
@@ -597,7 +597,7 @@ export const products: Product[] = [
     price: 6500,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1594938298603-c8148c4b4b50?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1510560127339-37ce679cfafa?w=800&q=80",
         alt: "Ocean Road Sunglasses — front",
       },
       {
