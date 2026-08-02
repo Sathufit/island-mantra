@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { type Product } from "@/src/lib/data/products";
 import { formatPrice } from "@/src/lib/utils";
-import Badge from "@/src/components/ui/Badge";
 import { useCart } from "@/src/store/cart";
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -35,38 +34,38 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.slug}`} className="group block">
       {/* Image */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#F4EDE1]">
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#F0EBE1]">
         <Image
           src={image.src}
           alt={image.alt}
           fill
-          className="object-cover transition-opacity duration-700 ease-in-out group-hover:opacity-0"
+          className="object-cover transition-opacity duration-500 ease-in-out group-hover:opacity-0"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
         <Image
           src={hoverImage.src}
           alt={hoverImage.alt}
           fill
-          className="object-cover transition-opacity duration-700 ease-in-out opacity-0 group-hover:opacity-100"
+          className="object-cover transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
 
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          {product.isNew && <Badge variant="new">New</Badge>}
-          {product.compareAtPrice && <Badge variant="sale">Sale</Badge>}
-          {product.isBestSeller && !product.isNew && (
-            <Badge variant="bestseller">Best Seller</Badge>
-          )}
-        </div>
+        {/* New / Sale badge — top left, minimal */}
+        {(product.isNew || product.compareAtPrice) && (
+          <div className="absolute top-3 left-3">
+            <span className="font-sans text-[9px] tracking-[0.15em] uppercase bg-white text-[#1F2A2B] px-2 py-1">
+              {product.compareAtPrice ? "Sale" : "New"}
+            </span>
+          </div>
+        )}
 
-        {/* Quick-add overlay — desktop hover only */}
+        {/* Quick-add — slides up on desktop hover */}
         <div
-          className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out bg-white/96 backdrop-blur-sm p-3 hidden sm:block"
+          className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out hidden sm:block"
           onClick={(e) => e.stopPropagation()}
         >
           {product.sizes[0] !== "One Size" && (
-            <div className="flex gap-1 justify-center mb-2 flex-wrap">
+            <div className="bg-white/95 px-3 pt-3 pb-1 flex gap-1 justify-center flex-wrap border-t border-[#E7DCC8]">
               {product.sizes.slice(0, 5).map((size) => (
                 <button
                   key={size}
@@ -75,7 +74,7 @@ export default function ProductCard({ product }: { product: Product }) {
                     e.stopPropagation();
                     setQuickSize(size);
                   }}
-                  className={`w-8 h-7 text-[10px] font-sans border transition-colors ${
+                  className={`w-9 h-8 text-[10px] font-sans border transition-colors ${
                     quickSize === size
                       ? "border-[#0E4F52] bg-[#0E4F52] text-white"
                       : "border-[#E7DCC8] text-[#1F2A2B] hover:border-[#0E4F52]"
@@ -88,27 +87,24 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
           <button
             onClick={handleQuickAdd}
-            className={`w-full py-2 text-[10px] font-sans tracking-widest uppercase transition-colors duration-200 ${
+            className={`w-full py-3 text-[10px] font-sans tracking-[0.18em] uppercase transition-colors duration-200 ${
               quickAdded
                 ? "bg-[#2E7D7B] text-white"
                 : "bg-[#0E4F52] text-white hover:bg-[#2E7D7B]"
             }`}
           >
-            {quickAdded ? "Added ✓" : "Quick Add"}
+            {quickAdded ? "Added" : "Quick Add"}
           </button>
         </div>
       </div>
 
       {/* Info */}
-      <div className="mt-3 px-0.5">
-        <p className="font-sans text-[10px] tracking-widest uppercase text-[#1F2A2B]/45 mb-1">
-          {product.collectionName}
-        </p>
-        <h3 className="font-serif text-base text-[#1F2A2B] leading-snug group-hover:text-[#0E4F52] transition-colors duration-200">
+      <div className="mt-3">
+        <h3 className="font-sans text-sm text-[#1F2A2B] leading-snug group-hover:text-[#0E4F52] transition-colors duration-200">
           {product.name}
         </h3>
-        <div className="flex items-baseline gap-2 mt-1.5">
-          <span className="font-sans text-sm font-medium text-[#0E4F52]">
+        <div className="flex items-baseline gap-2 mt-1">
+          <span className="font-sans text-sm text-[#1F2A2B]/70">
             {formatPrice(product.price)}
           </span>
           {product.compareAtPrice && (
@@ -123,7 +119,7 @@ export default function ProductCard({ product }: { product: Product }) {
               <span
                 key={v.color}
                 title={v.color}
-                className="w-3 h-3 rounded-full border border-[#E7DCC8] flex-shrink-0"
+                className="w-3 h-3 rounded-full border border-[#E7DCC8]"
                 style={{ backgroundColor: v.colorHex }}
               />
             ))}

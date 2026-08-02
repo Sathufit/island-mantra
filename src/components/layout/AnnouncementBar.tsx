@@ -1,29 +1,13 @@
-const messages = [
-  "Free delivery on orders over Rs 5,000",
-  "Coastal fashion born in Hikkaduwa, Sri Lanka",
-  "Islandwide delivery in 2–4 business days",
-  "Handcrafted by local artisans",
-  "Easy 14-day returns",
-  "New arrivals added weekly",
-];
-
 export default function AnnouncementBar() {
-  const items = [...messages, ...messages];
-
   return (
-    <div className="bg-[#0A3D40] overflow-hidden" style={{ height: "36px" }}>
-      <div className="flex items-center h-full">
-        <div className="marquee-track flex items-center whitespace-nowrap">
-          {items.map((msg, i) => (
-            <span
-              key={i}
-              className="inline-flex items-center gap-2.5 px-7 font-sans text-[11px] tracking-[0.16em] text-white/75"
-            >
-              <span className="text-[#E1704B]" style={{ fontSize: "7px" }}>◆</span>
-              {msg}
-            </span>
-          ))}
-        </div>
+    <div className="bg-[#0A3D40]" style={{ height: "32px" }}>
+      <div className="h-full flex items-center justify-center px-4">
+        <p className="font-sans text-[11px] tracking-[0.15em] text-white/65 text-center leading-none md:hidden whitespace-nowrap overflow-hidden text-ellipsis">
+          Free delivery over Rs 5,000 · Made in Sri Lanka
+        </p>
+        <p className="hidden md:block font-sans text-[11px] tracking-[0.18em] text-white/65 text-center">
+          Free delivery on orders over Rs 5,000&nbsp;&nbsp;·&nbsp;&nbsp;Made in Sri Lanka&nbsp;&nbsp;·&nbsp;&nbsp;Easy 14-day returns
+        </p>
       </div>
     </div>
   );

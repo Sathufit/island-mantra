@@ -487,7 +487,7 @@ export const products: Product[] = [
     price: 4500,
     images: [
       {
-        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&q=80",
         alt: "Hikka Palm Straw Hat — front",
       },
       {
@@ -528,7 +528,7 @@ export const products: Product[] = [
         alt: "Southside Woven Tote — front",
       },
       {
-        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&q=80",
         alt: "Southside Woven Tote — interior",
       },
       {
@@ -564,7 +564,7 @@ export const products: Product[] = [
         alt: "Pandan Shell Bracelet — close-up",
       },
       {
-        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&q=80",
         alt: "Pandan Shell Bracelet — worn",
       },
       {
@@ -605,7 +605,7 @@ export const products: Product[] = [
         alt: "Ocean Road Sunglasses — side",
       },
       {
-        src: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80",
+        src: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&q=80",
         alt: "Ocean Road Sunglasses — detail",
       },
     ],

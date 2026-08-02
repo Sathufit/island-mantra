@@ -79,8 +79,8 @@ export default function CollectionPage({
 
   return (
     <div className="pt-0">
-      {/* Full-bleed hero — starts at y=0, sits behind the fixed bar */}
-      <div className="relative h-64 md:h-80 flex items-end">
+      {/* Full-bleed hero */}
+      <div className="relative flex items-end" style={{ height: "clamp(280px, 52vh, 560px)" }}>
         <Image
           src={collection.image}
           alt={collection.imageAlt}
@@ -89,18 +89,26 @@ export default function CollectionPage({
           priority
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0E4F52]/80 to-transparent" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pb-10 w-full">
-          <nav className="font-sans text-xs tracking-widest uppercase text-white/60 mb-3 flex gap-2">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0E4F52]/85 via-[#0E4F52]/20 to-transparent" />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pb-10 md:pb-14 w-full">
+          <nav className="font-sans text-[10px] tracking-[0.28em] uppercase text-white/55 mb-4 flex gap-2">
             <Link href="/" className="hover:text-white transition-colors">
               Home
             </Link>
             <span>/</span>
             <span className="text-white">{collection.name}</span>
           </nav>
-          <h1 className="font-serif text-4xl md:text-5xl text-white">
+          <h1
+            className="font-serif text-white leading-tight"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 5.5rem)" }}
+          >
             {collection.name}
           </h1>
+          {collection.description && (
+            <p className="font-sans text-sm text-white/60 mt-3 max-w-md leading-relaxed hidden md:block">
+              {collection.description}
+            </p>
+          )}
         </div>
       </div>
 
