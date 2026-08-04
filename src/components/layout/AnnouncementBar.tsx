@@ -5,17 +5,18 @@ const phrases = [
 ];
 
 export default function AnnouncementBar() {
+  // Duplicated once so the marquee keyframe (translateX -50%) loops seamlessly
   const track = [...phrases, ...phrases];
 
   return (
-    <div className="bg-[#D9C7A3] overflow-hidden" style={{ height: "32px" }}>
+    <div className="bg-[#C9A876] overflow-hidden" style={{ height: "36px" }}>
       <div className="h-full flex items-center marquee-track whitespace-nowrap">
         {track.map((phrase, i) => (
-          <span
-            key={i}
-            className="font-sans text-[11px] tracking-[0.15em] text-white px-6 flex-shrink-0"
-          >
-            {phrase}
+          <span key={i} className="flex items-center flex-shrink-0">
+            <span className="font-sans text-[11px] font-medium tracking-[0.2em] uppercase text-white px-5">
+              {phrase}
+            </span>
+            <span className="text-white/50 text-[8px] leading-none">◆</span>
           </span>
         ))}
       </div>
