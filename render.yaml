@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: island-mantra-backend
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: >-
+      npm install &&
+      npx turbo build --filter=@dtc/backend &&
+      cd apps/backend/.medusa/server && npm install
+    startCommand: >-
+      cd apps/backend/.medusa/server &&
+      npx medusa db:migrate &&
+      npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
+      - key: NODE_ENV
+        value: production
+      - key: MEDUSA_WORKER_MODE
+        value: shared
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: STORE_CORS
+        sync: false
+      - key: ADMIN_CORS
+        sync: false
+      - key: AUTH_CORS
+        sync: false
+      - key: PAYHERE_MERCHANT_ID
+        sync: false
+      - key: PAYHERE_MERCHANT_SECRET
+        sync: false
+      - key: PAYHERE_MODE
+        value: sandbox
+      - key: PAYHERE_RETURN_URL
+        sync: false
+      - key: PAYHERE_CANCEL_URL
+        sync: false
+      - key: PAYHERE_NOTIFY_URL
+        sync: false
