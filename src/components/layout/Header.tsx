@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/src/store/cart";
+import { useCustomer } from "@/src/store/customer";
 import MobileNav from "./MobileNav";
 
 export const navCategories = [
@@ -27,6 +28,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { toggleCart, totalItems } = useCart();
+  const { isLoggedIn, hydrateCustomer } = useCustomer();
   const pathname = usePathname();
   const count = totalItems();
 
@@ -41,6 +43,11 @@ export default function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
+
+  useEffect(() => {
+    hydrateCustomer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -115,6 +122,23 @@ export default function Header() {
               >
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+              </svg>
+            </Link>
+            <Link
+              href="/account"
+              className="hover:opacity-60 transition-opacity"
+              aria-label={isLoggedIn ? "Your account" : "Sign in"}
+            >
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" strokeLinecap="round" />
               </svg>
             </Link>
             <button

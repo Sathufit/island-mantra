@@ -11,11 +11,12 @@ interface MedusaFetchOptions {
   method?: "GET" | "POST" | "DELETE";
   params?: Record<string, string>;
   body?: unknown;
+  token?: string;
 }
 
 async function medusaFetch<T>(
   path: string,
-  { method = "GET", params = {}, body }: MedusaFetchOptions = {}
+  { method = "GET", params = {}, body, token }: MedusaFetchOptions = {}
 ): Promise<T> {
   const url = new URL(path, BACKEND_URL);
   for (const [key, value] of Object.entries(params)) {
@@ -27,6 +28,7 @@ async function medusaFetch<T>(
     headers: {
       "x-publishable-api-key": PUBLISHABLE_KEY!,
       ...(body ? { "Content-Type": "application/json" } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
     ...(method === "GET" ? { next: { revalidate: 60 } } : { cache: "no-store" }),
@@ -243,4 +245,167 @@ export async function completeCart(
   cartId: string
 ): Promise<{ type: "order" | "cart"; order?: { id: string; display_id: number } }> {
   return medusaFetch(`/store/carts/${cartId}/complete`, { method: "POST" });
+}
+
+export async function attachCustomerToCart(
+  cartId: string,
+  token: string
+): Promise<void> {
+  await medusaFetch(`/store/carts/${cartId}/customer`, {
+    method: "POST",
+    token,
+  });
+}
+
+// ── Customer accounts ────────────────────────────────────────────
+
+export interface MedusaCustomerAddress {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  address_1: string | null;
+  city: string | null;
+  phone: string | null;
+  country_code: string | null;
+  is_default_shipping: boolean;
+}
+
+export interface MedusaCustomer {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  addresses: MedusaCustomerAddress[];
+}
+
+export interface MedusaOrder {
+  id: string;
+  display_id: number;
+  status: string;
+  payment_status: string;
+  fulfillment_status: string;
+  total: number;
+  currency_code: string;
+  created_at: string;
+  email: string;
+  shipping_address: MedusaAddress | null;
+  items: {
+    id: string;
+    title: string;
+    thumbnail: string | null;
+    variant_title: string | null;
+    unit_price: number;
+    quantity: number;
+  }[];
+}
+
+// Registering a customer is a 3-step Medusa flow: register the auth identity,
+// use that (single-use) token to create the customer record, then log in for
+// a real session token — the registration token stops working the moment the
+// customer record exists.
+export async function registerCustomer(
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+): Promise<{ token: string; customer: MedusaCustomer }> {
+  const { token: registrationToken } = await medusaFetch<{ token: string }>(
+    "/auth/customer/emailpass/register",
+    { method: "POST", body: { email, password } }
+  );
+
+  await medusaFetch<{ customer: MedusaCustomer }>("/store/customers", {
+    method: "POST",
+    token: registrationToken,
+    body: { email, first_name: firstName, last_name: lastName },
+  });
+
+  return loginCustomer(email, password);
+}
+
+export async function loginCustomer(
+  email: string,
+  password: string
+): Promise<{ token: string; customer: MedusaCustomer }> {
+  const { token } = await medusaFetch<{ token: string }>(
+    "/auth/customer/emailpass",
+    { method: "POST", body: { email, password } }
+  );
+  const customer = await getCustomer(token);
+  return { token, customer };
+}
+
+export async function getCustomer(token: string): Promise<MedusaCustomer> {
+  const data = await medusaFetch<{ customer: MedusaCustomer }>(
+    "/store/customers/me",
+    { token }
+  );
+  return data.customer;
+}
+
+export async function updateCustomer(
+  token: string,
+  update: { first_name?: string; last_name?: string; phone?: string }
+): Promise<MedusaCustomer> {
+  const data = await medusaFetch<{ customer: MedusaCustomer }>(
+    "/store/customers/me",
+    { method: "POST", token, body: update }
+  );
+  return data.customer;
+}
+
+export async function addAddress(
+  token: string,
+  address: MedusaAddress & { is_default_shipping?: boolean }
+): Promise<MedusaCustomer> {
+  const data = await medusaFetch<{ customer: MedusaCustomer }>(
+    "/store/customers/me/addresses",
+    { method: "POST", token, body: address }
+  );
+  return data.customer;
+}
+
+export async function updateAddress(
+  token: string,
+  addressId: string,
+  address: Partial<MedusaAddress>
+): Promise<MedusaCustomer> {
+  const data = await medusaFetch<{ customer: MedusaCustomer }>(
+    `/store/customers/me/addresses/${addressId}`,
+    { method: "POST", token, body: address }
+  );
+  return data.customer;
+}
+
+export async function deleteAddress(
+  token: string,
+  addressId: string
+): Promise<void> {
+  await medusaFetch(`/store/customers/me/addresses/${addressId}`, {
+    method: "DELETE",
+    token,
+  });
+}
+
+const ORDER_FIELDS =
+  "id,display_id,status,payment_status,fulfillment_status,total,currency_code,created_at,email,*shipping_address,*items";
+
+export async function listOrders(token: string): Promise<MedusaOrder[]> {
+  const data = await medusaFetch<{ orders: MedusaOrder[] }>("/store/orders", {
+    token,
+    params: { fields: ORDER_FIELDS, order: "-created_at" },
+  });
+  return data.orders;
+}
+
+export async function getOrder(
+  token: string,
+  orderId: string
+): Promise<MedusaOrder> {
+  const data = await medusaFetch<{ order: MedusaOrder }>(
+    `/store/orders/${orderId}`,
+    { token, params: { fields: ORDER_FIELDS } }
+  );
+  return data.order;
 }

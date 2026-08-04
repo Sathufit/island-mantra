@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/src/store/cart";
+import { useCustomer } from "@/src/store/customer";
 import { formatPrice } from "@/src/lib/utils";
 import {
   setCartAddressAndEmail,
@@ -11,6 +12,7 @@ import {
   addShippingMethod,
   initiatePaymentSession,
   completeCart,
+  attachCustomerToCart,
 } from "@/src/lib/medusa/client";
 
 interface FormState {
@@ -34,11 +36,28 @@ const EMPTY_FORM: FormState = {
 export default function CheckoutPage() {
   const router = useRouter();
   const { cartId, items, subtotal, clearCart } = useCart();
+  const { isLoggedIn, token, customer } = useCustomer();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const total = subtotal();
+
+  useEffect(() => {
+    if (!customer) return;
+    const defaultAddress =
+      customer.addresses.find((a) => a.is_default_shipping) ??
+      customer.addresses[0];
+    setForm((f) => ({
+      ...f,
+      email: customer.email,
+      firstName: defaultAddress?.first_name ?? f.firstName,
+      lastName: defaultAddress?.last_name ?? f.lastName,
+      address1: defaultAddress?.address_1 ?? f.address1,
+      city: defaultAddress?.city ?? f.city,
+      phone: defaultAddress?.phone ?? f.phone,
+    }));
+  }, [customer]);
 
   const update =
     (key: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -54,6 +73,10 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
+      if (isLoggedIn && token) {
+        await attachCustomerToCart(cartId, token);
+      }
+
       await setCartAddressAndEmail(cartId, form.email, {
         first_name: form.firstName,
         last_name: form.lastName,

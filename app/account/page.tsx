@@ -1,81 +1,239 @@
-import { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Account",
-};
+import { useState } from "react";
+import Link from "next/link";
+import { useCustomer } from "@/src/store/customer";
+
+type Tab = "signin" | "register";
+
+function AuthForms() {
+  const { login, register } = useCustomer();
+  const [tab, setTab] = useState<Tab>("signin");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+  });
+
+  const update =
+    (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      if (tab === "signin") {
+        await login(form.email, form.password);
+      } else {
+        await register(form.email, form.password, form.firstName, form.lastName);
+      }
+    } catch {
+      setError(
+        tab === "signin"
+          ? "Incorrect email or password."
+          : "Couldn't create your account. That email may already be in use."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto px-6">
+      <div className="text-center mb-10">
+        <h1 className="font-serif text-3xl text-[#0A0A0A]">My Account</h1>
+      </div>
+
+      <div className="flex border-b border-[#E7DCC8] mb-8">
+        {(["signin", "register"] as Tab[]).map((t) => (
+          <button
+            key={t}
+            onClick={() => {
+              setTab(t);
+              setError(null);
+            }}
+            className={`flex-1 py-3 font-sans text-xs tracking-widest uppercase transition-colors ${
+              tab === t
+                ? "text-[#0A0A0A] border-b-2 border-[#0A0A0A]"
+                : "text-[#0A0A0A]/40"
+            }`}
+          >
+            {t === "signin" ? "Sign In" : "Create Account"}
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {tab === "register" && (
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              required
+              placeholder="First name"
+              value={form.firstName}
+              onChange={update("firstName")}
+              className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+            />
+            <input
+              required
+              placeholder="Last name"
+              value={form.lastName}
+              onChange={update("lastName")}
+              className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+            />
+          </div>
+        )}
+        <input
+          required
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={update("email")}
+          className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+        />
+        <input
+          required
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={update("password")}
+          className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+        />
+
+        {error && <p className="font-sans text-sm text-red-600">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase py-4 hover:bg-[#2A2A2A] transition-colors disabled:opacity-50"
+        >
+          {loading
+            ? "Please wait…"
+            : tab === "signin"
+            ? "Sign In"
+            : "Create Account"}
+        </button>
+      </form>
+
+      <div className="mt-8 text-center">
+        <Link
+          href="/"
+          className="font-sans text-xs text-[#0A0A0A] tracking-widest uppercase underline underline-offset-2 hover:text-[#2A2A2A] transition-colors"
+        >
+          Continue Shopping
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function AccountDashboard() {
+  const { customer, updateProfile, logout } = useCustomer();
+  const [form, setForm] = useState({
+    firstName: customer?.first_name ?? "",
+    lastName: customer?.last_name ?? "",
+    phone: customer?.phone ?? "",
+  });
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await updateProfile({
+      first_name: form.firstName,
+      last_name: form.lastName,
+      phone: form.phone,
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="max-w-md mx-auto px-6">
+      <div className="text-center mb-10">
+        <h1 className="font-serif text-3xl text-[#0A0A0A]">My Account</h1>
+        <p className="font-sans text-sm text-[#0A0A0A]/60 mt-2">
+          {customer?.email}
+        </p>
+      </div>
+
+      <div className="flex gap-3 mb-10">
+        <Link
+          href="/account/orders"
+          className="flex-1 text-center border border-[#E7DCC8] py-4 font-sans text-xs tracking-widest uppercase text-[#0A0A0A] hover:border-[#0A0A0A] transition-colors"
+        >
+          Order History
+        </Link>
+        <Link
+          href="/account/addresses"
+          className="flex-1 text-center border border-[#E7DCC8] py-4 font-sans text-xs tracking-widest uppercase text-[#0A0A0A] hover:border-[#0A0A0A] transition-colors"
+        >
+          Addresses
+        </Link>
+      </div>
+
+      <form onSubmit={handleSave} className="space-y-5">
+        <h2 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]">
+          Profile
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          <input
+            placeholder="First name"
+            value={form.firstName}
+            onChange={(e) => setForm((f) => ({ ...f, firstName: e.target.value }))}
+            className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+          />
+          <input
+            placeholder="Last name"
+            value={form.lastName}
+            onChange={(e) => setForm((f) => ({ ...f, lastName: e.target.value }))}
+            className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+          />
+        </div>
+        <input
+          placeholder="Phone"
+          value={form.phone}
+          onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+          className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+        />
+        <button
+          type="submit"
+          className="w-full border border-[#0A0A0A] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase py-3 hover:bg-[#0A0A0A] hover:text-white transition-colors"
+        >
+          {saved ? "Saved" : "Save Changes"}
+        </button>
+      </form>
+
+      <button
+        onClick={logout}
+        className="w-full mt-8 font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/50 hover:text-[#0A0A0A] transition-colors"
+      >
+        Log Out
+      </button>
+    </div>
+  );
+}
 
 export default function AccountPage() {
+  const { hasHydrated, token, isLoggedIn } = useCustomer();
+
+  // Wait for zustand's localStorage rehydration, then — if a token turns out
+  // to exist — wait for the customer fetch too, instead of flashing the
+  // sign-in form before either resolves.
+  if (!hasHydrated || (token && !isLoggedIn)) {
+    return (
+      <div className="pt-28 pb-20 min-h-screen flex items-center justify-center">
+        <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-28 pb-20 min-h-screen">
-      <div className="max-w-md mx-auto px-6">
-        <div className="text-center mb-10">
-          <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#0A0A0A]/50 mb-3">
-            Coming Soon
-          </p>
-          <h1 className="font-serif text-3xl text-[#0A0A0A]">My Account</h1>
-        </div>
-
-        <div className="bg-[#F4EDE1] p-6 mb-6 text-center">
-          <p className="font-sans text-xs text-[#0A0A0A]/60 leading-relaxed">
-            Customer accounts — order history, saved addresses, and wishlists — are coming in Phase 2.
-          </p>
-        </div>
-
-        {/* Login form (UI only) */}
-        <div className="space-y-5 mb-8">
-          <h2 className="font-serif text-xl text-[#0A0A0A]">Sign In</h2>
-          <div>
-            <label className="block font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              disabled
-              placeholder="your@email.com"
-              className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-2.5 focus:outline-none cursor-not-allowed opacity-50"
-            />
-          </div>
-          <div>
-            <label className="block font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              disabled
-              placeholder="••••••••"
-              className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-2.5 focus:outline-none cursor-not-allowed opacity-50"
-            />
-          </div>
-          <button
-            disabled
-            className="w-full bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase py-4 opacity-50 cursor-not-allowed"
-          >
-            Sign In (Coming Soon)
-          </button>
-        </div>
-
-        <div className="border-t border-[#E7DCC8] pt-8">
-          <h2 className="font-serif text-xl text-[#0A0A0A] mb-5">
-            Create Account
-          </h2>
-          <button
-            disabled
-            className="w-full border border-[#0A0A0A] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase py-4 opacity-50 cursor-not-allowed"
-          >
-            Register (Coming Soon)
-          </button>
-        </div>
-
-        <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="font-sans text-xs text-[#0A0A0A] tracking-widest uppercase underline underline-offset-2 hover:text-[#2A2A2A] transition-colors"
-          >
-            Continue Shopping
-          </Link>
-        </div>
-      </div>
+      {isLoggedIn ? <AccountDashboard /> : <AuthForms />}
     </div>
   );
 }
