@@ -7,24 +7,18 @@ import { formatPrice } from "@/src/lib/utils";
 import { useCart } from "@/src/store/cart";
 
 export default function ProductCard({ product }: { product: Product }) {
-  const image = product.images[0];
   const [quickSize, setQuickSize] = useState(product.sizes[0] ?? "");
   const [quickAdded, setQuickAdded] = useState(false);
   const { addItem } = useCart();
 
-  const handleQuickAdd = (e: React.MouseEvent) => {
+  const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!quickSize) return;
-    addItem({
-      productSlug: product.slug,
-      productName: product.name,
-      price: product.price,
-      image: image.src,
-      imageAlt: image.alt,
-      size: quickSize,
-      color: product.variants[0]?.color ?? "",
-    });
+    const color = product.variants[0]?.color ?? "";
+    const variantId = product.variantMap[`${quickSize}|${color}`];
+    if (!variantId) return;
+    await addItem(variantId);
     setQuickAdded(true);
     setTimeout(() => setQuickAdded(false), 2000);
   };

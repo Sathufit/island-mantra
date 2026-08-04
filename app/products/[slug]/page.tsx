@@ -41,18 +41,11 @@ export default function ProductPage({
     });
   }, [slug]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product || !selectedSize || !selectedColor) return;
-    addItem({
-      productSlug: product.slug,
-      productName: product.name,
-      price: product.price,
-      image: product.images[0].src,
-      imageAlt: product.images[0].alt,
-      size: selectedSize,
-      color: selectedColor,
-      quantity,
-    });
+    const variantId = product.variantMap[`${selectedSize}|${selectedColor}`];
+    if (!variantId) return;
+    await addItem(variantId, quantity);
     setAddedMessage(true);
     setTimeout(() => setAddedMessage(false), 2000);
   };

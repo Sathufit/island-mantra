@@ -1,52 +1,236 @@
-import Link from "next/link";
+"use client";
 
-export const metadata = {
-  title: "Checkout",
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useCart } from "@/src/store/cart";
+import { formatPrice } from "@/src/lib/utils";
+import {
+  setCartAddressAndEmail,
+  listShippingOptions,
+  addShippingMethod,
+  initiatePaymentSession,
+  completeCart,
+} from "@/src/lib/medusa/client";
+
+interface FormState {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address1: string;
+  city: string;
+}
+
+const EMPTY_FORM: FormState = {
+  email: "",
+  firstName: "",
+  lastName: "",
+  phone: "",
+  address1: "",
+  city: "",
 };
 
 export default function CheckoutPage() {
-  return (
-    <div className="pt-28 pb-20 min-h-screen flex items-center justify-center">
-      <div className="max-w-md mx-auto px-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-[#F4EDE1] flex items-center justify-center mx-auto mb-6">
-          <svg
-            width="28"
-            height="28"
-            fill="none"
-            stroke="#0A0A0A"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          </svg>
-        </div>
-        <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#0A0A0A]/50 mb-3">
-          Coming Soon
-        </p>
-        <h1 className="font-serif text-3xl text-[#0A0A0A] mb-4">
-          Checkout is on the way
-        </h1>
-        <p className="font-sans text-sm text-[#0A0A0A]/70 leading-relaxed mb-4">
-          We&apos;re setting up our secure payment system — Visa, Mastercard, PayHere, Mintpay, and Koko BNPL are all coming in Phase 2.
-        </p>
-        <p className="font-sans text-sm text-[#0A0A0A]/70 leading-relaxed mb-8">
-          Want to place an order now? Get in touch via WhatsApp and we&apos;ll sort it out personally.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href="https://wa.me/94771234567"
-            className="inline-flex items-center justify-center gap-2 bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase px-6 py-3 hover:bg-[#2A2A2A] transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Order via WhatsApp
-          </a>
+  const router = useRouter();
+  const { cartId, items, subtotal, clearCart } = useCart();
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const total = subtotal();
+
+  const update =
+    (key: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cartId) {
+      setError("Your bag is empty.");
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      await setCartAddressAndEmail(cartId, form.email, {
+        first_name: form.firstName,
+        last_name: form.lastName,
+        address_1: form.address1,
+        city: form.city,
+        phone: form.phone,
+        country_code: "lk",
+      });
+
+      const options = await listShippingOptions(cartId);
+      if (options[0]) {
+        await addShippingMethod(cartId, options[0].id);
+      }
+
+      await initiatePaymentSession(cartId, "pp_system_default");
+
+      const result = await completeCart(cartId);
+      if (result.type === "order" && result.order) {
+        clearCart();
+        router.push(`/checkout/confirmation?order=${result.order.display_id}`);
+      } else {
+        setError("We couldn't place your order. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong placing your order. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (items.length === 0) {
+    return (
+      <div className="pt-28 pb-20 min-h-screen flex items-center justify-center">
+        <div className="max-w-md mx-auto px-6 text-center">
+          <h1 className="font-serif text-3xl text-[#0A0A0A] mb-4">
+            Your bag is empty
+          </h1>
+          <p className="font-sans text-sm text-[#0A0A0A]/70 mb-8">
+            Add something to your bag before checking out.
+          </p>
           <Link
-            href="/cart"
-            className="inline-flex items-center justify-center border border-[#0A0A0A] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase px-6 py-3 hover:bg-[#0A0A0A] hover:text-white transition-colors"
+            href="/"
+            className="inline-flex items-center justify-center bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase px-6 py-3 hover:bg-[#2A2A2A] transition-colors"
           >
-            Back to Cart
+            Continue Shopping
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pt-28 pb-20 min-h-screen">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <h1 className="font-serif text-3xl md:text-4xl text-[#0A0A0A] mb-10">
+          Checkout
+        </h1>
+
+        <div className="grid md:grid-cols-3 gap-10">
+          <form onSubmit={handleSubmit} className="md:col-span-2 space-y-8">
+            <div>
+              <h2 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-4">
+                Contact
+              </h2>
+              <input
+                type="email"
+                required
+                placeholder="Email"
+                value={form.email}
+                onChange={update("email")}
+                className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+              />
+            </div>
+
+            <div>
+              <h2 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-4">
+                Shipping Address
+              </h2>
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <input
+                  required
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={update("firstName")}
+                  className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                />
+                <input
+                  required
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={update("lastName")}
+                  className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                />
+              </div>
+              <input
+                required
+                placeholder="Address"
+                value={form.address1}
+                onChange={update("address1")}
+                className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A] mb-3"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  required
+                  placeholder="City"
+                  value={form.city}
+                  onChange={update("city")}
+                  className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                />
+                <input
+                  required
+                  type="tel"
+                  placeholder="Phone"
+                  value={form.phone}
+                  onChange={update("phone")}
+                  className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <h2 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-4">
+                Payment
+              </h2>
+              <div className="border border-[#0A0A0A] px-4 py-3 flex items-center gap-3">
+                <span className="w-4 h-4 rounded-full border-2 border-[#0A0A0A] bg-[#0A0A0A]" />
+                <span className="font-sans text-sm text-[#0A0A0A]">
+                  Cash on Delivery
+                </span>
+              </div>
+              <p className="font-sans text-xs text-[#0A0A0A]/50 mt-2">
+                Pay in cash when your order arrives. Card and BNPL payments are
+                coming soon.
+              </p>
+            </div>
+
+            {error && (
+              <p className="font-sans text-sm text-red-600">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-[#0A0A0A] text-white font-sans text-sm tracking-widest uppercase py-4 hover:bg-[#2A2A2A] transition-colors disabled:opacity-50"
+            >
+              {submitting ? "Placing Order…" : "Place Order"}
+            </button>
+          </form>
+
+          <div className="md:col-span-1">
+            <div className="bg-[#F4EDE1] p-6 sticky top-24">
+              <h2 className="font-serif text-xl text-[#0A0A0A] mb-6">
+                Order Summary
+              </h2>
+              <ul className="space-y-3 mb-5">
+                {items.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex justify-between font-sans text-sm text-[#0A0A0A]"
+                  >
+                    <span className="text-[#0A0A0A]/70">
+                      {item.productName} ({item.size} · {item.color}) ×{" "}
+                      {item.quantity}
+                    </span>
+                    <span>{formatPrice(item.price * item.quantity)}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="border-t border-[#E7DCC8] pt-3 flex justify-between font-medium text-[#0A0A0A]">
+                <span>Subtotal</span>
+                <span className="font-serif text-lg">{formatPrice(total)}</span>
+              </div>
+              <p className="font-sans text-xs text-[#0A0A0A]/50 mt-2">
+                Shipping calculated after address
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

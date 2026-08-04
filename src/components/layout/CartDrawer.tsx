@@ -6,8 +6,14 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQuantity, subtotal } = useCart();
+  const { items, isOpen, closeCart, removeItem, updateQuantity, subtotal, hydrateCart } =
+    useCart();
   const total = subtotal();
+
+  useEffect(() => {
+    hydrateCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (isOpen) {

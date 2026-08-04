@@ -1,6 +1,15 @@
 "use client";
 
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import {
+  createCart,
+  addLineItem,
+  updateLineItem,
+  removeLineItem,
+  getCart,
+} from "@/src/lib/medusa/client";
+import { mapCart } from "@/src/lib/medusa/map";
 
 export interface CartItem {
   id: string;
@@ -15,12 +24,14 @@ export interface CartItem {
 }
 
 interface CartStore {
+  cartId: string | null;
   items: CartItem[];
   isOpen: boolean;
-  addItem: (item: Omit<CartItem, "id" | "quantity"> & { quantity?: number }) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  addItem: (variantId: string, quantity?: number) => Promise<void>;
+  removeItem: (id: string) => Promise<void>;
+  updateQuantity: (id: string, quantity: number) => Promise<void>;
   clearCart: () => void;
+  hydrateCart: () => Promise<void>;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
@@ -28,52 +39,63 @@ interface CartStore {
   subtotal: () => number;
 }
 
-export const useCart = create<CartStore>((set, get) => ({
-  items: [],
-  isOpen: false,
+export const useCart = create<CartStore>()(
+  persist(
+    (set, get) => ({
+      cartId: null,
+      items: [],
+      isOpen: false,
 
-  addItem: (newItem: Omit<CartItem, "id" | "quantity"> & { quantity?: number }) => {
-    const { items } = get();
-    const lineId = `${newItem.productSlug}-${newItem.size}-${newItem.color}`;
-    const existing = items.find((i) => i.id === lineId);
+      addItem: async (variantId, quantity = 1) => {
+        let { cartId } = get();
+        if (!cartId) {
+          const cart = await createCart();
+          cartId = cart.id;
+          set({ cartId });
+        }
+        const cart = await addLineItem(cartId, variantId, quantity);
+        set({ items: mapCart(cart), isOpen: true });
+      },
 
-    if (existing) {
-      set({
-        items: items.map((i) =>
-          i.id === lineId
-            ? { ...i, quantity: i.quantity + (newItem.quantity ?? 1) }
-            : i
-        ),
-        isOpen: true,
-      });
-    } else {
-      set({
-        items: [...items, { ...newItem, id: lineId, quantity: newItem.quantity ?? 1 }],
-        isOpen: true,
-      });
+      removeItem: async (id) => {
+        const { cartId } = get();
+        if (!cartId) return;
+        await removeLineItem(cartId, id);
+        const cart = await getCart(cartId);
+        set({ items: mapCart(cart) });
+      },
+
+      updateQuantity: async (id, quantity) => {
+        if (quantity < 1) {
+          await get().removeItem(id);
+          return;
+        }
+        const { cartId } = get();
+        if (!cartId) return;
+        const cart = await updateLineItem(cartId, id, quantity);
+        set({ items: mapCart(cart) });
+      },
+
+      clearCart: () => set({ cartId: null, items: [] }),
+
+      hydrateCart: async () => {
+        const { cartId } = get();
+        if (!cartId) return;
+        const cart = await getCart(cartId);
+        set({ items: mapCart(cart) });
+      },
+
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
+      toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+
+      totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+      subtotal: () =>
+        get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    }),
+    {
+      name: "island-mantra-cart",
+      partialize: (state) => ({ cartId: state.cartId }),
     }
-  },
-
-  removeItem: (id) =>
-    set((state) => ({ items: state.items.filter((i) => i.id !== id) })),
-
-  updateQuantity: (id, quantity) => {
-    if (quantity < 1) {
-      get().removeItem(id);
-      return;
-    }
-    set((state) => ({
-      items: state.items.map((i) => (i.id === id ? { ...i, quantity } : i)),
-    }));
-  },
-
-  clearCart: () => set({ items: [] }),
-
-  openCart: () => set({ isOpen: true }),
-  closeCart: () => set({ isOpen: false }),
-  toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
-
-  totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
-  subtotal: () =>
-    get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
-}));
+  )
+);
