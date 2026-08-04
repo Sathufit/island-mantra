@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: island-mantra-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: island_mantra
+      POSTGRES_PASSWORD: island_mantra
+      POSTGRES_DB: island_mantra
+    ports:
+      - "5432:5432"
+    volumes:
+      - island_mantra_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U island_mantra"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  island_mantra_pgdata:
