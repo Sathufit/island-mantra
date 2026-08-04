@@ -14,7 +14,7 @@ services:
       npm run start
     envVars:
       - key: NODE_VERSION
-        value: 20.19.0
+        value: 24.18.0
       - key: NODE_ENV
         value: production
       - key: MEDUSA_WORKER_MODE
