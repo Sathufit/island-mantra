@@ -13,7 +13,7 @@ export default function NewsletterForm() {
       />
       <button
         type="submit"
-        className="px-5 py-3 bg-white text-[#0E4F52] font-sans text-xs tracking-widest uppercase hover:bg-[#F4EDE1] transition-colors flex-shrink-0"
+        className="px-5 py-3 bg-white text-[#0A0A0A] font-sans text-xs tracking-widest uppercase hover:bg-[#F4EDE1] transition-colors flex-shrink-0"
       >
         Join
       </button>

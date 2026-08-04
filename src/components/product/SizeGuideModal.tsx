@@ -17,7 +17,7 @@ export default function SizeGuideModal() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="font-sans text-xs text-[#0E4F52] underline underline-offset-2 hover:text-[#2E7D7B] transition-colors"
+        className="font-sans text-xs text-[#0A0A0A] underline underline-offset-2 hover:text-[#2A2A2A] transition-colors"
       >
         Size Guide
       </button>
@@ -30,10 +30,10 @@ export default function SizeGuideModal() {
           />
           <div className="relative bg-white max-w-lg w-full p-6 md:p-8 z-10">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-serif text-xl text-[#0E4F52]">Size Guide</h3>
+              <h3 className="font-serif text-xl text-[#0A0A0A]">Size Guide</h3>
               <button
                 onClick={() => setOpen(false)}
-                className="text-[#1F2A2B]"
+                className="text-[#0A0A0A]"
                 aria-label="Close size guide"
               >
                 <svg
@@ -48,22 +48,22 @@ export default function SizeGuideModal() {
                 </svg>
               </button>
             </div>
-            <p className="font-sans text-xs text-[#1F2A2B]/60 mb-4">
+            <p className="font-sans text-xs text-[#0A0A0A]/60 mb-4">
               All measurements in centimetres (cm).
             </p>
             <table className="w-full font-sans text-sm">
               <thead>
                 <tr className="border-b border-[#E7DCC8]">
-                  <th className="text-left py-2 text-[#1F2A2B]/60 font-medium text-xs">
+                  <th className="text-left py-2 text-[#0A0A0A]/60 font-medium text-xs">
                     Size
                   </th>
-                  <th className="text-left py-2 text-[#1F2A2B]/60 font-medium text-xs">
+                  <th className="text-left py-2 text-[#0A0A0A]/60 font-medium text-xs">
                     Bust
                   </th>
-                  <th className="text-left py-2 text-[#1F2A2B]/60 font-medium text-xs">
+                  <th className="text-left py-2 text-[#0A0A0A]/60 font-medium text-xs">
                     Waist
                   </th>
-                  <th className="text-left py-2 text-[#1F2A2B]/60 font-medium text-xs">
+                  <th className="text-left py-2 text-[#0A0A0A]/60 font-medium text-xs">
                     Hips
                   </th>
                 </tr>
@@ -71,10 +71,10 @@ export default function SizeGuideModal() {
               <tbody>
                 {sizeData.map((row) => (
                   <tr key={row.size} className="border-b border-[#F4EDE1]">
-                    <td className="py-3 font-medium text-[#0E4F52]">{row.size}</td>
-                    <td className="py-3 text-[#1F2A2B]">{row.bust}</td>
-                    <td className="py-3 text-[#1F2A2B]">{row.waist}</td>
-                    <td className="py-3 text-[#1F2A2B]">{row.hips}</td>
+                    <td className="py-3 font-medium text-[#0A0A0A]">{row.size}</td>
+                    <td className="py-3 text-[#0A0A0A]">{row.bust}</td>
+                    <td className="py-3 text-[#0A0A0A]">{row.waist}</td>
+                    <td className="py-3 text-[#0A0A0A]">{row.hips}</td>
                   </tr>
                 ))}
               </tbody>

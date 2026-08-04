@@ -64,7 +64,7 @@ export default function ProductPage({
   if (!product) {
     return (
       <div className="pt-32 pb-20 min-h-screen flex items-center justify-center">
-        <p className="font-sans text-sm text-[#1F2A2B]/50">Loading…</p>
+        <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
       </div>
     );
   }
@@ -73,19 +73,19 @@ export default function ProductPage({
     <div className="pt-28 pb-24 md:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Breadcrumb */}
-        <nav className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B]/50 mb-8 flex gap-2 flex-wrap">
-          <Link href="/" className="hover:text-[#0E4F52] transition-colors">
+        <nav className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/50 mb-8 flex gap-2 flex-wrap">
+          <Link href="/" className="hover:text-[#0A0A0A] transition-colors">
             Home
           </Link>
           <span>/</span>
           <Link
             href={`/collections/${product.collectionSlug}`}
-            className="hover:text-[#0E4F52] transition-colors"
+            className="hover:text-[#0A0A0A] transition-colors"
           >
             {product.collectionName}
           </Link>
           <span>/</span>
-          <span className="text-[#1F2A2B]">{product.name}</span>
+          <span className="text-[#0A0A0A]">{product.name}</span>
         </nav>
 
         <div className="grid md:grid-cols-2 gap-10 md:gap-16">
@@ -101,21 +101,21 @@ export default function ProductPage({
               {product.isBestSeller && <Badge variant="bestseller">Best Seller</Badge>}
             </div>
 
-            <p className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B]/50 mb-2">
+            <p className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/50 mb-2">
               {product.collectionName}
             </p>
-            <h1 className="font-serif text-3xl md:text-4xl text-[#1F2A2B] mb-4 leading-snug">
+            <h1 className="font-serif text-3xl md:text-4xl text-[#0A0A0A] mb-4 leading-snug">
               {product.name}
             </h1>
 
             {/* Price */}
             <div className="mb-3">
               <div className="flex items-baseline gap-3 mb-2">
-                <span className="font-serif text-2xl text-[#0E4F52]">
+                <span className="font-serif text-2xl text-[#0A0A0A]">
                   {formatPrice(product.price)}
                 </span>
                 {product.compareAtPrice && (
-                  <span className="font-sans text-sm text-[#1F2A2B]/40 line-through">
+                  <span className="font-sans text-sm text-[#0A0A0A]/40 line-through">
                     {formatPrice(product.compareAtPrice)}
                   </span>
                 )}
@@ -127,7 +127,7 @@ export default function ProductPage({
 
             {/* Colour */}
             <div className="mb-5">
-              <p className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-3">
+              <p className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-3">
                 Colour: <span className="font-medium">{selectedColor}</span>
               </p>
               <div className="flex gap-2">
@@ -138,7 +138,7 @@ export default function ProductPage({
                     onClick={() => setSelectedColor(v.color)}
                     className={`w-8 h-8 rounded-full border-2 transition-all ${
                       selectedColor === v.color
-                        ? "border-[#0E4F52] scale-110"
+                        ? "border-[#0A0A0A] scale-110"
                         : "border-transparent hover:border-[#E7DCC8]"
                     }`}
                     style={{ backgroundColor: v.colorHex }}
@@ -152,7 +152,7 @@ export default function ProductPage({
             {product.sizes[0] !== "One Size" && (
               <div className="mb-5">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B]">
+                  <p className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]">
                     Size: <span className="font-medium">{selectedSize}</span>
                   </p>
                   <SizeGuideModal />
@@ -164,8 +164,8 @@ export default function ProductPage({
                       onClick={() => setSelectedSize(size)}
                       className={`px-4 py-2 font-sans text-xs border transition-colors ${
                         selectedSize === size
-                          ? "border-[#0E4F52] bg-[#0E4F52] text-white"
-                          : "border-[#E7DCC8] text-[#1F2A2B] hover:border-[#0E4F52]"
+                          ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
+                          : "border-[#E7DCC8] text-[#0A0A0A] hover:border-[#0A0A0A]"
                       }`}
                     >
                       {size}
@@ -177,12 +177,12 @@ export default function ProductPage({
 
             {/* Quantity */}
             <div className="mb-6">
-              <p className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-3">
+              <p className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-3">
                 Quantity
               </p>
               <div className="flex items-center border border-[#E7DCC8] w-fit">
                 <button
-                  className="w-10 h-10 flex items-center justify-center text-[#1F2A2B] hover:bg-[#F4EDE1] transition-colors"
+                  className="w-10 h-10 flex items-center justify-center text-[#0A0A0A] hover:bg-[#F4EDE1] transition-colors"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   aria-label="Decrease"
                 >
@@ -190,7 +190,7 @@ export default function ProductPage({
                 </button>
                 <span className="w-12 text-center font-sans text-sm">{quantity}</span>
                 <button
-                  className="w-10 h-10 flex items-center justify-center text-[#1F2A2B] hover:bg-[#F4EDE1] transition-colors"
+                  className="w-10 h-10 flex items-center justify-center text-[#0A0A0A] hover:bg-[#F4EDE1] transition-colors"
                   onClick={() => setQuantity(quantity + 1)}
                   aria-label="Increase"
                 >
@@ -204,15 +204,15 @@ export default function ProductPage({
               onClick={handleAddToCart}
               className={`w-full py-4 font-sans text-sm tracking-widest uppercase transition-all duration-200 ${
                 addedMessage
-                  ? "bg-[#2E7D7B] text-white"
-                  : "bg-[#0E4F52] text-white hover:bg-[#2E7D7B]"
+                  ? "bg-[#2A2A2A] text-white"
+                  : "bg-[#0A0A0A] text-white hover:bg-[#2A2A2A]"
               }`}
             >
-              {addedMessage ? "Added to Bag ✓" : "Add to Bag"}
+              {addedMessage ? "Added to Bag" : "Add to Bag"}
             </button>
 
             {/* Delivery note */}
-            <p className="font-sans text-xs text-[#1F2A2B]/50 text-center mt-3">
+            <p className="font-sans text-xs text-[#0A0A0A]/50 text-center mt-3">
               Islandwide delivery in 2–4 business days
             </p>
 
@@ -241,7 +241,7 @@ export default function ProductPage({
               <div key={item.key} className="border-b border-[#E7DCC8]">
                 <button
                   onClick={() => toggleAccordion(item.key)}
-                  className="w-full flex items-center justify-between py-4 font-sans text-xs tracking-widest uppercase text-[#1F2A2B] hover:text-[#0E4F52] transition-colors"
+                  className="w-full flex items-center justify-between py-4 font-sans text-xs tracking-widest uppercase text-[#0A0A0A] hover:text-[#0A0A0A] transition-colors"
                 >
                   {item.label}
                   <svg
@@ -260,7 +260,7 @@ export default function ProductPage({
                 </button>
                 {openAccordion === item.key && (
                   <div className="pb-5">
-                    <p className="font-sans text-sm text-[#1F2A2B]/70 leading-relaxed whitespace-pre-line">
+                    <p className="font-sans text-sm text-[#0A0A0A]/70 leading-relaxed whitespace-pre-line">
                       {item.content}
                     </p>
                   </div>
@@ -277,7 +277,7 @@ export default function ProductPage({
           <select
             value={selectedSize}
             onChange={(e) => setSelectedSize(e.target.value)}
-            className="flex-1 border border-[#E7DCC8] px-3 py-3 font-sans text-xs text-[#1F2A2B] focus:outline-none focus:border-[#0E4F52] bg-white"
+            className="flex-1 border border-[#E7DCC8] px-3 py-3 font-sans text-xs text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A] bg-white"
           >
             {product.sizes.map((s) => (
               <option key={s} value={s}>{s}</option>
@@ -285,18 +285,18 @@ export default function ProductPage({
           </select>
         ) : (
           <div className="flex-1 flex items-center px-3 border border-[#E7DCC8]">
-            <span className="font-sans text-xs text-[#1F2A2B]/60">One Size</span>
+            <span className="font-sans text-xs text-[#0A0A0A]/60">One Size</span>
           </div>
         )}
         <button
           onClick={handleAddToCart}
           className={`flex-[2] py-3 font-sans text-xs tracking-widest uppercase transition-all duration-200 ${
             addedMessage
-              ? "bg-[#2E7D7B] text-white"
-              : "bg-[#0E4F52] text-white"
+              ? "bg-[#2A2A2A] text-white"
+              : "bg-[#0A0A0A] text-white"
           }`}
         >
-          {addedMessage ? "Added ✓" : "Add to Bag"}
+          {addedMessage ? "Added" : "Add to Bag"}
         </button>
       </div>
 
@@ -304,7 +304,7 @@ export default function ProductPage({
       {related.length > 0 && (
         <section className="bg-[#F4EDE1] py-16 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#0E4F52] mb-8">
+            <h2 className="font-serif text-2xl md:text-3xl text-[#0A0A0A] mb-8">
               You May Also Like
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

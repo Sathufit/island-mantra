@@ -1,21 +1,21 @@
 import Link from "next/link";
 
-const collections = [
-  { name: "Linen Edit", slug: "linen-edit" },
-  { name: "Coastal Dresses", slug: "coastal-dresses" },
-  { name: "Island Tees", slug: "island-tees" },
-  { name: "Accessories", slug: "accessories" },
+const information = [
+  { name: "About Us", href: "/about" },
+  { name: "Contact Us", href: "/contact" },
+  { name: "Size Guide", href: "/policies/size-guide" },
 ];
 
-const policies = [
-  { name: "Shipping", slug: "shipping" },
-  { name: "Returns", slug: "returns" },
-  { name: "Privacy Policy", slug: "privacy" },
+const termsOfUse = [
+  { name: "Terms & Conditions", href: "/policies/terms" },
+  { name: "Privacy Policy", href: "/policies/privacy" },
+  { name: "Delivery Policy", href: "/policies/shipping" },
+  { name: "Return Policy", href: "/policies/returns" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0E4F52] text-white">
+    <footer className="bg-[#0A0A0A] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
         {/* Brand */}
         <div className="md:col-span-1">
@@ -51,58 +51,48 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Collections */}
-        <div>
-          <p className="font-sans text-xs tracking-widest uppercase mb-5 text-white/50">
-            Collections
-          </p>
-          <ul className="space-y-3">
-            {collections.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  href={`/collections/${c.slug}`}
-                  className="font-sans text-sm text-white/80 hover:text-white transition-colors"
-                >
-                  {c.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Info */}
+        {/* Information */}
         <div>
           <p className="font-sans text-xs tracking-widest uppercase mb-5 text-white/50">
             Information
           </p>
           <ul className="space-y-3">
-            <li>
-              <Link href="/about" className="font-sans text-sm text-white/80 hover:text-white transition-colors">
-                Our Story
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="font-sans text-sm text-white/80 hover:text-white transition-colors">
-                Contact Us
-              </Link>
-            </li>
-            {policies.map((p) => (
-              <li key={p.slug}>
+            {information.map((item) => (
+              <li key={item.href}>
                 <Link
-                  href={`/policies/${p.slug}`}
+                  href={item.href}
                   className="font-sans text-sm text-white/80 hover:text-white transition-colors"
                 >
-                  {p.name}
+                  {item.name}
                 </Link>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Contact */}
+        {/* Terms of Use */}
         <div>
           <p className="font-sans text-xs tracking-widest uppercase mb-5 text-white/50">
-            Visit Us
+            Terms of Use
+          </p>
+          <ul className="space-y-3">
+            {termsOfUse.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="font-sans text-sm text-white/80 hover:text-white transition-colors"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Be In Touch */}
+        <div>
+          <p className="font-sans text-xs tracking-widest uppercase mb-5 text-white/50">
+            Be In Touch
           </p>
           <address className="font-sans text-sm text-white/80 not-italic leading-relaxed mb-4">
             22 Galle Road<br />
@@ -133,7 +123,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-sans text-xs text-white/40">
-            © {new Date().getFullYear()} Island Mantra. All rights reserved.
+            © Island Mantra 2026. All rights reserved.
           </p>
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {["Visa", "Mastercard", "Mintpay", "Koko", "COD"].map((method) => (

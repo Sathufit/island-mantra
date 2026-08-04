@@ -1,13 +1,23 @@
+const phrases = [
+  "Designed & Made in Sri Lanka",
+  "Sustainably Sourced & Ethically Produced",
+  "All Women Staff",
+];
+
 export default function AnnouncementBar() {
+  const track = [...phrases, ...phrases];
+
   return (
-    <div className="bg-[#0A3D40]" style={{ height: "32px" }}>
-      <div className="h-full flex items-center justify-center px-4">
-        <p className="font-sans text-[11px] tracking-[0.15em] text-white/65 text-center leading-none md:hidden whitespace-nowrap overflow-hidden text-ellipsis">
-          Free delivery over Rs 5,000 · Made in Sri Lanka
-        </p>
-        <p className="hidden md:block font-sans text-[11px] tracking-[0.18em] text-white/65 text-center">
-          Free delivery on orders over Rs 5,000&nbsp;&nbsp;·&nbsp;&nbsp;Made in Sri Lanka&nbsp;&nbsp;·&nbsp;&nbsp;Easy 14-day returns
-        </p>
+    <div className="bg-[#D9C7A3] overflow-hidden" style={{ height: "32px" }}>
+      <div className="h-full flex items-center marquee-track whitespace-nowrap">
+        {track.map((phrase, i) => (
+          <span
+            key={i}
+            className="font-sans text-[11px] tracking-[0.15em] text-white px-6 flex-shrink-0"
+          >
+            {phrase}
+          </span>
+        ))}
       </div>
     </div>
   );

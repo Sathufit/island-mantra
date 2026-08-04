@@ -38,7 +38,7 @@ function SearchContent() {
   return (
     <div className="pt-28 pb-20 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h1 className="font-serif text-3xl md:text-4xl text-[#0E4F52] mb-8">
+        <h1 className="font-serif text-3xl md:text-4xl text-[#0A0A0A] mb-8">
           {filter === "new"
             ? "New Arrivals"
             : filter === "bestseller"
@@ -53,14 +53,14 @@ function SearchContent() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search products…"
-              className="w-full border-b-2 border-[#0E4F52] bg-transparent font-sans text-xl text-[#1F2A2B] placeholder:text-[#1F2A2B]/30 py-3 pr-10 focus:outline-none"
+              className="w-full border-b-2 border-[#0A0A0A] bg-transparent font-sans text-xl text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-3 pr-10 focus:outline-none"
               autoFocus
             />
             <svg
               width="20"
               height="20"
               fill="none"
-              stroke="#0E4F52"
+              stroke="#0A0A0A"
               strokeWidth="1.5"
               viewBox="0 0 24 24"
               className="absolute right-0 top-1/2 -translate-y-1/2"
@@ -72,19 +72,19 @@ function SearchContent() {
         )}
 
         {loading ? (
-          <p className="font-sans text-sm text-[#1F2A2B]/50">Searching…</p>
+          <p className="font-sans text-sm text-[#0A0A0A]/50">Searching…</p>
         ) : results.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="font-serif text-2xl text-[#0E4F52] mb-3">
+            <p className="font-serif text-2xl text-[#0A0A0A] mb-3">
               No results found
             </p>
-            <p className="font-sans text-sm text-[#1F2A2B]/60">
+            <p className="font-sans text-sm text-[#0A0A0A]/60">
               Try a different search term or browse our collections.
             </p>
           </div>
         ) : (
           <>
-            <p className="font-sans text-xs text-[#1F2A2B]/50 mb-6">
+            <p className="font-sans text-xs text-[#0A0A0A]/50 mb-6">
               {results.length} {results.length === 1 ? "result" : "results"}
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

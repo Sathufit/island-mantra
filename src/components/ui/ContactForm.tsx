@@ -6,7 +6,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="name"
-          className="block font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-2"
+          className="block font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-2"
         >
           Name
         </label>
@@ -14,13 +14,13 @@ export default function ContactForm() {
           id="name"
           type="text"
           placeholder="Your name"
-          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#1F2A2B] placeholder:text-[#1F2A2B]/30 py-2.5 focus:outline-none focus:border-[#0E4F52] transition-colors"
+          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-2.5 focus:outline-none focus:border-[#0A0A0A] transition-colors"
         />
       </div>
       <div>
         <label
           htmlFor="email"
-          className="block font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-2"
+          className="block font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-2"
         >
           Email
         </label>
@@ -28,13 +28,13 @@ export default function ContactForm() {
           id="email"
           type="email"
           placeholder="your@email.com"
-          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#1F2A2B] placeholder:text-[#1F2A2B]/30 py-2.5 focus:outline-none focus:border-[#0E4F52] transition-colors"
+          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-2.5 focus:outline-none focus:border-[#0A0A0A] transition-colors"
         />
       </div>
       <div>
         <label
           htmlFor="subject"
-          className="block font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-2"
+          className="block font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-2"
         >
           Subject
         </label>
@@ -42,13 +42,13 @@ export default function ContactForm() {
           id="subject"
           type="text"
           placeholder="Order enquiry, sizing, etc."
-          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#1F2A2B] placeholder:text-[#1F2A2B]/30 py-2.5 focus:outline-none focus:border-[#0E4F52] transition-colors"
+          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-2.5 focus:outline-none focus:border-[#0A0A0A] transition-colors"
         />
       </div>
       <div>
         <label
           htmlFor="message"
-          className="block font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-2"
+          className="block font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-2"
         >
           Message
         </label>
@@ -56,16 +56,16 @@ export default function ContactForm() {
           id="message"
           rows={5}
           placeholder="How can we help?"
-          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#1F2A2B] placeholder:text-[#1F2A2B]/30 py-2.5 focus:outline-none focus:border-[#0E4F52] transition-colors resize-none"
+          className="w-full border-b border-[#E7DCC8] bg-transparent font-sans text-sm text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-2.5 focus:outline-none focus:border-[#0A0A0A] transition-colors resize-none"
         />
       </div>
       <button
         type="submit"
-        className="bg-[#0E4F52] text-white font-sans text-xs tracking-widest uppercase px-8 py-4 hover:bg-[#2E7D7B] transition-colors"
+        className="bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase px-8 py-4 hover:bg-[#2A2A2A] transition-colors"
       >
         Send Message
       </button>
-      <p className="font-sans text-xs text-[#1F2A2B]/40">
+      <p className="font-sans text-xs text-[#0A0A0A]/40">
         We reply within 24 hours on business days.
       </p>
     </form>

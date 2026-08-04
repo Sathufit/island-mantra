@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { type Product } from "@/src/lib/data/products";
 import { formatPrice } from "@/src/lib/utils";
@@ -9,7 +8,6 @@ import { useCart } from "@/src/store/cart";
 
 export default function ProductCard({ product }: { product: Product }) {
   const image = product.images[0];
-  const hoverImage = product.images[1] ?? product.images[0];
   const [quickSize, setQuickSize] = useState(product.sizes[0] ?? "");
   const [quickAdded, setQuickAdded] = useState(false);
   const { addItem } = useCart();
@@ -33,27 +31,12 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/products/${product.slug}`} className="group block">
-      {/* Image */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#F0EBE1]">
-        <Image
-          src={image.src}
-          alt={image.alt}
-          fill
-          className="object-cover transition-opacity duration-500 ease-in-out group-hover:opacity-0"
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        />
-        <Image
-          src={hoverImage.src}
-          alt={hoverImage.alt}
-          fill
-          className="object-cover transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100"
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        />
-
+      {/* Image placeholder */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#F4EDE1] border border-[#E7DCC8]">
         {/* New / Sale badge — top left, minimal */}
         {(product.isNew || product.compareAtPrice) && (
           <div className="absolute top-3 left-3">
-            <span className="font-sans text-[9px] tracking-[0.15em] uppercase bg-white text-[#1F2A2B] px-2 py-1">
+            <span className="font-sans text-[9px] tracking-[0.15em] uppercase bg-white text-[#0A0A0A] px-2 py-1">
               {product.compareAtPrice ? "Sale" : "New"}
             </span>
           </div>
@@ -76,8 +59,8 @@ export default function ProductCard({ product }: { product: Product }) {
                   }}
                   className={`w-9 h-8 text-[10px] font-sans border transition-colors ${
                     quickSize === size
-                      ? "border-[#0E4F52] bg-[#0E4F52] text-white"
-                      : "border-[#E7DCC8] text-[#1F2A2B] hover:border-[#0E4F52]"
+                      ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
+                      : "border-[#E7DCC8] text-[#0A0A0A] hover:border-[#0A0A0A]"
                   }`}
                 >
                   {size}
@@ -89,8 +72,8 @@ export default function ProductCard({ product }: { product: Product }) {
             onClick={handleQuickAdd}
             className={`w-full py-3 text-[10px] font-sans tracking-[0.18em] uppercase transition-colors duration-200 ${
               quickAdded
-                ? "bg-[#2E7D7B] text-white"
-                : "bg-[#0E4F52] text-white hover:bg-[#2E7D7B]"
+                ? "bg-[#2A2A2A] text-white"
+                : "bg-[#0A0A0A] text-white hover:bg-[#2A2A2A]"
             }`}
           >
             {quickAdded ? "Added" : "Quick Add"}
@@ -100,15 +83,15 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Info */}
       <div className="mt-3">
-        <h3 className="font-sans text-sm text-[#1F2A2B] leading-snug group-hover:text-[#0E4F52] transition-colors duration-200">
+        <h3 className="font-sans text-sm text-[#0A0A0A] leading-snug group-hover:text-[#0A0A0A] transition-colors duration-200">
           {product.name}
         </h3>
         <div className="flex items-baseline gap-2 mt-1">
-          <span className="font-sans text-sm text-[#1F2A2B]/70">
+          <span className="font-sans text-sm text-[#0A0A0A]/70">
             {formatPrice(product.price)}
           </span>
           {product.compareAtPrice && (
-            <span className="font-sans text-xs text-[#1F2A2B]/35 line-through">
+            <span className="font-sans text-xs text-[#0A0A0A]/35 line-through">
               {formatPrice(product.compareAtPrice)}
             </span>
           )}

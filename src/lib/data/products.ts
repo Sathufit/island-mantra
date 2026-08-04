@@ -14,6 +14,7 @@ export interface Product {
   name: string;
   collectionSlug: string;
   collectionName: string;
+  category: "women" | "men" | "kids" | "accessories";
   price: number;
   compareAtPrice?: number;
   images: ProductImage[];
@@ -34,6 +35,7 @@ export const products: Product[] = [
   {
     id: "1",
     slug: "hikka-breeze-linen-shirt",
+    category: "men",
     name: "Hikka Breeze Linen Shirt",
     collectionSlug: "linen-edit",
     collectionName: "Linen Edit",
@@ -72,6 +74,7 @@ export const products: Product[] = [
   {
     id: "2",
     slug: "weligama-linen-pants",
+    category: "women",
     name: "Weligama Linen Pants",
     collectionSlug: "linen-edit",
     collectionName: "Linen Edit",
@@ -109,6 +112,7 @@ export const products: Product[] = [
   {
     id: "3",
     slug: "galle-linen-set",
+    category: "women",
     name: "Galle Linen Co-ord Set",
     collectionSlug: "linen-edit",
     collectionName: "Linen Edit",
@@ -146,6 +150,7 @@ export const products: Product[] = [
   {
     id: "4",
     slug: "unawatuna-linen-overshirt",
+    category: "women",
     name: "Unawatuna Linen Overshirt",
     collectionSlug: "linen-edit",
     collectionName: "Linen Edit",
@@ -183,6 +188,7 @@ export const products: Product[] = [
   {
     id: "5",
     slug: "coral-bay-maxi-dress",
+    category: "women",
     name: "Coral Bay Maxi Dress",
     collectionSlug: "coastal-dresses",
     collectionName: "Coastal Dresses",
@@ -221,6 +227,7 @@ export const products: Product[] = [
   {
     id: "6",
     slug: "mirissa-wrap-dress",
+    category: "women",
     name: "Mirissa Wrap Dress",
     collectionSlug: "coastal-dresses",
     collectionName: "Coastal Dresses",
@@ -258,6 +265,7 @@ export const products: Product[] = [
   {
     id: "7",
     slug: "tangalle-slip-dress",
+    category: "women",
     name: "Tangalle Slip Dress",
     collectionSlug: "coastal-dresses",
     collectionName: "Coastal Dresses",
@@ -294,6 +302,7 @@ export const products: Product[] = [
   {
     id: "8",
     slug: "arugam-kaftan-dress",
+    category: "women",
     name: "Arugam Kaftan Dress",
     collectionSlug: "coastal-dresses",
     collectionName: "Coastal Dresses",
@@ -332,6 +341,7 @@ export const products: Product[] = [
   {
     id: "9",
     slug: "south-coast-pocket-tee",
+    category: "men",
     name: "South Coast Pocket Tee",
     collectionSlug: "island-tees",
     collectionName: "Island Tees",
@@ -371,6 +381,7 @@ export const products: Product[] = [
   {
     id: "10",
     slug: "hikkaduwa-graphic-tee",
+    category: "men",
     name: "Hikkaduwa Graphic Tee",
     collectionSlug: "island-tees",
     collectionName: "Island Tees",
@@ -407,6 +418,7 @@ export const products: Product[] = [
   {
     id: "11",
     slug: "turtle-bay-oversized-tee",
+    category: "women",
     name: "Turtle Bay Oversized Tee",
     collectionSlug: "island-tees",
     collectionName: "Island Tees",
@@ -444,6 +456,7 @@ export const products: Product[] = [
   {
     id: "12",
     slug: "mantra-stripe-tee",
+    category: "men",
     name: "Mantra Stripe Tee",
     collectionSlug: "island-tees",
     collectionName: "Island Tees",
@@ -481,6 +494,7 @@ export const products: Product[] = [
   {
     id: "13",
     slug: "hikka-palm-straw-hat",
+    category: "accessories",
     name: "Hikka Palm Straw Hat",
     collectionSlug: "accessories",
     collectionName: "Accessories",
@@ -518,6 +532,7 @@ export const products: Product[] = [
   {
     id: "14",
     slug: "southside-woven-tote",
+    category: "accessories",
     name: "Southside Woven Tote",
     collectionSlug: "accessories",
     collectionName: "Accessories",
@@ -554,6 +569,7 @@ export const products: Product[] = [
   {
     id: "15",
     slug: "pandan-shell-bracelet",
+    category: "accessories",
     name: "Pandan Shell Bracelet",
     collectionSlug: "accessories",
     collectionName: "Accessories",
@@ -591,6 +607,7 @@ export const products: Product[] = [
   {
     id: "16",
     slug: "ocean-road-sunglasses",
+    category: "accessories",
     name: "Ocean Road Sunglasses",
     collectionSlug: "accessories",
     collectionName: "Accessories",

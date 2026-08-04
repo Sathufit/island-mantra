@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, use } from "react";
 import { getCollection, getProductsByCollection } from "@/src/lib/api";
@@ -72,7 +71,7 @@ export default function CollectionPage({
   if (!collection) {
     return (
       <div className="pt-32 pb-20 min-h-screen flex items-center justify-center">
-        <p className="font-sans text-sm text-[#1F2A2B]/50">Loading…</p>
+        <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
       </div>
     );
   }
@@ -80,16 +79,7 @@ export default function CollectionPage({
   return (
     <div className="pt-0">
       {/* Full-bleed hero */}
-      <div className="relative flex items-end" style={{ height: "clamp(280px, 52vh, 560px)" }}>
-        <Image
-          src={collection.image}
-          alt={collection.imageAlt}
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0E4F52]/85 via-[#0E4F52]/20 to-transparent" />
+      <div className="relative flex items-end bg-[#0A0A0A]" style={{ height: "clamp(280px, 52vh, 560px)" }}>
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pb-10 md:pb-14 w-full">
           <nav className="font-sans text-[10px] tracking-[0.28em] uppercase text-white/55 mb-4 flex gap-2">
             <Link href="/" className="hover:text-white transition-colors">
@@ -117,7 +107,7 @@ export default function CollectionPage({
         <div className="flex items-center justify-between mb-8 border-b border-[#E7DCC8] pb-5">
           <button
             onClick={() => setDrawerOpen(!drawerOpen)}
-            className="flex items-center gap-2 font-sans text-xs tracking-widest uppercase text-[#1F2A2B] hover:text-[#0E4F52] transition-colors md:hidden"
+            className="flex items-center gap-2 font-sans text-xs tracking-widest uppercase text-[#0A0A0A] hover:text-[#0A0A0A] transition-colors md:hidden"
           >
             <svg
               width="16"
@@ -131,11 +121,11 @@ export default function CollectionPage({
             </svg>
             Filter
           </button>
-          <p className="hidden md:block font-sans text-xs text-[#1F2A2B]/50">
+          <p className="hidden md:block font-sans text-xs text-[#0A0A0A]/50">
             {filtered.length} {filtered.length === 1 ? "item" : "items"}
           </p>
           <div className="flex items-center gap-3">
-            <span className="font-sans text-xs text-[#1F2A2B]/50 hidden md:block">
+            <span className="font-sans text-xs text-[#0A0A0A]/50 hidden md:block">
               Sort by
             </span>
             <select
@@ -146,7 +136,7 @@ export default function CollectionPage({
                   sort: e.target.value as Filters["sort"],
                 }))
               }
-              className="font-sans text-xs tracking-widest uppercase border border-[#E7DCC8] px-3 py-2 text-[#1F2A2B] focus:outline-none focus:border-[#0E4F52] bg-white"
+              className="font-sans text-xs tracking-widest uppercase border border-[#E7DCC8] px-3 py-2 text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A] bg-white"
             >
               <option value="newest">Newest</option>
               <option value="price-asc">Price: Low–High</option>
@@ -160,7 +150,7 @@ export default function CollectionPage({
           <aside className="hidden md:block w-56 flex-shrink-0">
             <div className="sticky top-24 space-y-8">
               <div>
-                <h3 className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-4">
+                <h3 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-4">
                   Size
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -170,8 +160,8 @@ export default function CollectionPage({
                       onClick={() => toggleSize(size)}
                       className={`w-10 h-10 flex items-center justify-center font-sans text-xs border transition-colors ${
                         filters.sizes.includes(size)
-                          ? "border-[#0E4F52] bg-[#0E4F52] text-white"
-                          : "border-[#E7DCC8] text-[#1F2A2B] hover:border-[#0E4F52]"
+                          ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
+                          : "border-[#E7DCC8] text-[#0A0A0A] hover:border-[#0A0A0A]"
                       }`}
                     >
                       {size}
@@ -181,7 +171,7 @@ export default function CollectionPage({
               </div>
 
               <div>
-                <h3 className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-4">
+                <h3 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-4">
                   Price (up to Rs {filters.priceMax.toLocaleString()})
                 </h3>
                 <input
@@ -196,9 +186,9 @@ export default function CollectionPage({
                       priceMax: Number(e.target.value),
                     }))
                   }
-                  className="w-full accent-[#0E4F52]"
+                  className="w-full accent-[#0A0A0A]"
                 />
-                <div className="flex justify-between font-sans text-xs text-[#1F2A2B]/50 mt-1">
+                <div className="flex justify-between font-sans text-xs text-[#0A0A0A]/50 mt-1">
                   <span>Rs 3,000</span>
                   <span>Rs 20,000</span>
                 </div>
@@ -209,7 +199,7 @@ export default function CollectionPage({
                   onClick={() =>
                     setFilters({ sizes: [], priceMax: 20000, sort: "newest" })
                   }
-                  className="font-sans text-xs text-[#E1704B] underline underline-offset-2"
+                  className="font-sans text-xs text-[#0A0A0A] underline underline-offset-2"
                 >
                   Clear all filters
                 </button>
@@ -226,7 +216,7 @@ export default function CollectionPage({
               />
               <div className="absolute bottom-0 left-0 right-0 bg-white p-6 rounded-t-lg space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-sans text-sm tracking-widest uppercase text-[#1F2A2B]">
+                  <h3 className="font-sans text-sm tracking-widest uppercase text-[#0A0A0A]">
                     Filters
                   </h3>
                   <button onClick={() => setDrawerOpen(false)}>
@@ -246,7 +236,7 @@ export default function CollectionPage({
                   </button>
                 </div>
                 <div>
-                  <p className="font-sans text-xs tracking-widest uppercase text-[#1F2A2B] mb-3">
+                  <p className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-3">
                     Size
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -256,8 +246,8 @@ export default function CollectionPage({
                         onClick={() => toggleSize(size)}
                         className={`w-10 h-10 flex items-center justify-center font-sans text-xs border transition-colors ${
                           filters.sizes.includes(size)
-                            ? "border-[#0E4F52] bg-[#0E4F52] text-white"
-                            : "border-[#E7DCC8] text-[#1F2A2B]"
+                            ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
+                            : "border-[#E7DCC8] text-[#0A0A0A]"
                         }`}
                       >
                         {size}
@@ -267,7 +257,7 @@ export default function CollectionPage({
                 </div>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="w-full bg-[#0E4F52] text-white font-sans text-xs tracking-widest uppercase py-3"
+                  className="w-full bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase py-3"
                 >
                   Show {filtered.length} Results
                 </button>
@@ -279,17 +269,17 @@ export default function CollectionPage({
           <div className="flex-1">
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
-                <p className="font-serif text-2xl text-[#0E4F52]">
+                <p className="font-serif text-2xl text-[#0A0A0A]">
                   No items found
                 </p>
-                <p className="font-sans text-sm text-[#1F2A2B]/60">
+                <p className="font-sans text-sm text-[#0A0A0A]/60">
                   Try adjusting your filters
                 </p>
                 <button
                   onClick={() =>
                     setFilters({ sizes: [], priceMax: 20000, sort: "newest" })
                   }
-                  className="font-sans text-xs tracking-widest uppercase text-[#0E4F52] border border-[#0E4F52] px-5 py-2.5 hover:bg-[#0E4F52] hover:text-white transition-colors"
+                  className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] border border-[#0A0A0A] px-5 py-2.5 hover:bg-[#0A0A0A] hover:text-white transition-colors"
                 >
                   Clear Filters
                 </button>

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { type ProductImage } from "@/src/lib/data/products";
 
@@ -20,33 +19,19 @@ export default function ProductGallery({ images, productName }: Props) {
           <button
             key={i}
             onClick={() => setActive(i)}
-            className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 overflow-hidden border-2 transition-colors ${
-              active === i ? "border-[#0E4F52]" : "border-transparent"
+            className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 overflow-hidden border-2 bg-[#F4EDE1] transition-colors ${
+              active === i ? "border-[#0A0A0A]" : "border-transparent"
             }`}
             aria-label={`View image ${i + 1}`}
-          >
-            <Image
-              src={img.src}
-              alt={img.alt}
-              fill
-              className="object-cover"
-              sizes="80px"
-            />
-          </button>
+          />
         ))}
       </div>
 
-      {/* Main image */}
-      <div className="relative flex-1 aspect-[3/4] md:aspect-auto md:min-h-[600px] bg-[#F4EDE1] overflow-hidden">
-        <Image
-          src={images[active].src}
-          alt={images[active].alt}
-          fill
-          priority
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 55vw"
-        />
-      </div>
+      {/* Main image placeholder */}
+      <div
+        className="relative flex-1 aspect-[3/4] md:aspect-auto md:min-h-[600px] bg-[#F4EDE1] overflow-hidden"
+        aria-label={`${productName} — image ${active + 1}`}
+      />
     </div>
   );
 }

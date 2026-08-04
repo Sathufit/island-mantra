@@ -17,13 +17,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           size === "md" && "text-sm px-6 py-3",
           size === "lg" && "text-base px-8 py-4",
           variant === "primary" &&
-            "bg-[#0E4F52] text-white hover:bg-[#2E7D7B] focus-visible:ring-[#0E4F52]",
+            "bg-[#0A0A0A] text-white hover:bg-[#2A2A2A] focus-visible:ring-[#0A0A0A]",
           variant === "outline" &&
-            "border border-[#0E4F52] text-[#0E4F52] hover:bg-[#0E4F52] hover:text-white focus-visible:ring-[#0E4F52]",
+            "border border-[#0A0A0A] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white focus-visible:ring-[#0A0A0A]",
           variant === "ghost" &&
-            "text-[#0E4F52] hover:bg-[#F4EDE1] focus-visible:ring-[#0E4F52]",
+            "text-[#0A0A0A] hover:bg-[#F4EDE1] focus-visible:ring-[#0A0A0A]",
           variant === "coral" &&
-            "bg-[#E1704B] text-white hover:bg-[#c85e3c] focus-visible:ring-[#E1704B]",
+            "bg-[#0A0A0A] text-white hover:bg-[#262626] focus-visible:ring-[#0A0A0A]",
           className
         )}
         {...props}

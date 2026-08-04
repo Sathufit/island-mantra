@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useEffect } from "react";
 
-const collections = [
-  { label: "Linen Edit", href: "/collections/linen-edit" },
-  { label: "Coastal Dresses", href: "/collections/coastal-dresses" },
-  { label: "Island Tees", href: "/collections/island-tees" },
-  { label: "Accessories", href: "/collections/accessories" },
+const categories = [
+  { label: "Women", href: "/women" },
+  { label: "Men", href: "/men" },
+  { label: "Kids", href: "/kids" },
+  { label: "Accessories", href: "/accessories" },
 ];
 
 const pages = [
@@ -29,7 +29,7 @@ export default function MobileNav({ isOpen, onClose }: Props) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 bg-[#0B3A3D] flex flex-col transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col transition-opacity duration-300 ${
         isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
     >
@@ -56,15 +56,32 @@ export default function MobileNav({ isOpen, onClose }: Props) {
       {/* Nav links */}
       <nav className="flex-1 flex flex-col justify-center px-8 pb-4">
         <p className="font-sans text-[10px] tracking-[0.28em] uppercase text-white/35 mb-5">
-          Collections
+          Shop
         </p>
 
-        {collections.map((link, i) => (
+        <div
+          className="transition-all duration-500"
+          style={{
+            transitionDelay: isOpen ? "80ms" : "0ms",
+            opacity: isOpen ? 1 : 0,
+            transform: isOpen ? "translateY(0)" : "translateY(16px)",
+          }}
+        >
+          <Link
+            href="/"
+            onClick={onClose}
+            className="block font-serif text-[2.25rem] leading-tight text-white/85 hover:text-white py-2.5 border-b border-white/8 hover:pl-1.5 transition-all duration-200"
+          >
+            Home
+          </Link>
+        </div>
+
+        {categories.map((link, i) => (
           <div
             key={link.href}
             className="transition-all duration-500"
             style={{
-              transitionDelay: isOpen ? `${i * 55 + 80}ms` : "0ms",
+              transitionDelay: isOpen ? `${(i + 1) * 55 + 80}ms` : "0ms",
               opacity: isOpen ? 1 : 0,
               transform: isOpen ? "translateY(0)" : "translateY(16px)",
             }}
@@ -85,7 +102,7 @@ export default function MobileNav({ isOpen, onClose }: Props) {
               key={link.href}
               className="transition-all duration-500"
               style={{
-                transitionDelay: isOpen ? `${(collections.length + i) * 55 + 80}ms` : "0ms",
+                transitionDelay: isOpen ? `${(categories.length + 1 + i) * 55 + 80}ms` : "0ms",
                 opacity: isOpen ? 1 : 0,
                 transform: isOpen ? "translateY(0)" : "translateY(12px)",
               }}

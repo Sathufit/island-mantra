@@ -1,5 +1,6 @@
 import { products, type Product } from "./data/products";
 import { collections, type Collection } from "./data/collections";
+import { categories, type Category } from "./data/categories";
 
 export async function getProducts(): Promise<Product[]> {
   return products;
@@ -27,6 +28,22 @@ export async function getCollection(
   slug: string
 ): Promise<Collection | undefined> {
   return collections.find((c) => c.slug === slug);
+}
+
+export async function getCategories(): Promise<Category[]> {
+  return categories;
+}
+
+export async function getCategory(
+  slug: string
+): Promise<Category | undefined> {
+  return categories.find((c) => c.slug === slug);
+}
+
+export async function getProductsByCategory(
+  categorySlug: Product["category"]
+): Promise<Product[]> {
+  return products.filter((p) => p.category === categorySlug);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {

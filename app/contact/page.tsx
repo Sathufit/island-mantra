@@ -11,10 +11,10 @@ export default function ContactPage() {
     <div className="pt-28 pb-20 min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="mb-12">
-          <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#1F2A2B]/50 mb-3">
+          <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#0A0A0A]/50 mb-3">
             Get in Touch
           </p>
-          <h1 className="font-serif text-4xl md:text-5xl text-[#0E4F52]">
+          <h1 className="font-serif text-4xl md:text-5xl text-[#0A0A0A]">
             Contact Us
           </h1>
         </div>
@@ -22,7 +22,7 @@ export default function ContactPage() {
         <div className="grid md:grid-cols-2 gap-14">
           {/* Form */}
           <div>
-            <h2 className="font-serif text-xl text-[#0E4F52] mb-6">
+            <h2 className="font-serif text-xl text-[#0A0A0A] mb-6">
               Send a Message
             </h2>
             <ContactForm />
@@ -32,15 +32,15 @@ export default function ContactPage() {
           <div className="space-y-10">
             {/* WhatsApp */}
             <div>
-              <h2 className="font-serif text-xl text-[#0E4F52] mb-4">
+              <h2 className="font-serif text-xl text-[#0A0A0A] mb-4">
                 WhatsApp
               </h2>
-              <p className="font-sans text-sm text-[#1F2A2B]/70 mb-4">
+              <p className="font-sans text-sm text-[#0A0A0A]/70 mb-4">
                 The fastest way to reach us. We&apos;re available on WhatsApp for order enquiries, custom requests, and anything else.
               </p>
               <a
                 href="https://wa.me/94771234567"
-                className="inline-flex items-center gap-2 border border-[#0E4F52] text-[#0E4F52] font-sans text-xs tracking-widest uppercase px-5 py-3 hover:bg-[#0E4F52] hover:text-white transition-colors"
+                className="inline-flex items-center gap-2 border border-[#0A0A0A] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase px-5 py-3 hover:bg-[#0A0A0A] hover:text-white transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -53,16 +53,16 @@ export default function ContactPage() {
 
             {/* Visit */}
             <div>
-              <h2 className="font-serif text-xl text-[#0E4F52] mb-4">
+              <h2 className="font-serif text-xl text-[#0A0A0A] mb-4">
                 Visit the Store
               </h2>
-              <address className="font-sans text-sm text-[#1F2A2B]/70 not-italic leading-relaxed mb-4">
-                <strong className="text-[#1F2A2B] font-semibold">Island Mantra</strong><br />
+              <address className="font-sans text-sm text-[#0A0A0A]/70 not-italic leading-relaxed mb-4">
+                <strong className="text-[#0A0A0A] font-semibold">Island Mantra</strong><br />
                 22 Galle Road<br />
                 Hikkaduwa, Galle District<br />
                 Sri Lanka 80240
               </address>
-              <div className="font-sans text-sm text-[#1F2A2B]/70 space-y-1">
+              <div className="font-sans text-sm text-[#0A0A0A]/70 space-y-1">
                 <p>Monday–Friday: 10:00 AM – 7:00 PM</p>
                 <p>Saturday–Sunday: 9:00 AM – 8:00 PM</p>
               </div>
@@ -70,12 +70,12 @@ export default function ContactPage() {
 
             {/* Email */}
             <div>
-              <h2 className="font-serif text-xl text-[#0E4F52] mb-4">
+              <h2 className="font-serif text-xl text-[#0A0A0A] mb-4">
                 Email
               </h2>
               <a
                 href="mailto:hello@islandmantra.lk"
-                className="font-sans text-sm text-[#0E4F52] underline underline-offset-2 hover:text-[#2E7D7B] transition-colors"
+                className="font-sans text-sm text-[#0A0A0A] underline underline-offset-2 hover:text-[#2A2A2A] transition-colors"
               >
                 hello@islandmantra.lk
               </a>
