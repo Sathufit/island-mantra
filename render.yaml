@@ -5,9 +5,10 @@ services:
     plan: free
     region: singapore
     buildCommand: >-
-      npm install &&
+      npm install --fetch-retries=5 --fetch-retry-mintimeout=15000 --fetch-retry-maxtimeout=120000 &&
       npx turbo build --filter=@dtc/backend &&
-      cd apps/backend/.medusa/server && npm install
+      cd apps/backend/.medusa/server &&
+      npm install --fetch-retries=5 --fetch-retry-mintimeout=15000 --fetch-retry-maxtimeout=120000
     startCommand: >-
       cd apps/backend/.medusa/server &&
       npx medusa db:migrate &&
