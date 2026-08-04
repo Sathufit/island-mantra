@@ -12,5 +12,26 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
     }
-  }
+  },
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/payhere-payment",
+            id: "payhere",
+            options: {
+              merchantId: process.env.PAYHERE_MERCHANT_ID,
+              merchantSecret: process.env.PAYHERE_MERCHANT_SECRET,
+              mode: process.env.PAYHERE_MODE ?? "sandbox",
+              returnUrl: process.env.PAYHERE_RETURN_URL,
+              cancelUrl: process.env.PAYHERE_CANCEL_URL,
+              notifyUrl: process.env.PAYHERE_NOTIFY_URL,
+            },
+          },
+        ],
+      },
+    },
+  ],
 })
