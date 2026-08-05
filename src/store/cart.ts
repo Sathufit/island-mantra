@@ -27,6 +27,11 @@ interface CartStore {
   cartId: string | null;
   items: CartItem[];
   isOpen: boolean;
+  /** True once zustand's localStorage rehydration has resolved. `cartId` is
+   * `null` until then even for a visitor with an existing cart — pages must
+   * wait for this before treating the bag as genuinely empty. */
+  hasHydrated: boolean;
+  setHasHydrated: (value: boolean) => void;
   addItem: (variantId: string, quantity?: number) => Promise<void>;
   removeItem: (id: string) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
@@ -45,6 +50,8 @@ export const useCart = create<CartStore>()(
       cartId: null,
       items: [],
       isOpen: false,
+      hasHydrated: false,
+      setHasHydrated: (value) => set({ hasHydrated: value }),
 
       addItem: async (variantId, quantity = 1) => {
         const { cartId } = get();
@@ -119,6 +126,9 @@ export const useCart = create<CartStore>()(
     {
       name: "island-mantra-cart",
       partialize: (state) => ({ cartId: state.cartId }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

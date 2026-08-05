@@ -1,12 +1,19 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/src/store/cart";
 import { formatPrice } from "@/src/lib/utils";
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal } = useCart();
+  const { items, removeItem, updateQuantity, subtotal, hasHydrated, hydrateCart } =
+    useCart();
   const total = subtotal();
+
+  useEffect(() => {
+    if (hasHydrated) hydrateCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasHydrated]);
 
   return (
     <div className="pt-28 pb-20 min-h-screen">
@@ -15,7 +22,11 @@ export default function CartPage() {
           Your Bag
         </h1>
 
-        {items.length === 0 ? (
+        {!hasHydrated ? (
+          <div className="flex items-center justify-center py-24">
+            <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
+          </div>
+        ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center gap-5">
             <svg
               width="56"

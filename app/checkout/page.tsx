@@ -35,13 +35,19 @@ const EMPTY_FORM: FormState = {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cartId, items, subtotal, clearCart } = useCart();
+  const { cartId, items, subtotal, hasHydrated, hydrateCart, clearCart } =
+    useCart();
   const { isLoggedIn, token, customer } = useCustomer();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const total = subtotal();
+
+  useEffect(() => {
+    if (hasHydrated) hydrateCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasHydrated]);
 
   useEffect(() => {
     if (!customer) return;
@@ -106,6 +112,14 @@ export default function CheckoutPage() {
       setSubmitting(false);
     }
   };
+
+  if (!hasHydrated) {
+    return (
+      <div className="pt-28 pb-20 min-h-screen flex items-center justify-center">
+        <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
