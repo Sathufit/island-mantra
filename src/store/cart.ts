@@ -28,10 +28,15 @@ interface CartStore {
   items: CartItem[];
   isOpen: boolean;
   /** True once zustand's localStorage rehydration has resolved. `cartId` is
-   * `null` until then even for a visitor with an existing cart — pages must
-   * wait for this before treating the bag as genuinely empty. */
+   * `null` until then even for a visitor with an existing cart. */
   hasHydrated: boolean;
   setHasHydrated: (value: boolean) => void;
+  /** True once the cart's *contents* have been fetched from the backend at
+   * least once this session (or determined there's no cart to fetch). Items
+   * stay `[]` while this is false even for a returning visitor with a real
+   * cart, since hydrateCart's network call takes a moment — pages must wait
+   * for this, not just hasHydrated, before treating the bag as empty. */
+  cartLoaded: boolean;
   addItem: (variantId: string, quantity?: number) => Promise<void>;
   removeItem: (id: string) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
@@ -52,6 +57,7 @@ export const useCart = create<CartStore>()(
       isOpen: false,
       hasHydrated: false,
       setHasHydrated: (value) => set({ hasHydrated: value }),
+      cartLoaded: false,
 
       addItem: async (variantId, quantity = 1) => {
         const { cartId } = get();
@@ -103,15 +109,18 @@ export const useCart = create<CartStore>()(
 
       hydrateCart: async () => {
         const { cartId } = get();
-        if (!cartId) return;
+        if (!cartId) {
+          set({ cartLoaded: true });
+          return;
+        }
         try {
           const cart = await getCart(cartId);
-          set({ items: mapCart(cart) });
+          set({ items: mapCart(cart), cartLoaded: true });
         } catch {
           // Stale/invalid cart id (e.g. from a different environment) —
           // drop it rather than leaving the app stuck on a cart that will
           // 404 on every subsequent operation.
-          set({ cartId: null, items: [] });
+          set({ cartId: null, items: [], cartLoaded: true });
         }
       },
 

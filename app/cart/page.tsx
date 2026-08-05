@@ -6,8 +6,15 @@ import { useCart } from "@/src/store/cart";
 import { formatPrice } from "@/src/lib/utils";
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal, hasHydrated, hydrateCart } =
-    useCart();
+  const {
+    items,
+    removeItem,
+    updateQuantity,
+    subtotal,
+    hasHydrated,
+    cartLoaded,
+    hydrateCart,
+  } = useCart();
   const total = subtotal();
 
   useEffect(() => {
@@ -22,7 +29,7 @@ export default function CartPage() {
           Your Bag
         </h1>
 
-        {!hasHydrated ? (
+        {!cartLoaded ? (
           <div className="flex items-center justify-center py-24">
             <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
           </div>

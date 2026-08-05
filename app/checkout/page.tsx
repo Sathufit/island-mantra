@@ -35,8 +35,15 @@ const EMPTY_FORM: FormState = {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cartId, items, subtotal, hasHydrated, hydrateCart, clearCart } =
-    useCart();
+  const {
+    cartId,
+    items,
+    subtotal,
+    hasHydrated,
+    cartLoaded,
+    hydrateCart,
+    clearCart,
+  } = useCart();
   const { isLoggedIn, token, customer } = useCustomer();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -113,7 +120,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (!hasHydrated) {
+  if (!cartLoaded) {
     return (
       <div className="pt-28 pb-20 min-h-screen flex items-center justify-center">
         <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
