@@ -22,6 +22,10 @@ services:
         value: shared
       - key: DATABASE_URL
         sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: COOKIE_SECRET
