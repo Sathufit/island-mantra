@@ -1,0 +1,35 @@
+name: Backup Supabase database
+
+on:
+  schedule:
+    # Daily at 02:00 UTC. This also touches the DB, which prevents Supabase's
+    # free-tier auto-pause after 7 days of inactivity.
+    - cron: "0 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install postgresql-client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Dump database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DATABASE_URL secret is not set — see repo Settings > Secrets and variables > Actions"
+            exit 1
+          fi
+          pg_dump "$DATABASE_URL" --no-owner --no-privileges -F c -f backup.dump
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: island-mantra-db-backup-${{ github.run_id }}
+          path: backup.dump
+          # Free-tier GitHub Actions artifact storage isn't unlimited — keep
+          # a rolling 30 days of daily backups rather than accumulating
+          # forever.
+          retention-days: 30
