@@ -2,8 +2,13 @@ name: Keep Render backend awake
 
 on:
   schedule:
-    # Every 10 minutes — Render's free plan spins down after 15 min idle.
-    - cron: "*/10 * * * *"
+    # Every 20 minutes. Render's free plan spins down after 15 min idle, so
+    # this lets it sleep for ~5 of every 20 minutes instead of never sleeping
+    # at all (a 10-min ping keeps it awake 24/7, which alone burns ~99% of
+    # the workspace's shared 750 free-instance-hour/month pool). This trades
+    # an occasional cold start (~50s) for meaningfully lower instance-hour
+    # usage, roughly a 25% reduction.
+    - cron: "*/20 * * * *"
   workflow_dispatch: {}
 
 jobs:
