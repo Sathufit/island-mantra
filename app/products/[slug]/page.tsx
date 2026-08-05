@@ -28,6 +28,7 @@ export default function ProductPage({
   const [quantity, setQuantity] = useState(1);
   const [openAccordion, setOpenAccordion] = useState<AccordionKey>("description");
   const [addedMessage, setAddedMessage] = useState(false);
+  const [addError, setAddError] = useState(false);
 
   const { addItem } = useCart();
 
@@ -45,9 +46,14 @@ export default function ProductPage({
     if (!product || !selectedSize || !selectedColor) return;
     const variantId = product.variantMap[`${selectedSize}|${selectedColor}`];
     if (!variantId) return;
-    await addItem(variantId, quantity);
-    setAddedMessage(true);
-    setTimeout(() => setAddedMessage(false), 2000);
+    setAddError(false);
+    try {
+      await addItem(variantId, quantity);
+      setAddedMessage(true);
+      setTimeout(() => setAddedMessage(false), 2000);
+    } catch {
+      setAddError(true);
+    }
   };
 
   const toggleAccordion = (key: AccordionKey) => {
@@ -203,6 +209,12 @@ export default function ProductPage({
             >
               {addedMessage ? "Added to Bag" : "Add to Bag"}
             </button>
+
+            {addError && (
+              <p className="font-sans text-xs text-red-600 text-center mt-2">
+                Couldn't add this to your bag. Please try again.
+              </p>
+            )}
 
             {/* Delivery note */}
             <p className="font-sans text-xs text-[#0A0A0A]/50 text-center mt-3">

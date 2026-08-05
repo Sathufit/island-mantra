@@ -47,22 +47,34 @@ export const useCart = create<CartStore>()(
       isOpen: false,
 
       addItem: async (variantId, quantity = 1) => {
-        let { cartId } = get();
-        if (!cartId) {
+        const { cartId } = get();
+        try {
+          const targetCartId = cartId ?? (await createCart()).id;
+          if (!cartId) set({ cartId: targetCartId });
+          const cart = await addLineItem(targetCartId, variantId, quantity);
+          set({ items: mapCart(cart), isOpen: true });
+        } catch {
+          // cartId was stale (e.g. left over from a different environment,
+          // or the cart expired) — start a fresh cart and retry once before
+          // giving up, so a bad cached cart ID self-heals silently instead
+          // of the button just doing nothing.
           const cart = await createCart();
-          cartId = cart.id;
-          set({ cartId });
+          set({ cartId: cart.id });
+          const updated = await addLineItem(cart.id, variantId, quantity);
+          set({ items: mapCart(updated), isOpen: true });
         }
-        const cart = await addLineItem(cartId, variantId, quantity);
-        set({ items: mapCart(cart), isOpen: true });
       },
 
       removeItem: async (id) => {
         const { cartId } = get();
         if (!cartId) return;
-        await removeLineItem(cartId, id);
-        const cart = await getCart(cartId);
-        set({ items: mapCart(cart) });
+        try {
+          await removeLineItem(cartId, id);
+          const cart = await getCart(cartId);
+          set({ items: mapCart(cart) });
+        } catch {
+          set({ cartId: null, items: [] });
+        }
       },
 
       updateQuantity: async (id, quantity) => {
@@ -72,8 +84,12 @@ export const useCart = create<CartStore>()(
         }
         const { cartId } = get();
         if (!cartId) return;
-        const cart = await updateLineItem(cartId, id, quantity);
-        set({ items: mapCart(cart) });
+        try {
+          const cart = await updateLineItem(cartId, id, quantity);
+          set({ items: mapCart(cart) });
+        } catch {
+          set({ cartId: null, items: [] });
+        }
       },
 
       clearCart: () => set({ cartId: null, items: [] }),
@@ -81,8 +97,15 @@ export const useCart = create<CartStore>()(
       hydrateCart: async () => {
         const { cartId } = get();
         if (!cartId) return;
-        const cart = await getCart(cartId);
-        set({ items: mapCart(cart) });
+        try {
+          const cart = await getCart(cartId);
+          set({ items: mapCart(cart) });
+        } catch {
+          // Stale/invalid cart id (e.g. from a different environment) —
+          // drop it rather than leaving the app stuck on a cart that will
+          // 404 on every subsequent operation.
+          set({ cartId: null, items: [] });
+        }
       },
 
       openCart: () => set({ isOpen: true }),
