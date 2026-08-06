@@ -16,4 +16,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping health endpoint
-        run: curl -fsS --max-time 30 https://island-mantra-backend.onrender.com/health
+        run: curl -fsS --max-time 90 https://island-mantra-backend.onrender.com/health
