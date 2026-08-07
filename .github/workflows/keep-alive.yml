@@ -16,4 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping health endpoint
-        run: curl -fsS --max-time 90 https://island-mantra-backend.onrender.com/health
+        # Render's free-tier cold start for this backend regularly exceeds
+        # 90s (DB connect + migrations check + Medusa bootstrap), so a
+        # single request timing out isn't a real failure - it's often the
+        # request that woke the dyno. Poll instead of doing one long wait,
+        # so the job succeeds once the backend actually finishes booting.
+        run: |
+          for i in $(seq 1 18); do
+            if curl -fsS --max-time 15 https://island-mantra-backend.onrender.com/health; then
+              echo "Backend is awake (attempt $i)"
+              exit 0
+            fi
+            echo "Attempt $i: backend not ready yet, retrying in 10s..."
+            sleep 10
+          done
+          echo "Backend did not respond after ~4.5 minutes"
+          exit 1
