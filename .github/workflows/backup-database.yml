@@ -32,7 +32,10 @@ jobs:
             echo "DATABASE_URL secret is not set — see repo Settings > Secrets and variables > Actions"
             exit 1
           fi
-          pg_dump "$DATABASE_URL" --no-owner --no-privileges -F c -f backup.dump
+          # The runner image ships its own postgresql-client ahead on PATH,
+          # so the plain `pg_dump` still resolved to v16 even with v17
+          # installed. Call the versioned binary directly.
+          /usr/lib/postgresql/17/bin/pg_dump "$DATABASE_URL" --no-owner --no-privileges -F c -f backup.dump
 
       - name: Upload backup artifact
         uses: actions/upload-artifact@v4
