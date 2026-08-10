@@ -16,9 +16,28 @@ function relatedSlugsFor(product: MedusaProduct, all: MedusaProduct[]): string[]
     .map((p) => p.handle);
 }
 
+// The full catalog fetch (with calculated prices, variants, images, etc. for
+// every product) takes several seconds against the backend and was being
+// re-run from scratch on every single page — every category/collection/
+// product/search page called this independently, and the homepage alone
+// triggered it 3x in parallel for its different sections. Cache it in
+// memory so repeat calls within the window reuse one in-flight/settled
+// fetch instead of hitting the backend again.
+let productsCache: { promise: Promise<Product[]>; timestamp: number } | null = null;
+const PRODUCTS_CACHE_TTL_MS = 60_000;
+
 async function getAllProducts(): Promise<Product[]> {
-  const raw = await fetchProducts();
-  return raw.map((p) => mapProduct(p, relatedSlugsFor(p, raw)));
+  const now = Date.now();
+  if (!productsCache || now - productsCache.timestamp > PRODUCTS_CACHE_TTL_MS) {
+    const promise = fetchProducts()
+      .then((raw) => raw.map((p) => mapProduct(p, relatedSlugsFor(p, raw))))
+      .catch((err) => {
+        productsCache = null;
+        throw err;
+      });
+    productsCache = { promise, timestamp: now };
+  }
+  return productsCache.promise;
 }
 
 export async function getProducts(): Promise<Product[]> {

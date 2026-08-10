@@ -29,6 +29,7 @@ export default function ProductPage({
   const [openAccordion, setOpenAccordion] = useState<AccordionKey>("description");
   const [addedMessage, setAddedMessage] = useState(false);
   const [addError, setAddError] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   const { addItem } = useCart();
 
@@ -47,12 +48,15 @@ export default function ProductPage({
     const variantId = product.variantMap[`${selectedSize}|${selectedColor}`];
     if (!variantId) return;
     setAddError(false);
+    setIsAdding(true);
     try {
       await addItem(variantId, quantity);
       setAddedMessage(true);
       setTimeout(() => setAddedMessage(false), 2000);
     } catch {
       setAddError(true);
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -201,13 +205,14 @@ export default function ProductPage({
             {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              className={`w-full py-4 font-sans text-sm tracking-widest uppercase transition-all duration-200 ${
+              disabled={isAdding}
+              className={`w-full py-4 font-sans text-sm tracking-widest uppercase transition-all duration-200 disabled:opacity-60 ${
                 addedMessage
                   ? "bg-[#2A2A2A] text-white"
                   : "bg-[#0A0A0A] text-white hover:bg-[#2A2A2A]"
               }`}
             >
-              {addedMessage ? "Added to Bag" : "Add to Bag"}
+              {isAdding ? "Adding…" : addedMessage ? "Added to Bag" : "Add to Bag"}
             </button>
 
             {addError && (
@@ -295,13 +300,14 @@ export default function ProductPage({
         )}
         <button
           onClick={handleAddToCart}
-          className={`flex-[2] py-3 font-sans text-xs tracking-widest uppercase transition-all duration-200 ${
+          disabled={isAdding}
+          className={`flex-[2] py-3 font-sans text-xs tracking-widest uppercase transition-all duration-200 disabled:opacity-60 ${
             addedMessage
               ? "bg-[#2A2A2A] text-white"
               : "bg-[#0A0A0A] text-white"
           }`}
         >
-          {addedMessage ? "Added" : "Add to Bag"}
+          {isAdding ? "Adding…" : addedMessage ? "Added" : "Add to Bag"}
         </button>
       </div>
 

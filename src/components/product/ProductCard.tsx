@@ -11,15 +11,17 @@ export default function ProductCard({ product }: { product: Product }) {
   const [quickSize, setQuickSize] = useState(product.sizes[0] ?? "");
   const [quickAdded, setQuickAdded] = useState(false);
   const [quickError, setQuickError] = useState(false);
+  const [quickAdding, setQuickAdding] = useState(false);
   const { addItem } = useCart();
 
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!quickSize) return;
+    if (!quickSize || quickAdding) return;
     const color = product.variants[0]?.color ?? "";
     const variantId = product.variantMap[`${quickSize}|${color}`];
     if (!variantId) return;
+    setQuickAdding(true);
     try {
       await addItem(variantId);
       setQuickAdded(true);
@@ -27,6 +29,8 @@ export default function ProductCard({ product }: { product: Product }) {
     } catch {
       setQuickError(true);
       setTimeout(() => setQuickError(false), 2000);
+    } finally {
+      setQuickAdding(false);
     }
   };
 
@@ -80,7 +84,8 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
           <button
             onClick={handleQuickAdd}
-            className={`w-full py-3 text-[10px] font-sans tracking-[0.18em] uppercase transition-colors duration-200 ${
+            disabled={quickAdding}
+            className={`w-full py-3 text-[10px] font-sans tracking-[0.18em] uppercase transition-colors duration-200 disabled:opacity-60 ${
               quickAdded
                 ? "bg-[#2A2A2A] text-white"
                 : quickError
@@ -88,7 +93,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 : "bg-[#0A0A0A] text-white hover:bg-[#2A2A2A]"
             }`}
           >
-            {quickAdded ? "Added" : quickError ? "Try Again" : "Quick Add"}
+            {quickAdding ? "Adding…" : quickAdded ? "Added" : quickError ? "Try Again" : "Quick Add"}
           </button>
         </div>
       </div>
