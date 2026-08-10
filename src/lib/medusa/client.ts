@@ -14,6 +14,12 @@ interface MedusaFetchOptions {
   token?: string;
 }
 
+// Render's free tier spins the backend down after idle periods; a cold
+// start can take 30-60s, which is longer than Netlify's function timeout.
+// Bail out well before that so the function fails fast instead of hanging
+// until Netlify kills it.
+const MEDUSA_TIMEOUT_MS = 8_000;
+
 async function medusaFetch<T>(
   path: string,
   { method = "GET", params = {}, body, token }: MedusaFetchOptions = {}
@@ -23,16 +29,30 @@ async function medusaFetch<T>(
     url.searchParams.set(key, value);
   }
 
-  const res = await fetch(url, {
-    method,
-    headers: {
-      "x-publishable-api-key": PUBLISHABLE_KEY!,
-      ...(body ? { "Content-Type": "application/json" } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: body ? JSON.stringify(body) : undefined,
-    ...(method === "GET" ? { next: { revalidate: 60 } } : { cache: "no-store" }),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), MEDUSA_TIMEOUT_MS);
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method,
+      headers: {
+        "x-publishable-api-key": PUBLISHABLE_KEY!,
+        ...(body ? { "Content-Type": "application/json" } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+      ...(method === "GET" ? { next: { revalidate: 60 } } : { cache: "no-store" }),
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new Error(`Medusa request timed out after ${MEDUSA_TIMEOUT_MS}ms: ${url.pathname}`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!res.ok) {
     throw new Error(`Medusa request failed (${res.status}): ${url.pathname}`);
