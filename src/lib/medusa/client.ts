@@ -17,8 +17,10 @@ interface MedusaFetchOptions {
 // Render's free tier spins the backend down after idle periods; a cold
 // start can take 30-60s, which is longer than Netlify's function timeout.
 // Bail out well before that so the function fails fast instead of hanging
-// until Netlify kills it.
-const MEDUSA_TIMEOUT_MS = 8_000;
+// until Netlify kills it. Cart mutations legitimately take up to ~9-10s
+// (Medusa recalculates pricing/tax/promotions on every write), so the
+// timeout needs real headroom above that or it kills valid slow requests.
+const MEDUSA_TIMEOUT_MS = 20_000;
 
 async function medusaFetch<T>(
   path: string,
