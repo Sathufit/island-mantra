@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Island Mantra — Admin Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0A0A0A;
+      --sand: #F4EDE1;
+      --warm: #E7DCC8;
+      --accent: #C9A97A;
+      --text: #1A1A1A;
+      --muted: #6B6B6B;
+      --border: #E0D6C8;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: #fff;
+      font-size: 11pt;
+      line-height: 1.65;
+    }
+
+    /* ── COVER PAGE ── */
+    .cover {
+      height: 100vh;
+      background: var(--black);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 80px;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,169,122,0.2);
+    }
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: 80px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,169,122,0.1);
+    }
+
+    .cover-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 32px;
+    }
+
+    .cover h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 52pt;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      max-width: 700px;
+    }
+
+    .cover-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 13pt;
+      color: rgba(255,255,255,0.55);
+      font-weight: 300;
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 64px;
+    }
+
+    .cover-meta {
+      display: flex;
+      gap: 48px;
+    }
+
+    .cover-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cover-meta-item span:first-child {
+      font-size: 8pt;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .cover-meta-item span:last-child {
+      font-size: 10pt;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .cover-logo {
+      position: absolute;
+      bottom: 80px;
+      right: 80px;
+      font-family: 'Playfair Display', serif;
+      font-size: 18pt;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* ── TOC PAGE ── */
+    .toc-page {
+      padding: 80px;
+      page-break-after: always;
+      min-height: 100vh;
+    }
+
+    .toc-header {
+      margin-bottom: 48px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toc-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28pt;
+      color: var(--black);
+    }
+
+    .toc-section {
+      margin-bottom: 32px;
+    }
+
+    .toc-section-label {
+      font-size: 8pt;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .toc-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dotted var(--border);
+    }
+
+    .toc-item-title {
+      font-size: 11pt;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .toc-item-sub {
+      font-size: 9.5pt;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .toc-item-num {
+      font-size: 9pt;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── CONTENT PAGES ── */
+    .page {
+      padding: 64px 80px;
+      page-break-before: always;
+    }
+
+    .page:first-of-type {
+      page-break-before: auto;
+    }
+
+    /* Section header */
+    .section-eyebrow {
+      font-size: 8pt;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26pt;
+      color: var(--black);
+      margin-bottom: 8px;
+      line-height: 1.15;
+    }
+
+    .section-desc {
+      font-size: 11pt;
+      color: var(--muted);
+      max-width: 580px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 36px 0;
+    }
+
+    /* Sub-sections */
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 15pt;
+      color: var(--black);
+      margin-bottom: 12px;
+      margin-top: 32px;
+    }
+
+    h4 {
+      font-size: 10pt;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 10px;
+      margin-top: 24px;
+    }
+
+    p {
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 10.5pt;
+    }
+
+    /* Steps */
+    .steps {
+      counter-reset: step;
+      margin: 20px 0 28px;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      counter-increment: step;
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
+      border-radius: 50%;
+      background: var(--black);
+      color: #fff;
+      font-size: 8.5pt;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .step-body {
+      flex: 1;
+    }
+
+    .step-body strong {
+      display: block;
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 3px;
+    }
+
+    .step-body span {
+      font-size: 10pt;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Info boxes */
+    .info-box {
+      background: var(--sand);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .info-box .label {
+      font-size: 8pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .info-box p {
+      font-size: 10pt;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .warning-box {
+      background: #FFF8F0;
+      border-left: 3px solid #E8834A;
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .warning-box .label {
+      font-size: 8pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #E8834A;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .warning-box p {
+      font-size: 10pt;
+      color: var(--text);
+      margin: 0;
+    }
+
+    /* Field table */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px;
+      font-size: 10pt;
+    }
+
+    .field-table thead tr {
+      background: var(--black);
+      color: #fff;
+    }
+
+    .field-table thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 8pt;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .field-table tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field-table tbody tr:nth-child(even) {
+      background: var(--sand);
+    }
+
+    .field-table tbody td {
+      padding: 10px 14px;
+      vertical-align: top;
+    }
+
+    .field-table td:first-child {
+      font-weight: 600;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    .field-table td:last-child {
+      color: var(--muted);
+    }
+
+    /* Required badge */
+    .req {
+      display: inline-block;
+      background: var(--black);
+      color: #fff;
+      font-size: 7pt;
+      letter-spacing: 0.1em;
+      padding: 2px 6px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    .opt {
+      display: inline-block;
+      background: var(--warm);
+      color: var(--muted);
+      font-size: 7pt;
+      letter-spacing: 0.1em;
+      padding: 2px 6px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    /* Two column */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin: 20px 0;
+    }
+
+    .card {
+      background: var(--sand);
+      border: 1px solid var(--warm);
+      border-radius: 6px;
+      padding: 20px;
+    }
+
+    .card h4 {
+      margin-top: 0;
+      font-size: 10pt;
+    }
+
+    .card p {
+      font-size: 9.5pt;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* Nav path */
+    .nav-path {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--black);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 9pt;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-bottom: 24px;
+    }
+
+    .nav-path span {
+      opacity: 0.45;
+    }
+
+    /* Page footer */
+    .page-footer {
+      position: fixed;
+      bottom: 28px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 9pt;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-note {
+      font-size: 8pt;
+      color: var(--border);
+    }
+
+    ul {
+      padding-left: 20px;
+      margin: 10px 0 18px;
+    }
+
+    li {
+      font-size: 10.5pt;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    li strong {
+      color: var(--black);
+    }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 8.5pt;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-green { background: #E8F5E9; color: #2E7D32; }
+    .badge-yellow { background: #FFF8E1; color: #F57F17; }
+    .badge-red { background: #FFEBEE; color: #C62828; }
+    .badge-grey { background: #F5F5F5; color: #616161; }
+    .badge-blue { background: #E3F2FD; color: #1565C0; }
+
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cover { height: 100vh; }
+      .page { page-break-before: always; }
+      .no-break { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-label">Admin Operations Manual</div>
+  <h1>Island Mantra<br/>Admin Guide</h1>
+  <p class="cover-sub">A complete reference for managing your store — products, orders, customers, inventory, pricing, and settings — all in one place.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <span>Platform</span>
+      <span>Medusa v2</span>
+    </div>
+    <div class="cover-meta-item">
+      <span>Admin URL</span>
+      <span>island-mantra-backend.onrender.com/app</span>
+    </div>
+    <div class="cover-meta-item">
+      <span>Prepared</span>
+      <span>August 2026</span>
+    </div>
+  </div>
+  <div class="cover-logo">Island Mantra</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     TABLE OF CONTENTS
+══════════════════════════════════════════ -->
+<div class="toc-page">
+  <div class="toc-header">
+    <h2>Contents</h2>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-label">Getting Started</div>
+    <div class="toc-item"><span class="toc-item-title">1. Logging In &amp; Dashboard Overview</span><span class="toc-item-num">3</span></div>
+    <div class="toc-item"><span class="toc-item-title">2. Navigating the Admin</span><span class="toc-item-num">3</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-label">Daily Operations</div>
+    <div class="toc-item"><span class="toc-item-title">3. Orders</span><span class="toc-item-num">4</span></div>
+    <div class="toc-item toc-item-sub"><span>Viewing, fulfilling, and managing orders</span></div>
+    <div class="toc-item"><span class="toc-item-title">4. Customers</span><span class="toc-item-num">6</span></div>
+    <div class="toc-item toc-item-sub"><span>Customer profiles, order history, and addresses</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-label">Catalogue Management</div>
+    <div class="toc-item"><span class="toc-item-title">5. Products</span><span class="toc-item-num">7</span></div>
+    <div class="toc-item toc-item-sub"><span>Adding, editing, variants, images, and metadata</span></div>
+    <div class="toc-item"><span class="toc-item-title">6. Collections</span><span class="toc-item-num">10</span></div>
+    <div class="toc-item"><span class="toc-item-title">7. Categories</span><span class="toc-item-num">10</span></div>
+    <div class="toc-item"><span class="toc-item-title">8. Inventory</span><span class="toc-item-num">11</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-label">Pricing &amp; Promotions</div>
+    <div class="toc-item"><span class="toc-item-title">9. Price Lists</span><span class="toc-item-num">12</span></div>
+    <div class="toc-item"><span class="toc-item-title">10. Promotions &amp; Discount Codes</span><span class="toc-item-num">13</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-label">Configuration</div>
+    <div class="toc-item"><span class="toc-item-title">11. Store Settings</span><span class="toc-item-num">14</span></div>
+    <div class="toc-item"><span class="toc-item-title">12. Regions &amp; Currency</span><span class="toc-item-num">14</span></div>
+    <div class="toc-item"><span class="toc-item-title">13. Shipping Options</span><span class="toc-item-num">15</span></div>
+    <div class="toc-item"><span class="toc-item-title">14. Team &amp; User Management</span><span class="toc-item-num">16</span></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — LOGGING IN & DASHBOARD
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Getting Started — Section 1</div>
+  <h2 class="section-title">Logging In &amp; Dashboard</h2>
+  <p class="section-desc">The admin panel is the control centre for your entire store. Everything — from adding a new product to confirming a shipped order — is managed here.</p>
+
+  <div class="nav-path">island-mantra-backend.onrender.com<span>/</span>app</div>
+
+  <div class="info-box">
+    <div class="label">First-time login</div>
+    <p>Enter your admin email and password. If you have forgotten your password, contact your developer to reset it from the server. Standard password-reset emails require email configuration which may not be enabled yet.</p>
+  </div>
+
+  <h3>Dashboard Overview</h3>
+  <p>After logging in you land on the <strong>Dashboard</strong>. This gives a quick snapshot of store performance:</p>
+
+  <div class="two-col">
+    <div class="card">
+      <h4>Orders Summary</h4>
+      <p>Total orders placed, pending fulfillment, and recently completed — updated in real time.</p>
+    </div>
+    <div class="card">
+      <h4>Revenue</h4>
+      <p>Gross revenue for the current period displayed in LKR (Sri Lankan Rupee), your store's base currency.</p>
+    </div>
+    <div class="card">
+      <h4>Products</h4>
+      <p>Total published products and any that are in draft (not yet visible on the storefront).</p>
+    </div>
+    <div class="card">
+      <h4>Customers</h4>
+      <p>Registered customers and guests who have placed orders.</p>
+    </div>
+  </div>
+
+  <h3>Navigating the Admin</h3>
+  <p>The left sidebar is your main navigation. It stays visible on every page.</p>
+
+  <table class="field-table">
+    <thead>
+      <tr><th>Sidebar Item</th><th>What It Does</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Orders</td><td>All customer orders — new, processing, shipped, returned</td></tr>
+      <tr><td>Products</td><td>Your full product catalogue including variants and images</td></tr>
+      <tr><td>Collections</td><td>Curated groups of products (e.g. "Hikkaduwa Summer")</td></tr>
+      <tr><td>Categories</td><td>Structural groupings like Women, Men, Kids, Accessories</td></tr>
+      <tr><td>Customers</td><td>Registered accounts and guest order profiles</td></tr>
+      <tr><td>Inventory</td><td>Stock levels per variant per location</td></tr>
+      <tr><td>Price Lists</td><td>Special pricing rules, sale prices, and B2B overrides</td></tr>
+      <tr><td>Promotions</td><td>Discount codes and automatic promotions</td></tr>
+      <tr><td>Settings</td><td>Store info, regions, shipping, team members, API keys</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — ORDERS
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Daily Operations — Section 3</div>
+  <h2 class="section-title">Orders</h2>
+  <p class="section-desc">Orders are the core of daily operations. This section covers how to view, process, fulfil, and handle exceptions for every order that comes in.</p>
+
+  <div class="nav-path">Orders</div>
+
+  <h3>Order List</h3>
+  <p>The orders list shows every order, newest first. Each row shows the order number, customer name, date, total, payment status, and fulfillment status.</p>
+
+  <h4>Order Statuses</h4>
+  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+    <span class="badge badge-yellow">Pending</span>
+    <span class="badge badge-blue">Processing</span>
+    <span class="badge badge-green">Completed</span>
+    <span class="badge badge-red">Cancelled</span>
+    <span class="badge badge-grey">Archived</span>
+  </div>
+
+  <h4>Payment Statuses</h4>
+  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:28px;">
+    <span class="badge badge-yellow">Awaiting</span>
+    <span class="badge badge-green">Captured</span>
+    <span class="badge badge-red">Refunded</span>
+    <span class="badge badge-grey">Not Paid</span>
+  </div>
+
+  <h3>Processing an Order — Step by Step</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Open the order</strong>
+        <span>Click any row in the Orders list to open the order detail page.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Confirm payment</strong>
+        <span>Check the Payment section. For cash-on-delivery or manual bank-transfer orders, click <em>Capture Payment</em> once you have confirmed receipt of funds.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Fulfil the order</strong>
+        <span>In the Fulfillment section, click <em>Create Fulfillment</em>. Select the items to ship (all or partial) and confirm. This marks items as shipped.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Add a tracking number (optional)</strong>
+        <span>After fulfillment is created, you can add a courier tracking number for the customer's reference.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <strong>Mark as shipped</strong>
+        <span>Click <em>Mark Shipped</em> on the fulfillment. The order status moves to Completed.</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Order Detail — What Each Section Means</h3>
+  <table class="field-table">
+    <thead>
+      <tr><th>Section</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Summary</td><td>Line items, quantities, unit prices, subtotal, shipping, and total in LKR</td></tr>
+      <tr><td>Payment</td><td>Payment provider used, amount captured, and any refunds issued</td></tr>
+      <tr><td>Fulfillment</td><td>Shipping method, fulfillment status, and tracking information</td></tr>
+      <tr><td>Customer</td><td>Name, email, shipping address, and link to their full profile</td></tr>
+      <tr><td>Timeline</td><td>Audit log of every action taken on this order with timestamps</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cancelling an Order</h3>
+  <p>Open the order, click the <strong>⋯ More</strong> menu in the top-right corner, and select <em>Cancel Order</em>. A cancellation can only be done before the order is fulfilled. If payment was captured, issue a refund first.</p>
+
+  <h3>Issuing a Refund</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Open the order → Payment section</strong>
+        <span>Click <em>Refund</em>.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Enter the refund amount</strong>
+        <span>You can refund the full amount or a partial amount (e.g. for a single returned item).</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Add a reason note</strong>
+        <span>Always add a note (e.g. "Customer returned defective item") for your records.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <div class="label">Important</div>
+    <p>Refunds in the admin are recorded entries only. The actual money transfer back to the customer must be done manually through your bank or payment provider unless you have an automated payment gateway connected.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 — CUSTOMERS
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Daily Operations — Section 4</div>
+  <h2 class="section-title">Customers</h2>
+  <p class="section-desc">The Customers section holds every registered account and guest buyer. Use it to look up order history, verify addresses, or assist customers with account issues.</p>
+
+  <div class="nav-path">Customers</div>
+
+  <h3>Customer List</h3>
+  <p>Each row shows the customer's name, email, number of orders, and the date they registered. Use the search bar to find a customer by name or email instantly.</p>
+
+  <h3>Customer Profile</h3>
+  <p>Clicking a customer opens their full profile, which contains:</p>
+
+  <table class="field-table">
+    <thead>
+      <tr><th>Section</th><th>What You'll Find</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Overview</td><td>Name, email, phone number, and account creation date</td></tr>
+      <tr><td>Orders</td><td>Full list of every order this customer has placed, with statuses and totals</td></tr>
+      <tr><td>Addresses</td><td>Saved delivery addresses on the account</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <div class="label">Guest Customers</div>
+    <p>Orders placed without creating an account appear as guest entries. They have order history but no saved addresses or login credentials.</p>
+  </div>
+
+  <h3>Editing a Customer</h3>
+  <p>From the customer profile, click <strong>Edit</strong> to update their name, email, or phone. You cannot change their password from here — password resets are customer-initiated from the storefront.</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 5 — PRODUCTS
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Catalogue Management — Section 5</div>
+  <h2 class="section-title">Products</h2>
+  <p class="section-desc">Products are the heart of your store. This section covers everything from adding a new item to managing variants, images, and metadata that power the storefront.</p>
+
+  <div class="nav-path">Products</div>
+
+  <h3>Adding a New Product</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Click "Create Product"</strong>
+        <span>The button is in the top-right corner of the Products list.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Fill in General Information</strong>
+        <span>Title, subtitle, description, handle (URL slug), and material. The handle auto-generates from the title but can be customised.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Organise the product</strong>
+        <span>Assign a Collection (e.g. "Hikkaduwa Summer") and a Category (e.g. "Women"). Both control how the product appears in the storefront navigation.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Add Options (variants)</strong>
+        <span>Define the options that create variants. For Island Mantra, these are typically <em>Colour</em> and <em>Size</em>.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <strong>Set prices per variant</strong>
+        <span>Each variant needs a price in LKR. Click into a variant row and set the price under the Sri Lanka region.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <strong>Upload images</strong>
+        <span>Drag and drop product images. The first image becomes the thumbnail. Recommended: upload 3–6 images per product at 1:1 or 4:5 ratio.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <strong>Publish</strong>
+        <span>Toggle the product status from <em>Draft</em> to <em>Published</em>. Only published products appear on the storefront.</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Product Fields Reference</h3>
+  <table class="field-table">
+    <thead>
+      <tr><th>Field</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Title <span class="req">Required</span></td><td>The product name shown to customers, e.g. "Coral Reef Sundress"</td></tr>
+      <tr><td>Handle <span class="req">Required</span></td><td>URL-friendly identifier, auto-generated. e.g. <em>coral-reef-sundress</em>. Cannot contain spaces.</td></tr>
+      <tr><td>Description <span class="opt">Optional</span></td><td>Full product description shown on the product page</td></tr>
+      <tr><td>Material <span class="opt">Optional</span></td><td>Fabric content shown in the Fabric &amp; Care section on the storefront</td></tr>
+      <tr><td>Collection <span class="opt">Optional</span></td><td>Links this product to a named collection (appears in navigation and carousels)</td></tr>
+      <tr><td>Categories <span class="opt">Optional</span></td><td>Assigns the product to a category like Women or Accessories</td></tr>
+      <tr><td>Status</td><td>Draft (hidden) or Published (live on storefront)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Managing Variants</h3>
+  <p>Each combination of options (e.g. Blue / Small, Blue / Medium, Red / Small) becomes a <strong>variant</strong>. Each variant has its own:</p>
+  <ul>
+    <li><strong>SKU</strong> — Stock keeping unit, your internal reference code</li>
+    <li><strong>Price</strong> — Set per region (Sri Lanka / LKR)</li>
+    <li><strong>Inventory</strong> — Tracked stock level for this specific size and colour</li>
+    <li><strong>Metadata</strong> — Custom fields used by the storefront (e.g. colour hex code for the colour swatch)</li>
+  </ul>
+
+  <div class="info-box">
+    <div class="label">Colour Swatches</div>
+    <p>The storefront displays colour swatches using a <strong>colorHex</strong> metadata key on each variant. When adding a new colour variant, add a metadata entry with key <em>colorHex</em> and value <em>#RRGGBB</em> (e.g. <em>#C8856A</em> for terracotta).</p>
+  </div>
+
+  <h3>Editing an Existing Product</h3>
+  <p>Click any product in the list to open it. All fields are editable in-place. Changes save automatically when you click <strong>Save</strong> at the top of the form. Changing the handle after the product is live will break any saved or shared links — avoid unless necessary.</p>
+
+  <h3>Deleting a Product</h3>
+  <p>Open the product → click the <strong>⋯ More</strong> menu → <em>Delete</em>. This is permanent. If a product is just temporarily unavailable, set it to <em>Draft</em> instead of deleting it.</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 6 & 7 — COLLECTIONS & CATEGORIES
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Catalogue Management — Sections 6 &amp; 7</div>
+  <h2 class="section-title">Collections &amp; Categories</h2>
+  <p class="section-desc">Collections and categories both organise products, but serve different purposes. Understanding the difference is important before making changes.</p>
+
+  <h3>Collections</h3>
+  <div class="nav-path">Collections</div>
+  <p>A <strong>collection</strong> is a curated editorial group — think of it as a seasonal campaign or a story. Products can belong to one collection. Collections appear in the storefront navigation and power the product carousels on the homepage.</p>
+
+  <p><strong>Examples:</strong> "Hikkaduwa Summer", "Rainy Season Edit", "Surf &amp; Shore"</p>
+
+  <h4>Creating a Collection</h4>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Click "Create Collection"</strong>
+        <span>Enter a title and an optional handle (auto-generated if left blank).</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Add products</strong>
+        <span>Once created, use the <em>Add Products</em> button to assign existing products to this collection.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h3>Categories</h3>
+  <div class="nav-path">Categories</div>
+  <p>A <strong>category</strong> is structural — it mirrors the top-level navigation of your storefront. Categories represent the type or gender of clothing, not a campaign. Products can belong to one category.</p>
+
+  <p><strong>Current categories:</strong> Women, Men, Kids, Accessories</p>
+
+  <div class="warning-box">
+    <div class="label">Do Not Rename Categories</div>
+    <p>The storefront navigation is tied to the category handles (<em>women</em>, <em>men</em>, <em>kids</em>, <em>accessories</em>). Renaming or deleting a category will break its storefront page. Only add new categories — do not modify existing ones without informing your developer.</p>
+  </div>
+
+  <h4>The Difference at a Glance</h4>
+  <table class="field-table">
+    <thead>
+      <tr><th></th><th>Collection</th><th>Category</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Purpose</td><td>Editorial / Campaign</td><td>Structural / Navigation</td></tr>
+      <tr><td>Examples</td><td>Hikkaduwa Summer</td><td>Women, Men, Kids</td></tr>
+      <tr><td>Storefront</td><td>Carousels, collection pages</td><td>Top-nav, browse pages</td></tr>
+      <tr><td>Can rename?</td><td>Yes, freely</td><td>No — breaks navigation</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 8 — INVENTORY
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Catalogue Management — Section 8</div>
+  <h2 class="section-title">Inventory</h2>
+  <p class="section-desc">Inventory tracks how many units of each variant are in stock. Keeping this accurate ensures customers cannot purchase items you cannot fulfil.</p>
+
+  <div class="nav-path">Inventory</div>
+
+  <h3>How Inventory Works</h3>
+  <p>Each product <strong>variant</strong> (e.g. Blue Sundress / Size M) has its own inventory item. When a customer places an order, the reserved quantity increases. When you fulfil the order, the stock is deducted.</p>
+
+  <table class="field-table">
+    <thead>
+      <tr><th>Term</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>In Stock</td><td>Total units physically available at your location</td></tr>
+      <tr><td>Reserved</td><td>Units held for orders that are placed but not yet fulfilled</td></tr>
+      <tr><td>Available</td><td>In Stock minus Reserved — what customers can still order</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Updating Stock Levels</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Go to Inventory</strong>
+        <span>Use the search bar to find the variant by name or SKU.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Click the inventory item</strong>
+        <span>Opens the detail view showing stock per location.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Edit the quantity</strong>
+        <span>Click the quantity field next to your location and enter the new stock count. Click Save.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="label">Best Practice</div>
+    <p>Update inventory immediately after receiving new stock from your supplier, and again after any in-store sales or manual adjustments. Accurate stock prevents overselling and disappointing customers.</p>
+  </div>
+
+  <h3>Out-of-Stock Behaviour</h3>
+  <p>When a variant's available quantity reaches <strong>0</strong>, that size/colour combination becomes unselectable on the storefront. The product page still shows but that specific variant is greyed out automatically — no action needed from you.</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 9 — PRICE LISTS
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Pricing &amp; Promotions — Section 9</div>
+  <h2 class="section-title">Price Lists</h2>
+  <p class="section-desc">Price lists let you create special pricing rules that override the standard product price — perfect for sale events, seasonal discounts, or wholesale pricing.</p>
+
+  <div class="nav-path">Price Lists</div>
+
+  <h3>Types of Price Lists</h3>
+  <div class="two-col">
+    <div class="card">
+      <h4>Sale</h4>
+      <p>A temporary price reduction on selected products or variants. Runs between two dates and automatically reverts after the end date.</p>
+    </div>
+    <div class="card">
+      <h4>Override</h4>
+      <p>Permanently replaces the standard price for specific customer groups (e.g. wholesale or VIP buyers).</p>
+    </div>
+  </div>
+
+  <h3>Creating a Sale Price List</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Click "Create Price List"</strong>
+        <span>Choose type <em>Sale</em>, give it a name (e.g. "August End-of-Season Sale"), and set a start and end date.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Add products</strong>
+        <span>Click <em>Add Products</em> and select the items you want to discount.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Set the sale price per variant</strong>
+        <span>For each variant, enter the discounted price in LKR. This is the exact price, not a percentage — so if the item is Rs 5,000 and you want 20% off, enter Rs 4,000.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Save and activate</strong>
+        <span>The price list activates automatically on the start date. The storefront shows the sale price and a strikethrough of the original price.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="label">Compare-At Price</div>
+    <p>The strikethrough "was" price visible on the storefront comes from the variant's standard price when a sale price list is active. No extra setup needed — it shows automatically.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 10 — PROMOTIONS
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Pricing &amp; Promotions — Section 10</div>
+  <h2 class="section-title">Promotions &amp; Discount Codes</h2>
+  <p class="section-desc">Promotions let you create discount codes customers enter at checkout, or automatic discounts that apply without a code.</p>
+
+  <div class="nav-path">Promotions</div>
+
+  <h3>Creating a Discount Code</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Click "Create Promotion"</strong>
+        <span>Select <em>Discount Code</em> as the type.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Enter the code</strong>
+        <span>Type the code customers will use at checkout (e.g. <em>WELCOME10</em>). Codes are case-insensitive.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Set the discount value</strong>
+        <span>Choose <em>Percentage</em> (e.g. 10%) or <em>Fixed Amount</em> (e.g. Rs 500 off). For free shipping, select <em>Free Shipping</em>.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Set conditions (optional)</strong>
+        <span>Minimum order value, applicable products or categories, and usage limits (e.g. one use per customer, or 100 uses total).</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <strong>Set validity dates (optional)</strong>
+        <span>Codes without an end date run indefinitely until manually disabled.</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Discount Types Reference</h3>
+  <table class="field-table">
+    <thead>
+      <tr><th>Type</th><th>How It Works</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Percentage</td><td>Reduces the cart total by a %</td><td>10% off entire order</td></tr>
+      <tr><td>Fixed Amount</td><td>Deducts a set rupee amount from the total</td><td>Rs 1,000 off orders over Rs 5,000</td></tr>
+      <tr><td>Free Shipping</td><td>Waives the shipping charge at checkout</td><td>FREESHIP code for newsletter subscribers</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Disabling a Code</h3>
+  <p>Open the promotion → toggle the <strong>Active</strong> switch off. The code immediately stops working at checkout. You can re-enable it at any time.</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 11–14 — SETTINGS
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Configuration — Sections 11–14</div>
+  <h2 class="section-title">Settings</h2>
+  <p class="section-desc">Settings control the foundational configuration of your store. Most of these are set up once and rarely changed — but it's important to know where everything lives.</p>
+
+  <div class="nav-path">Settings</div>
+
+  <h3>Store Settings</h3>
+  <p>Found under <strong>Settings → Store</strong>. Contains:</p>
+  <ul>
+    <li><strong>Store Name</strong> — "Island Mantra" — shown in emails and receipts</li>
+    <li><strong>Default Currency</strong> — LKR (Sri Lankan Rupee)</li>
+    <li><strong>Default Region</strong> — Sri Lanka</li>
+  </ul>
+
+  <div class="divider"></div>
+
+  <h3>Regions &amp; Currency</h3>
+  <p>Found under <strong>Settings → Regions</strong>. Island Mantra operates a single region (<em>Sri Lanka</em> in LKR). The region controls:</p>
+  <ul>
+    <li>Which currency prices are displayed and charged in</li>
+    <li>Which payment providers are available</li>
+    <li>Which shipping options appear at checkout</li>
+    <li>Tax calculation rules</li>
+  </ul>
+
+  <div class="info-box">
+    <div class="label">Expanding to new markets</div>
+    <p>If you ever want to sell in another currency (e.g. USD for international customers), a new region would be created and linked to new shipping options. This requires developer involvement.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <h3>Shipping Options</h3>
+  <p>Found under <strong>Settings → Regions → Sri Lanka → Shipping Options</strong>. Each shipping option has:</p>
+
+  <table class="field-table">
+    <thead>
+      <tr><th>Field</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Name</td><td>Shown to the customer at checkout (e.g. "Standard Delivery")</td></tr>
+      <tr><td>Price</td><td>Flat rate in LKR charged for this shipping method</td></tr>
+      <tr><td>Provider</td><td>The fulfilment provider handling the delivery (manual by default)</td></tr>
+    </tbody>
+  </table>
+
+  <p>To add or change a shipping rate, click into the region → <em>Add Shipping Option</em> or click an existing option to edit its price. Changes take effect immediately at checkout.</p>
+
+  <div class="divider"></div>
+
+  <h3>Team &amp; User Management</h3>
+  <p>Found under <strong>Settings → Team</strong>. From here you can:</p>
+
+  <ul>
+    <li><strong>Invite a new admin user</strong> — Enter their email address. They'll receive an invitation link to set their own password.</li>
+    <li><strong>View existing team members</strong> — All users who have access to the admin panel are listed here.</li>
+    <li><strong>Remove a user</strong> — Click the user row and select <em>Remove</em> to revoke their access immediately.</li>
+  </ul>
+
+  <div class="warning-box">
+    <div class="label">Access Control</div>
+    <p>All admin users currently have full access. Only invite people who genuinely need to manage the store. Remove users promptly when they no longer need access.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <h3>API Keys (Publishable Keys)</h3>
+  <p>Found under <strong>Settings → API Key Management</strong>. The <strong>Publishable API Key</strong> is what connects your storefront (island-mantra.netlify.app) to the backend. </p>
+
+  <div class="warning-box">
+    <div class="label">Do Not Delete Active Keys</div>
+    <p>Deleting or rotating the publishable key will immediately break the storefront — products will not load, and customers cannot add to cart or check out. If you need to rotate the key, coordinate with your developer first so the new key is updated in Netlify's environment variables at the same time.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     QUICK REFERENCE / BACK COVER
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-eyebrow">Quick Reference</div>
+  <h2 class="section-title">Daily Checklist &amp; Common Tasks</h2>
+  <p class="section-desc">A one-page reference for the most frequently performed tasks in the admin.</p>
+
+  <h3>Every Day</h3>
+  <ul>
+    <li>Check <strong>Orders</strong> for any new or pending orders and process them</li>
+    <li>Confirm payment has been captured on completed bank-transfer orders</li>
+    <li>Mark fulfilled orders as <strong>Shipped</strong> once dispatched</li>
+  </ul>
+
+  <h3>When Stock Arrives</h3>
+  <ul>
+    <li>Go to <strong>Inventory</strong> → find each variant → update the quantity</li>
+    <li>If it's a brand new product, create it in <strong>Products</strong> first, then update inventory</li>
+  </ul>
+
+  <h3>When Running a Sale</h3>
+  <ul>
+    <li>Create a <strong>Price List</strong> (type: Sale) with start and end dates</li>
+    <li>Add the products and enter the sale price per variant</li>
+    <li>Verify on the storefront that the strikethrough price shows correctly</li>
+  </ul>
+
+  <h3>Common Mistakes to Avoid</h3>
+  <table class="field-table">
+    <thead>
+      <tr><th>Mistake</th><th>Consequence</th><th>Prevention</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Renaming a category handle</td><td>Breaks storefront navigation page</td><td>Never rename existing categories</td></tr>
+      <tr><td>Deleting a publishable API key</td><td>Storefront stops loading products</td><td>Coordinate with developer before any key changes</td></tr>
+      <tr><td>Publishing a product without setting a price</td><td>Product shows Rs 0 on storefront</td><td>Always set variant prices before publishing</td></tr>
+      <tr><td>Setting stock to 0 accidentally</td><td>Variant becomes unavailable to buy</td><td>Double-check quantity before saving inventory</td></tr>
+      <tr><td>Not capturing payment</td><td>Order remains "pending" indefinitely</td><td>Capture payment as soon as funds are confirmed</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Key URLs</h3>
+  <table class="field-table">
+    <thead>
+      <tr><th>What</th><th>URL</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Admin Panel</td><td>island-mantra-backend.onrender.com/app</td></tr>
+      <tr><td>Storefront</td><td>island-mantra.netlify.app</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Back cover strip -->
+  <div style="margin-top:60px; background:var(--black); border-radius:8px; padding:32px 40px; display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      <div style="font-family:'Playfair Display',serif; font-size:18pt; color:#fff; margin-bottom:6px;">Island Mantra</div>
+      <div style="font-size:9pt; color:rgba(255,255,255,0.4); letter-spacing:0.12em; text-transform:uppercase;">Admin Operations Manual</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:9pt; color:rgba(255,255,255,0.4);">Medusa v2 Platform</div>
+      <div style="font-size:9pt; color:rgba(255,255,255,0.4);">August 2026</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

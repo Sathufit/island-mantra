@@ -25,8 +25,8 @@ export const collections: Collection[] = [
     description:
       "Effortless dresses designed for the island woman. From breezy maxis to midi cuts, each piece moves as freely as you do.",
     image:
-      "https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=900&q=80",
-    imageAlt: "Coastal Dresses collection — flowing dresses",
+      "https://images.unsplash.com/photo-1777888511283-f717e3f61648?w=900&q=80",
+    imageAlt: "Coastal Dresses collection — flowing dress on a tropical beach path",
   },
   {
     id: "island-tees",
@@ -45,7 +45,7 @@ export const collections: Collection[] = [
     description:
       "The finishing touches. Straw hats, woven bags, and handcrafted jewellery sourced from local artisans around the south coast.",
     image:
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=900&q=80",
-    imageAlt: "Accessories collection — island accessories",
+      "https://images.unsplash.com/photo-1566812548394-f6396d8bac5c?w=900&q=80",
+    imageAlt: "Accessories collection — handwoven straw bag by the ocean",
   },
 ];

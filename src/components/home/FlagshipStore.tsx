@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { storeInfo } from "@/src/lib/data/store-info";
 
 export default function FlagshipStore() {
@@ -8,7 +9,15 @@ export default function FlagshipStore() {
   return (
     <section className="bg-white">
       <div className="grid md:grid-cols-2">
-        <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[440px] bg-[#F4EDE1] border border-[#E7DCC8]" />
+        <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[440px] bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
+          <Image
+            src="https://images.unsplash.com/photo-1770550145372-b055bf691a87?w=1200&q=80"
+            alt="White coastal building with wooden shutters and palm fronds"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </div>
         <div className="flex flex-col justify-center px-8 md:px-14 xl:px-20 py-16 bg-[#F4EDE1]">
           <p className="font-sans text-[10px] tracking-[0.24em] uppercase text-[#0A0A0A]/50 mb-4">
             Visit Us

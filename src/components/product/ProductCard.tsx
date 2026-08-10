@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { type Product } from "@/src/lib/data/products";
 import { formatPrice } from "@/src/lib/utils";
@@ -31,8 +32,17 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/products/${product.slug}`} className="group block">
-      {/* Image placeholder */}
+      {/* Product image */}
       <div className="relative aspect-[3/4] overflow-hidden bg-[#F4EDE1] border border-[#E7DCC8]">
+        {product.images[0] && (
+          <Image
+            src={product.images[0].src}
+            alt={product.images[0].alt || product.name}
+            fill
+            sizes="(min-width: 1024px) 23vw, (min-width: 768px) 26vw, (min-width: 640px) 45vw, 72vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        )}
         {/* New / Sale badge — top left, minimal */}
         {(product.isNew || product.compareAtPrice) && (
           <div className="absolute top-3 left-3">

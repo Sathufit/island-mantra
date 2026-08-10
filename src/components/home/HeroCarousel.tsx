@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,6 +9,8 @@ interface Slide {
   subheading: string;
   href: string;
   cta: string;
+  image: string;
+  imageAlt: string;
 }
 
 const slides: Slide[] = [
@@ -16,24 +19,32 @@ const slides: Slide[] = [
     subheading: "Coastal fashion born in Hikkaduwa, on the beach at sunrise.",
     href: "/women",
     cta: "Shop Women",
+    image: "https://images.unsplash.com/photo-1779323539338-dc302420495c?w=1800&q=80",
+    imageAlt: "Woman in a flowing white dress and hat walking on a tropical beach",
   },
   {
     heading: "Made for the Coast.",
     subheading: "Relaxed silhouettes for long lunches and longer evenings.",
     href: "/men",
     cta: "Shop Men",
+    image: "https://images.unsplash.com/photo-1772583435283-b07bc9950497?w=1800&q=80",
+    imageAlt: "Man in a white linen shirt standing on a tropical beach",
   },
   {
     heading: "Galle Fort, Sunset.",
     subheading: "Handcrafted accessories from artisans on the south coast.",
     href: "/accessories",
     cta: "Shop Accessories",
+    image: "https://images.unsplash.com/photo-1566812548394-f6396d8bac5c?w=1800&q=80",
+    imageAlt: "Handwoven straw bag hanging beachside with the ocean in view",
   },
   {
     heading: "New In.",
     subheading: "The latest arrivals, straight from the atelier.",
     href: "/search?filter=new",
     cta: "Shop New In",
+    image: "https://images.unsplash.com/photo-1596433904500-97b901c5d274?w=1800&q=80",
+    imageAlt: "Stack of folded linen garments in natural tones",
   },
 ];
 
@@ -66,6 +77,15 @@ export default function HeroCarousel() {
           className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
           style={{ opacity: i === index ? 1 : 0, pointerEvents: i === index ? "auto" : "none" }}
         >
+          <Image
+            src={slide.image}
+            alt={slide.imageAlt}
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/20" />
           <div className="relative z-10 h-full flex flex-col items-start justify-end px-6 sm:px-10 md:px-16 pb-24 md:pb-28">
             <h1 className="font-serif text-white leading-[0.95]" style={{ fontSize: "clamp(2.75rem, 6vw, 5.5rem)" }}>
               {slide.heading}

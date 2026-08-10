@@ -12,8 +12,8 @@ export const categories: Category[] = [
     name: "Women",
     tagline: "Coastal fashion for the island woman.",
     image:
-      "https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=1200&q=80",
-    imageAlt: "Island Mantra women's collection — flowing dresses on the coast",
+      "https://images.unsplash.com/photo-1777888511471-ca288dd1162f?w=1200&q=80",
+    imageAlt: "Island Mantra women's collection — flowing dress on a tropical beach path",
   },
   {
     slug: "men",
@@ -36,7 +36,7 @@ export const categories: Category[] = [
     name: "Accessories",
     tagline: "The finishing touches, handcrafted on the south coast.",
     image:
-      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=1200&q=80",
-    imageAlt: "Island Mantra accessories — straw hats and woven bags",
+      "https://images.unsplash.com/photo-1566812548394-f6396d8bac5c?w=1200&q=80",
+    imageAlt: "Island Mantra accessories — handwoven straw bag by the ocean",
   },
 ];

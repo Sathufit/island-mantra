@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, use } from "react";
 import { notFound } from "next/navigation";
@@ -92,7 +93,20 @@ export default function CategoryPage({
   return (
     <div className="pt-0">
       {/* Full-bleed hero */}
-      <div className="relative flex items-end bg-[#0A0A0A]" style={{ height: "clamp(280px, 52vh, 560px)" }}>
+      <div className="relative flex items-end bg-[#0A0A0A] overflow-hidden" style={{ height: "clamp(280px, 52vh, 560px)" }}>
+        {category.image && (
+          <>
+            <Image
+              src={category.image}
+              alt={category.imageAlt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
+          </>
+        )}
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pb-10 md:pb-14 w-full">
           <nav className="font-sans text-[10px] tracking-[0.28em] uppercase text-white/55 mb-4 flex gap-2">
             <Link href="/" className="hover:text-white transition-colors">

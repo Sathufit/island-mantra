@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 
@@ -10,7 +11,16 @@ export default function AboutPage() {
   return (
     <div className="pt-0">
       {/* Hero */}
-      <div className="relative flex items-end bg-[#0A0A0A]" style={{ height: "clamp(300px, 55vh, 600px)" }}>
+      <div className="relative flex items-end bg-[#0A0A0A] overflow-hidden" style={{ height: "clamp(300px, 55vh, 600px)" }}>
+        <Image
+          src="https://images.unsplash.com/photo-1784537642955-9d371c0cbf91?w=1800&q=80"
+          alt="Warmly lit boutique interior with linen clothing racks and plants"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
         <div className="relative z-10 px-8 md:px-14 pb-12 md:pb-16 w-full">
           <h1 className="font-serif text-white leading-tight"
             style={{ fontSize: "clamp(2.75rem, 6vw, 5.5rem)" }}>
@@ -43,11 +53,43 @@ export default function AboutPage() {
       {/* Image grid */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20 md:pb-28">
         <div className="grid md:grid-cols-2 gap-3">
-          <div className="relative aspect-[4/3] bg-[#F4EDE1] border border-[#E7DCC8]" />
+          <div className="relative aspect-[4/3] bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
+            <Image
+              src="https://images.unsplash.com/photo-1769107805511-0bb7075fca27?w=1200&q=80"
+              alt="Bright boutique interior with linen dresses on display"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="relative aspect-square bg-[#F4EDE1] border border-[#E7DCC8]" />
-            <div className="relative aspect-square bg-[#F4EDE1] border border-[#E7DCC8]" />
-            <div className="relative aspect-[2/1] col-span-2 bg-[#F4EDE1] border border-[#E7DCC8]" />
+            <div className="relative aspect-square bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1780504542528-b950bc6c6b39?w=800&q=80"
+                alt="Craftsperson's hands hand-stitching a garment"
+                fill
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative aspect-square bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1509233725247-49e657c54213?w=800&q=80"
+                alt="Palm trees framing a turquoise tropical beach"
+                fill
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative aspect-[2/1] col-span-2 bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1762450322458-f6fa50c88b4f?w=1200&q=80"
+                alt="White coastal building with palm trees, elevated view"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
