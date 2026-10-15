@@ -88,18 +88,18 @@ export default function ProductCarousel({ title, products, viewAllHref, tone = "
     <section aria-labelledby={headingId} className={`py-20 md:py-28 ${tone === "paper" ? "bg-paper" : ""}`}>
       <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
         <div className="mb-8 flex items-end justify-between gap-4 border-b border-line pb-5 md:mb-10">
-          <div className="flex items-baseline gap-3">
-            <h2 id={headingId} className="caps text-[13px] font-medium sm:text-[14px]">
+          <div className="flex min-w-0 items-baseline gap-3">
+            <h2 id={headingId} className="caps whitespace-nowrap text-[12px] font-medium tracking-[0.14em] sm:text-[14px] sm:tracking-[0.2em]">
               <MaskLine>{title}</MaskLine>
             </h2>
-            <span className="label text-muted">({String(products.length).padStart(2, "0")})</span>
+            <span className="label hidden text-muted sm:inline">({String(products.length).padStart(2, "0")})</span>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
             <button
               onClick={() => scroll(-1)}
               disabled={atStart}
               aria-label={`Previous ${title.toLowerCase()}`}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-line transition-all duration-500 hover:border-ink hover:bg-ink hover:text-paper disabled:pointer-events-none disabled:opacity-30"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-line sm:h-10 sm:w-10 transition-all duration-500 hover:border-ink hover:bg-ink hover:text-paper disabled:pointer-events-none disabled:opacity-30"
             >
               <ArrowIcon dir="left" />
             </button>
@@ -107,11 +107,11 @@ export default function ProductCarousel({ title, products, viewAllHref, tone = "
               onClick={() => scroll(1)}
               disabled={atEnd}
               aria-label={`Next ${title.toLowerCase()}`}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-line transition-all duration-500 hover:border-ink hover:bg-ink hover:text-paper disabled:pointer-events-none disabled:opacity-30"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-line sm:h-10 sm:w-10 transition-all duration-500 hover:border-ink hover:bg-ink hover:text-paper disabled:pointer-events-none disabled:opacity-30"
             >
               <ArrowIcon />
             </button>
-            <Link href={viewAllHref} className="link-draw caps ml-3 text-[11px] sm:ml-5">
+            <Link href={viewAllHref} className="link-draw caps ml-2 whitespace-nowrap text-[11px] sm:ml-5">
               View All
             </Link>
           </div>

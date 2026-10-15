@@ -47,7 +47,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3 { text-wrap: balance; }
+/* In the base layer so utilities like whitespace-nowrap can override it. */
+@layer base {
+  h1, h2, h3 { text-wrap: balance; }
+}
 
 ::selection { background: var(--color-saffron); color: var(--color-ink); }
 
