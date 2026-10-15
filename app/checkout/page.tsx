@@ -16,6 +16,8 @@ import {
   initiatePaymentSession,
   completeCart,
   attachCustomerToCart,
+  getCart,
+  MedusaRequestError,
   type MedusaShippingOption,
 } from "@/src/lib/medusa/client";
 
@@ -93,6 +95,7 @@ export default function CheckoutPage() {
   const [shippingId, setShippingId] = useState<string | null>(null);
   const [payment, setPayment] = useState<PaymentMethodId>("cod");
   const [submitting, setSubmitting] = useState(false);
+  const [step, setStep] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const total = subtotal();
@@ -126,16 +129,38 @@ export default function CheckoutPage() {
   const update = (key: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const finishOrder = (displayId?: number) => {
+    clearCart();
+    const params = new URLSearchParams({ pay: payment });
+    if (displayId) params.set("order", String(displayId));
+    router.push(`/checkout/confirmation?${params}`);
+  };
+
+  /**
+   * Completing a cart is safe to repeat — Medusa hands back the existing order
+   * if the cart was already turned into one — so a dropped connection gets one
+   * retry rather than an error for an order that may well have gone through.
+   */
+  const completeSafely = async (id: string) => {
+    try {
+      return await completeCart(id);
+    } catch (err) {
+      if (err instanceof MedusaRequestError && err.status === 0) return completeCart(id);
+      throw err;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!cartId) {
-      setError("Your bag is empty.");
+      setError("We couldn’t find your bag. Please go back to your bag and try again.");
       return;
     }
     setSubmitting(true);
     setError(null);
 
     try {
+      setStep("Saving your details…");
       if (isLoggedIn && token) await attachCustomerToCart(cartId, token);
 
       await setCartAddressAndEmail(
@@ -152,24 +177,38 @@ export default function CheckoutPage() {
         { payment_method: payment }
       );
 
+      setStep("Arranging delivery…");
       // Options can depend on the address, so re-check now that it's set.
       const options = shippingOptions.length ? shippingOptions : await listShippingOptions(cartId);
       const optionId = shippingId ?? options[0]?.id;
       if (optionId) await addShippingMethod(cartId, optionId);
 
+      setStep("Confirming your order…");
       await initiatePaymentSession(cartId, "pp_system_default");
 
-      const result = await completeCart(cartId);
+      const result = await completeSafely(cartId);
       if (result.type === "order" && result.order) {
-        clearCart();
-        router.push(`/checkout/confirmation?order=${result.order.display_id}&pay=${payment}`);
+        finishOrder(result.order.display_id);
       } else {
-        setError("We couldn’t place your order. Please try again.");
+        setError("We couldn’t place your order. Please check your details and try again.");
       }
     } catch {
-      setError("Something went wrong placing your order. Please try again.");
+      // Before reporting a failure, make sure the order didn't go through anyway.
+      try {
+        const cart = await getCart(cartId);
+        if (cart.completed_at) {
+          finishOrder();
+          return;
+        }
+      } catch {
+        /* fall through to the error */
+      }
+      setError(
+        "We couldn’t place your order just now — nothing has been charged. Please try again, or WhatsApp us on 077 730 3906."
+      );
     } finally {
       setSubmitting(false);
+      setStep(null);
     }
   };
 
@@ -268,6 +307,11 @@ export default function CheckoutPage() {
             <button type="submit" disabled={submitting} className="btn btn-solid w-full">
               <span>{submitting ? "Placing Order…" : "Place Order"}</span>
             </button>
+            {submitting && (
+              <p role="status" aria-live="polite" className="text-center text-[13px] text-muted">
+                {step} This can take up to a minute — please keep this page open.
+              </p>
+            )}
           </form>
 
           <aside className="md:sticky md:top-24 md:self-start">

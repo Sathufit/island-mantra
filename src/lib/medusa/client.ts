@@ -28,13 +28,14 @@ interface MedusaFetchOptions {
   token?: string;
 }
 
-// Render's free tier spins the backend down after idle periods; a cold
-// start can take 30-60s, which is longer than Netlify's function timeout.
-// Bail out well before that so the function fails fast instead of hanging
-// until Netlify kills it. Cart mutations legitimately take up to ~9-10s
-// (Medusa recalculates pricing/tax/promotions on every write), so the
-// timeout needs real headroom above that or it kills valid slow requests.
-const MEDUSA_TIMEOUT_MS = 20_000;
+// Reads give up after 20s so a cold or stuck backend can't hang a server
+// render. Writes (cart, checkout) only ever run in the visitor's browser and
+// on the current backend legitimately take 20-30s each — Medusa recalculates
+// pricing, tax and stock on every cart write — so they get far more headroom.
+// Cutting a write off early doesn't stop it on the backend; it just makes the
+// shopper see an error for something that actually succeeded.
+const READ_TIMEOUT_MS = 20_000;
+const WRITE_TIMEOUT_MS = 90_000;
 
 async function medusaFetch<T>(
   path: string,
@@ -45,8 +46,9 @@ async function medusaFetch<T>(
     url.searchParams.set(key, value);
   }
 
+  const timeoutMs = method === "GET" ? READ_TIMEOUT_MS : WRITE_TIMEOUT_MS;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), MEDUSA_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   let res: Response;
   try {
@@ -63,7 +65,7 @@ async function medusaFetch<T>(
     });
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {
-      throw new MedusaRequestError(`Medusa request timed out after ${MEDUSA_TIMEOUT_MS}ms: ${url.pathname}`, 0);
+      throw new MedusaRequestError(`Medusa request timed out after ${timeoutMs}ms: ${url.pathname}`, 0);
     }
     throw new MedusaRequestError(`Medusa request failed: ${url.pathname}`, 0);
   } finally {
