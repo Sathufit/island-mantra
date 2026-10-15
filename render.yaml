@@ -3,6 +3,10 @@ services:
     name: island-mantra-backend
     runtime: node
     plan: free
+    rootDir: backend
+    buildFilter:
+      paths:
+        - backend/**
     region: singapore
     buildCommand: >-
       npm install --include=dev --network-concurrency=8 --fetch-retries=5 --fetch-retry-mintimeout=15000 --fetch-retry-maxtimeout=120000 &&
