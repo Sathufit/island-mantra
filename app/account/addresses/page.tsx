@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCustomer } from "@/src/store/customer";
 import type { MedusaCustomerAddress } from "@/src/lib/medusa/client";
+import SunsetLoader from "@/src/components/ui/SunsetLoader";
 
 const EMPTY_FORM = {
   first_name: "",
@@ -78,7 +79,7 @@ export default function AddressesPage() {
   if (!customer) {
     return (
       <div className="pt-32 pb-20 min-h-screen flex items-center justify-center">
-        <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
+        <SunsetLoader />
       </div>
     );
   }
@@ -87,10 +88,10 @@ export default function AddressesPage() {
     <div className="pt-28 pb-20 min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between mb-10">
-          <h1 className="font-serif text-3xl text-[#0A0A0A]">Addresses</h1>
+          <h1 className="tagline text-4xl text-ink">Addresses</h1>
           <Link
             href="/account"
-            className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/60 hover:text-[#0A0A0A] transition-colors"
+            className="font-sans text-xs caps text-ink/60 hover:text-ink transition-colors"
           >
             Back to Account
           </Link>
@@ -98,25 +99,25 @@ export default function AddressesPage() {
 
         <div className="space-y-4 mb-8">
           {customer.addresses.length === 0 && !showForm && (
-            <p className="font-sans text-sm text-[#0A0A0A]/60">
+            <p className="font-sans text-sm text-ink/60">
               No saved addresses yet.
             </p>
           )}
           {customer.addresses.map((address) => (
             <div
               key={address.id}
-              className="border border-[#E7DCC8] p-5 flex items-start justify-between"
+              className="border border-line p-5 flex items-start justify-between"
             >
               <div>
-                <p className="font-serif text-sm text-[#0A0A0A]">
+                <p className="font-serif text-sm text-ink">
                   {address.first_name} {address.last_name}
                   {address.is_default_shipping && (
-                    <span className="ml-2 font-sans text-[10px] tracking-widest uppercase bg-[#F4EDE1] px-2 py-0.5">
+                    <span className="ml-2 font-sans text-[10px] caps bg-sand px-2 py-0.5">
                       Default
                     </span>
                   )}
                 </p>
-                <p className="font-sans text-xs text-[#0A0A0A]/60 mt-1">
+                <p className="font-sans text-xs text-ink/60 mt-1">
                   {address.address_1}, {address.city}
                   <br />
                   {address.phone}
@@ -125,13 +126,13 @@ export default function AddressesPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => startEdit(address)}
-                  className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/60 hover:text-[#0A0A0A] transition-colors"
+                  className="font-sans text-xs caps text-ink/60 hover:text-ink transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(address.id)}
-                  className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/60 hover:text-[#0A0A0A] transition-colors"
+                  className="font-sans text-xs caps text-ink/60 hover:text-ink transition-colors"
                 >
                   Delete
                 </button>
@@ -141,8 +142,8 @@ export default function AddressesPage() {
         </div>
 
         {showForm ? (
-          <form onSubmit={handleSubmit} className="space-y-4 border-t border-[#E7DCC8] pt-8">
-            <h2 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]">
+          <form onSubmit={handleSubmit} className="space-y-4 border-t border-line pt-8">
+            <h2 className="font-sans text-xs caps text-ink">
               {editingId ? "Edit Address" : "New Address"}
             </h2>
             <div className="grid grid-cols-2 gap-3">
@@ -151,14 +152,14 @@ export default function AddressesPage() {
                 placeholder="First name"
                 value={form.first_name}
                 onChange={update("first_name")}
-                className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                className="field-box"
               />
               <input
                 required
                 placeholder="Last name"
                 value={form.last_name}
                 onChange={update("last_name")}
-                className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                className="field-box"
               />
             </div>
             <input
@@ -166,7 +167,7 @@ export default function AddressesPage() {
               placeholder="Address"
               value={form.address_1}
               onChange={update("address_1")}
-              className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+              className="w-full field-box"
             />
             <div className="grid grid-cols-2 gap-3">
               <input
@@ -174,7 +175,7 @@ export default function AddressesPage() {
                 placeholder="City"
                 value={form.city}
                 onChange={update("city")}
-                className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                className="field-box"
               />
               <input
                 required
@@ -182,20 +183,20 @@ export default function AddressesPage() {
                 placeholder="Phone"
                 value={form.phone}
                 onChange={update("phone")}
-                className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+                className="field-box"
               />
             </div>
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="flex-1 bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase py-3 hover:bg-[#2A2A2A] transition-colors"
+                className="btn btn-solid flex-1"
               >
                 Save
               </button>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="flex-1 border border-[#E7DCC8] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase py-3 hover:border-[#0A0A0A] transition-colors"
+                className="flex-1 border border-line text-ink font-sans text-xs caps py-3 hover:border-ink transition-colors"
               >
                 Cancel
               </button>
@@ -204,7 +205,7 @@ export default function AddressesPage() {
         ) : (
           <button
             onClick={startAdd}
-            className="w-full border border-[#0A0A0A] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase py-4 hover:bg-[#0A0A0A] hover:text-white transition-colors"
+            className="w-full border border-ink text-ink font-sans text-xs caps py-4 hover:bg-ink hover:text-white transition-colors"
           >
             Add New Address
           </button>

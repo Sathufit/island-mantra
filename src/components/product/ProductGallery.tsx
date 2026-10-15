@@ -1,58 +1,82 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { type ProductImage } from "@/src/lib/data/products";
+import { UnrollImage } from "@/src/components/motion/Reveal";
 
 interface Props {
   images: ProductImage[];
   productName: string;
 }
 
+/**
+ * Mobile: full-width swipe gallery with a counter.
+ * Desktop: images stacked in an editorial column beside the sticky details.
+ */
 export default function ProductGallery({ images, productName }: Props) {
   const [active, setActive] = useState(0);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  const onScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setActive(Math.round(el.scrollLeft / el.clientWidth));
+  };
+
+  if (images.length === 0) {
+    return <div className="aspect-[3/4] bg-sand" aria-hidden />;
+  }
 
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-3">
-      {/* Thumbnails */}
-      <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-x-visible md:w-20">
-        {images.map((img, i) => (
-          <button
-            key={i}
-            onClick={() => setActive(i)}
-            className={`relative flex-shrink-0 w-16 h-20 md:w-20 md:h-24 overflow-hidden border-2 bg-[#F4EDE1] transition-colors ${
-              active === i ? "border-[#0A0A0A]" : "border-transparent"
-            }`}
-            aria-label={`View image ${i + 1}`}
-          >
-            <Image
-              src={img.src}
-              alt={img.alt || `${productName} thumbnail ${i + 1}`}
-              fill
-              sizes="80px"
-              className="object-cover"
-            />
-          </button>
-        ))}
-      </div>
-
-      {/* Main image */}
-      <div
-        className="relative flex-1 aspect-[3/4] md:aspect-auto md:min-h-[600px] bg-[#F4EDE1] overflow-hidden"
-        aria-label={`${productName} — image ${active + 1}`}
-      >
-        {images[active] && (
-          <Image
-            key={active}
-            src={images[active].src}
-            alt={images[active].alt || `${productName} — image ${active + 1}`}
-            fill
-            priority
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-          />
+    <>
+      {/* Mobile */}
+      <div className="relative md:hidden">
+        <div
+          ref={scrollerRef}
+          onScroll={onScroll}
+          className="scrollbar-hide -mx-4 flex snap-x snap-mandatory overflow-x-auto sm:-mx-8"
+        >
+          {images.map((img, i) => (
+            <div key={img.src + i} className="relative aspect-[3/4] w-full flex-shrink-0 snap-start bg-sand">
+              <Image
+                src={img.src}
+                alt={img.alt || `${productName} — image ${i + 1}`}
+                fill
+                priority={i === 0}
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+        {images.length > 1 && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center gap-1.5">
+            {images.map((_, i) => (
+              <span
+                key={i}
+                className={`h-px transition-all duration-500 ${i === active ? "w-6 bg-ink" : "w-3 bg-ink/30"}`}
+              />
+            ))}
+          </div>
         )}
       </div>
-    </div>
+
+      {/* Desktop */}
+      <div className="hidden gap-3 md:grid">
+        {images.map((img, i) => (
+          <UnrollImage key={img.src + i} className="relative aspect-[3/4] overflow-hidden bg-sand" delay={i === 0 ? 0.1 : 0}>
+            <Image
+              src={img.src}
+              alt={img.alt || `${productName} — image ${i + 1}`}
+              fill
+              priority={i === 0}
+              sizes="(min-width: 1280px) 720px, 55vw"
+              className="object-cover"
+            />
+          </UnrollImage>
+        ))}
+      </div>
+    </>
   );
 }

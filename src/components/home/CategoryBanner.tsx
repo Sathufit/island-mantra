@@ -1,36 +1,49 @@
 import Image from "next/image";
 import Link from "next/link";
 import { type Category } from "@/src/lib/data/categories";
+import { MaskLine, Parallax, UnrollImage } from "@/src/components/motion/Reveal";
 
+/** Section 5 — four category pictures in a 2 × 2 grid with title, line and button. */
 export default function CategoryBanner({ categories }: { categories: Category[] }) {
   return (
-    <section className="py-16 md:py-24 bg-[#F4EDE1]">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
-        <h2 className="font-serif text-3xl md:text-4xl text-[#0A0A0A] mb-10">Shop by Category</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-          {categories.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/${c.slug}`}
-              className="group relative aspect-[3/4] overflow-hidden block bg-[#0A0A0A]"
-            >
-              <Image
-                src={c.image}
-                alt={c.imageAlt}
-                fill
-                sizes="(min-width: 768px) 25vw, 50vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent group-hover:from-black/70 transition-colors" />
-              <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                <h3 className="font-serif text-xl md:text-2xl text-white mb-2">{c.name}</h3>
-                <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-white border-b border-white/60 pb-0.5">
-                  Shop Now
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+    <section aria-label="Shop by category" className="px-4 sm:px-8">
+      <div className="mx-auto grid max-w-[1440px] gap-3 md:grid-cols-2 md:gap-4">
+        {categories.map((c, i) => (
+          <Link
+            key={c.slug}
+            href={`/${c.slug}`}
+            className="group relative block aspect-[4/5] overflow-hidden bg-lagoon sm:aspect-[16/11] md:aspect-[5/4]"
+          >
+            <UnrollImage className="absolute inset-0" delay={(i % 2) * 0.12}>
+              <Parallax amount={10}>
+                <Image
+                  src={c.image}
+                  alt={c.imageAlt}
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-[1800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                />
+              </Parallax>
+            </UnrollImage>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
+            {/* Thambili glow that warms the tile on hover — golden hour */}
+            <div className="absolute inset-0 bg-gradient-to-t from-saffron/45 via-saffron/0 to-transparent opacity-0 mix-blend-soft-light transition-opacity duration-700 group-hover:opacity-100" />
+
+            <div className="absolute inset-x-0 top-0 flex justify-between p-6 text-white/75 sm:p-8">
+              <span className="label">({String(i + 1).padStart(2, "0")})</span>
+            </div>
+
+            <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8 md:p-10">
+              <h2 className="display text-[clamp(2.8rem,6vw,5.5rem)] uppercase">
+                <MaskLine>{c.name}</MaskLine>
+              </h2>
+              <p className="tagline mt-2 text-xl sm:text-2xl">{c.tagline}</p>
+              <span className="btn btn-outline-light mt-6 min-h-[44px] px-7">
+                <span>{c.cta}</span>
+              </span>
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   );

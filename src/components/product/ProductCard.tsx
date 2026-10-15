@@ -7,124 +7,126 @@ import { type Product } from "@/src/lib/data/products";
 import { formatPrice } from "@/src/lib/utils";
 import { useCart } from "@/src/store/cart";
 
-export default function ProductCard({ product }: { product: Product }) {
+const ONE_SIZE = "One Size";
+
+interface Props {
+  product: Product;
+  sizes?: string;
+  /** Position in a list, shown as a small mono index. */
+  index?: number;
+}
+
+export default function ProductCard({ product, sizes, index }: Props) {
   const [quickSize, setQuickSize] = useState(product.sizes[0] ?? "");
-  const [quickAdded, setQuickAdded] = useState(false);
-  const [quickError, setQuickError] = useState(false);
-  const [quickAdding, setQuickAdding] = useState(false);
+  const [status, setStatus] = useState<"idle" | "adding" | "added" | "error">("idle");
   const { addItem } = useCart();
+
+  const primary = product.images[0];
+  const secondary = product.images[1];
+  const oneSize = !product.sizes.length || product.sizes[0] === ONE_SIZE;
+  const imgSizes = sizes ?? "(min-width: 1024px) 24vw, (min-width: 640px) 42vw, 72vw";
 
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!quickSize || quickAdding) return;
+    if (status === "adding") return;
     const color = product.variants[0]?.color ?? "";
     const variantId = product.variantMap[`${quickSize}|${color}`];
     if (!variantId) return;
-    setQuickAdding(true);
+    setStatus("adding");
     try {
       await addItem(variantId);
-      setQuickAdded(true);
-      setTimeout(() => setQuickAdded(false), 2000);
+      setStatus("added");
     } catch {
-      setQuickError(true);
-      setTimeout(() => setQuickError(false), 2000);
+      setStatus("error");
     } finally {
-      setQuickAdding(false);
+      setTimeout(() => setStatus("idle"), 2000);
     }
   };
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block">
-      {/* Product image */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#F4EDE1] border border-[#E7DCC8]">
-        {product.images[0] && (
+    <Link href={`/products/${product.slug}`} className="group block" draggable={false}>
+      <div className="relative aspect-[3/4] overflow-hidden bg-sand">
+        {primary && (
           <Image
-            src={product.images[0].src}
-            alt={product.images[0].alt || product.name}
+            src={primary.src}
+            alt={primary.alt || product.name}
             fill
-            sizes="(min-width: 1024px) 23vw, (min-width: 768px) 26vw, (min-width: 640px) 45vw, 72vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes={imgSizes}
+            draggable={false}
+            className="object-cover transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
           />
         )}
-        {/* New / Sale badge — top left, minimal */}
-        {(product.isNew || product.compareAtPrice) && (
-          <div className="absolute top-3 left-3">
-            <span className="font-sans text-[9px] tracking-[0.15em] uppercase bg-white text-[#0A0A0A] px-2 py-1">
-              {product.compareAtPrice ? "Sale" : "New"}
-            </span>
+        {/* Second photo washes up over the first on hover */}
+        {secondary && (
+          <div className="absolute inset-0 transition-[clip-path] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] [clip-path:inset(100%_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)]">
+            <Image src={secondary.src} alt="" aria-hidden fill sizes={imgSizes} draggable={false} className="object-cover" />
           </div>
         )}
 
-        {/* Quick-add — slides up on desktop hover */}
-        <div
-          className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out hidden sm:block"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {product.sizes[0] !== "One Size" && (
-            <div className="bg-white/95 px-3 pt-3 pb-1 flex gap-1 justify-center flex-wrap border-t border-[#E7DCC8]">
-              {product.sizes.slice(0, 5).map((size) => (
-                <button
-                  key={size}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setQuickSize(size);
-                  }}
-                  className={`w-9 h-8 text-[10px] font-sans border transition-colors ${
-                    quickSize === size
-                      ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
-                      : "border-[#E7DCC8] text-[#0A0A0A] hover:border-[#0A0A0A]"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
+        <div className="absolute inset-x-3 top-3 flex items-start justify-between">
+          {product.isNew ? <span className="label bg-paper/90 px-2 py-1 text-ink">New</span> : <span />}
+          {index !== undefined && (
+            <span className="label text-white/0 transition-colors duration-500 group-hover:text-white/90">
+              {String(index).padStart(2, "0")}
+            </span>
           )}
-          <button
-            onClick={handleQuickAdd}
-            disabled={quickAdding}
-            className={`w-full py-3 text-[10px] font-sans tracking-[0.18em] uppercase transition-colors duration-200 disabled:opacity-60 ${
-              quickAdded
-                ? "bg-[#2A2A2A] text-white"
-                : quickError
-                ? "bg-red-600 text-white"
-                : "bg-[#0A0A0A] text-white hover:bg-[#2A2A2A]"
-            }`}
-          >
-            {quickAdding ? "Adding…" : quickAdded ? "Added" : quickError ? "Try Again" : "Quick Add"}
-          </button>
+        </div>
+
+        {/* Quick add — rises on hover (mouse) */}
+        <div
+          className="absolute inset-x-3 bottom-3 hidden translate-y-[calc(100%+14px)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0 sm:block"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <div className="bg-paper/95 backdrop-blur-sm">
+            {!oneSize && (
+              <div className="flex flex-wrap justify-center gap-1 px-2 pt-2">
+                {product.sizes.slice(0, 6).map((size) => (
+                  <button
+                    key={size}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setQuickSize(size);
+                    }}
+                    aria-pressed={quickSize === size}
+                    className={`h-7 min-w-8 px-1.5 text-[10px] transition-colors ${
+                      quickSize === size ? "bg-ink text-paper" : "text-ink hover:bg-sand"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            )}
+            <button
+              onClick={handleQuickAdd}
+              disabled={status === "adding"}
+              className="caps h-10 w-full text-[10px] text-ink transition-colors hover:text-saffron-deep disabled:opacity-60"
+            >
+              {status === "adding"
+                ? "Adding…"
+                : status === "added"
+                ? "Added ✓"
+                : status === "error"
+                ? "Try again"
+                : oneSize
+                ? "+ Add to bag"
+                : `+ Add size ${quickSize}`}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Info */}
-      <div className="mt-3">
-        <h3 className="font-sans text-sm text-[#0A0A0A] leading-snug group-hover:text-[#0A0A0A] transition-colors duration-200">
-          {product.name}
-        </h3>
-        <div className="flex items-baseline gap-2 mt-1">
-          <span className="font-sans text-sm text-[#0A0A0A]/70">
-            {formatPrice(product.price)}
-          </span>
-          {product.compareAtPrice && (
-            <span className="font-sans text-xs text-[#0A0A0A]/35 line-through">
-              {formatPrice(product.compareAtPrice)}
-            </span>
-          )}
-        </div>
-        {product.variants.length > 1 && (
-          <div className="flex gap-1.5 mt-2">
-            {product.variants.map((v) => (
-              <span
-                key={v.color}
-                title={v.color}
-                className="w-3 h-3 rounded-full border border-[#E7DCC8]"
-                style={{ backgroundColor: v.colorHex }}
-              />
-            ))}
-          </div>
+      <div className="mt-4">
+        <h3 className="text-[15px] leading-snug text-ink">{product.name}</h3>
+        {product.description && (
+          <p className="mt-1 line-clamp-1 text-[13px] leading-relaxed text-muted">{product.description}</p>
         )}
+        <p className="label mt-2 text-[11px] text-ink">{formatPrice(product.price)}</p>
       </div>
     </Link>
   );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCustomer } from "@/src/store/customer";
+import SunsetLoader from "@/src/components/ui/SunsetLoader";
 
 type Tab = "signin" | "register";
 
@@ -46,10 +47,10 @@ function AuthForms() {
   return (
     <div className="max-w-md mx-auto px-6">
       <div className="text-center mb-10">
-        <h1 className="font-serif text-3xl text-[#0A0A0A]">My Account</h1>
+        <h1 className="tagline text-4xl text-ink">My Account</h1>
       </div>
 
-      <div className="flex border-b border-[#E7DCC8] mb-8">
+      <div className="flex border-b border-line mb-8">
         {(["signin", "register"] as Tab[]).map((t) => (
           <button
             key={t}
@@ -57,10 +58,10 @@ function AuthForms() {
               setTab(t);
               setError(null);
             }}
-            className={`flex-1 py-3 font-sans text-xs tracking-widest uppercase transition-colors ${
+            className={`flex-1 py-3 font-sans text-xs caps transition-colors ${
               tab === t
-                ? "text-[#0A0A0A] border-b-2 border-[#0A0A0A]"
-                : "text-[#0A0A0A]/40"
+                ? "text-ink border-b-2 border-ink"
+                : "text-ink/40"
             }`}
           >
             {t === "signin" ? "Sign In" : "Create Account"}
@@ -76,14 +77,14 @@ function AuthForms() {
               placeholder="First name"
               value={form.firstName}
               onChange={update("firstName")}
-              className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+              className="field-box"
             />
             <input
               required
               placeholder="Last name"
               value={form.lastName}
               onChange={update("lastName")}
-              className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+              className="field-box"
             />
           </div>
         )}
@@ -93,7 +94,7 @@ function AuthForms() {
           placeholder="Email"
           value={form.email}
           onChange={update("email")}
-          className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+          className="w-full field-box"
         />
         <input
           required
@@ -101,7 +102,7 @@ function AuthForms() {
           placeholder="Password"
           value={form.password}
           onChange={update("password")}
-          className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+          className="w-full field-box"
         />
 
         {error && <p className="font-sans text-sm text-red-600">{error}</p>}
@@ -109,7 +110,7 @@ function AuthForms() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase py-4 hover:bg-[#2A2A2A] transition-colors disabled:opacity-50"
+          className="btn btn-solid w-full"
         >
           {loading
             ? "Please wait…"
@@ -122,7 +123,7 @@ function AuthForms() {
       <div className="mt-8 text-center">
         <Link
           href="/"
-          className="font-sans text-xs text-[#0A0A0A] tracking-widest uppercase underline underline-offset-2 hover:text-[#2A2A2A] transition-colors"
+          className="font-sans text-xs text-ink caps underline underline-offset-2 hover:text-lagoon transition-colors"
         >
           Continue Shopping
         </Link>
@@ -154,8 +155,8 @@ function AccountDashboard() {
   return (
     <div className="max-w-md mx-auto px-6">
       <div className="text-center mb-10">
-        <h1 className="font-serif text-3xl text-[#0A0A0A]">My Account</h1>
-        <p className="font-sans text-sm text-[#0A0A0A]/60 mt-2">
+        <h1 className="tagline text-4xl text-ink">My Account</h1>
+        <p className="font-sans text-sm text-ink/60 mt-2">
           {customer?.email}
         </p>
       </div>
@@ -163,20 +164,20 @@ function AccountDashboard() {
       <div className="flex gap-3 mb-10">
         <Link
           href="/account/orders"
-          className="flex-1 text-center border border-[#E7DCC8] py-4 font-sans text-xs tracking-widest uppercase text-[#0A0A0A] hover:border-[#0A0A0A] transition-colors"
+          className="flex-1 text-center border border-line py-4 font-sans text-xs caps text-ink hover:border-ink transition-colors"
         >
           Order History
         </Link>
         <Link
           href="/account/addresses"
-          className="flex-1 text-center border border-[#E7DCC8] py-4 font-sans text-xs tracking-widest uppercase text-[#0A0A0A] hover:border-[#0A0A0A] transition-colors"
+          className="flex-1 text-center border border-line py-4 font-sans text-xs caps text-ink hover:border-ink transition-colors"
         >
           Addresses
         </Link>
       </div>
 
       <form onSubmit={handleSave} className="space-y-5">
-        <h2 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]">
+        <h2 className="font-sans text-xs caps text-ink">
           Profile
         </h2>
         <div className="grid grid-cols-2 gap-3">
@@ -184,24 +185,24 @@ function AccountDashboard() {
             placeholder="First name"
             value={form.firstName}
             onChange={(e) => setForm((f) => ({ ...f, firstName: e.target.value }))}
-            className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+            className="field-box"
           />
           <input
             placeholder="Last name"
             value={form.lastName}
             onChange={(e) => setForm((f) => ({ ...f, lastName: e.target.value }))}
-            className="border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+            className="field-box"
           />
         </div>
         <input
           placeholder="Phone"
           value={form.phone}
           onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-          className="w-full border border-[#E7DCC8] px-4 py-3 font-sans text-sm text-[#0A0A0A] focus:outline-none focus:border-[#0A0A0A]"
+          className="w-full field-box"
         />
         <button
           type="submit"
-          className="w-full border border-[#0A0A0A] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase py-3 hover:bg-[#0A0A0A] hover:text-white transition-colors"
+          className="w-full border border-ink text-ink font-sans text-xs caps py-3 hover:bg-ink hover:text-white transition-colors"
         >
           {saved ? "Saved" : "Save Changes"}
         </button>
@@ -209,7 +210,7 @@ function AccountDashboard() {
 
       <button
         onClick={logout}
-        className="w-full mt-8 font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/50 hover:text-[#0A0A0A] transition-colors"
+        className="w-full mt-8 font-sans text-xs caps text-ink/50 hover:text-ink transition-colors"
       >
         Log Out
       </button>
@@ -226,7 +227,7 @@ export default function AccountPage() {
   if (!hasHydrated || (token && !isLoggedIn)) {
     return (
       <div className="pt-28 pb-20 min-h-screen flex items-center justify-center">
-        <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
+        <SunsetLoader />
       </div>
     );
   }

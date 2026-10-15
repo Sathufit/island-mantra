@@ -1,55 +1,76 @@
-import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-import AnnouncementBar from "@/src/components/layout/AnnouncementBar";
 import Header from "@/src/components/layout/Header";
 import Footer from "@/src/components/layout/Footer";
-import CartDrawer from "@/src/components/layout/CartDrawer";
+import AddedToast from "@/src/components/layout/AddedToast";
+import SmoothScroll from "@/src/components/motion/SmoothScroll";
+import Preloader from "@/src/components/motion/Preloader";
 
-const playfair = Playfair_Display({
+const instrument = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument",
   display: "swap",
 });
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Island Mantra — Coastal Fashion from Hikkaduwa, Sri Lanka",
+    default: "Island Mantra — Dressed for island time",
     template: "%s | Island Mantra",
   },
   description:
-    "Boutique coastal fashion and island lifestyle store based in Hikkaduwa. Linen shirts, maxi dresses, tees and accessories. Islandwide delivery across Sri Lanka.",
-  keywords: ["Sri Lanka fashion", "coastal wear", "linen clothing", "resort wear", "Hikkaduwa"],
+    "Sri Lankan summer wear, handcrafted by local artisans. Linen and cotton pieces for women, men and kids, from our flagship store on Galle Road, Hikkaduwa.",
+  keywords: ["Island Mantra", "Sri Lanka fashion", "linen clothing", "resort wear", "Hikkaduwa", "summer wear"],
   openGraph: {
-    title: "Island Mantra — Coastal Fashion from Sri Lanka",
-    description: "Boutique coastal fashion born in Hikkaduwa, Sri Lanka.",
+    title: "Island Mantra — Dressed for island time",
+    description: "Sun-kissed. Salt-tested. Island-made. Summer wear from Hikkaduwa, Sri Lanka.",
     type: "website",
   },
 };
+
+export const viewport: Viewport = {
+  themeColor: "#f2ede4",
+};
+
+// Runs before first paint: flags the session's first visit so the preloader
+// covers the page from the very first frame instead of flashing in late.
+const firstVisitScript = `try{if(sessionStorage.getItem("im-loaded")!=="1"&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.dataset.preload="1"}}catch(e){}`;
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${playfair.variable} ${inter.variable}`}
-    >
-      <body className="min-h-screen flex flex-col">
-        {/* Single fixed unit: announcement bar + nav sit together at the top */}
-        <div className="fixed top-0 left-0 right-0 z-40">
-          <AnnouncementBar />
-          <Header />
-        </div>
-        <main className="flex-1">{children}</main>
+    <html lang="en" className={`${instrument.variable} ${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body className="flex min-h-screen flex-col">
+        <script dangerouslySetInnerHTML={{ __html: firstVisitScript }} />
+        <a
+          href="#main"
+          className="caps sr-only z-50 bg-ink px-4 py-3 text-[11px] text-paper focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        >
+          Skip to content
+        </a>
+        <Preloader />
+        <SmoothScroll />
+        <Header />
+        <main id="main" className="flex-1">
+          {children}
+        </main>
         <Footer />
-        <CartDrawer />
+        <AddedToast />
       </body>
     </html>
   );

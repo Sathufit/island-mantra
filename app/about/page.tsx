@@ -1,141 +1,108 @@
 import Image from "next/image";
-import Link from "next/link";
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { RiseWords, Reveal, UnrollImage } from "@/src/components/motion/Reveal";
+import TideLine from "@/src/components/motion/TideLine";
 
 export const metadata: Metadata = {
-  title: "Our Story",
-  description: "Island Mantra — a boutique born in Hikkaduwa, Sri Lanka.",
+  title: "About Us",
+  description: "Island Mantra — a summer wear brand that is truly Sri Lankan. Born of the island. Made for the world.",
 };
+
+const pillars = [
+  {
+    title: "Made to Move",
+    body: "An islander’s carefree life always makes room for a day at the beach, a hike through a tropical rainforest or a lazy paddle down a river. So every Island Mantra garment is designed to let you move with ease – and look wonderful doing it.",
+    image: "https://images.unsplash.com/photo-1710286145813-61acc1844cac?w=1400&q=75",
+    imageAlt: "Woman in a white dress standing in shallow sea water",
+  },
+  {
+    title: "Made for the Elements",
+    body: "Island life means scorching sun, salty sea breeze and sudden tropical downpours. That is why we craft our pieces from sustainably sourced premium fabrics, chosen to endure the elements season after season while keeping you completely comfortable.",
+    image: "https://images.unsplash.com/photo-1535392432937-a27c36ec07b5?w=1400&q=75",
+    imageAlt: "Coconut palms against a golden-hour sky",
+  },
+  {
+    title: "Made by Island Hands",
+    body: "Compassion and inclusivity sit at the heart of island communities, and they sit at the heart of ours. Every Island Mantra piece is crafted by skilled local artisans – the majority of them women – whose talent and care you can feel in every seam.",
+    image: "https://images.unsplash.com/photo-1780504542528-b950bc6c6b39?w=1400&q=75",
+    imageAlt: "An artisan’s hands stitching a garment",
+  },
+  {
+    title: "Made Slowly",
+    body: "A slower pace of life is one of the island’s greatest gifts. We bring that same unhurried spirit to how we make our clothes: free from rushed deadlines and unethical production practices. The result is a collection of unique pieces made for responsible global citizens – people who want to look good and feel good about what they wear.",
+    image: "https://images.unsplash.com/photo-1769107805511-0bb7075fca27?w=1400&q=75",
+    imageAlt: "Linen pieces on display in a bright boutique",
+  },
+];
 
 export default function AboutPage() {
   return (
-    <div className="pt-0">
-      {/* Hero */}
-      <div className="relative flex items-end bg-[#0A0A0A] overflow-hidden" style={{ height: "clamp(300px, 55vh, 600px)" }}>
-        <Image
-          src="https://images.unsplash.com/photo-1784537642955-9d371c0cbf91?w=1800&q=80"
-          alt="Warmly lit boutique interior with linen clothing racks and plants"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
-        <div className="relative z-10 px-8 md:px-14 pb-12 md:pb-16 w-full">
-          <h1 className="font-serif text-white leading-tight"
-            style={{ fontSize: "clamp(2.75rem, 6vw, 5.5rem)" }}>
-            Our Story
-          </h1>
+    <>
+      {/* Banner */}
+      <section className="relative flex h-[78svh] min-h-[480px] items-center justify-center overflow-hidden bg-ink">
+        <div className="ken-burns absolute inset-0" style={{ animationDuration: "20s" }}>
+          <Image
+            src="https://images.unsplash.com/photo-1529348915581-73628f0cf212?w=2000&q=75"
+            alt="Two coconut palms silhouetted over the sea at golden hour"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
         </div>
-      </div>
-
-      {/* Story */}
-      <section className="max-w-2xl mx-auto px-8 py-20 md:py-28">
-        <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#0A0A0A]/40 mb-8">
-          Hikkaduwa, Sri Lanka
-        </p>
-        <div className="space-y-6 font-sans text-base text-[#0A0A0A]/75 leading-[1.8]">
-          <p>
-            We started with a small space on Galle Road and a handful of linen pieces. One dress sold out before we&apos;d properly unpacked.
-          </p>
-          <p>
-            The idea was straightforward: clothes that actually fit the life here. Loose. Breathable. Things you reach for every day — on the beach in the morning, at dinner by the water at night.
-          </p>
-          <p>
-            Everything is made in Sri Lanka, with manufacturers and craftspeople on the south coast who we know by name. We use natural fibres — linen, organic cotton, TENCEL — because they perform better in this climate and last longer than the alternative.
-          </p>
-          <p>
-            We don&apos;t follow a seasonal calendar. We make things when they&apos;re ready, and we keep making them as long as people want them. That&apos;s the whole model.
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="relative z-10 px-6 text-center text-white">
+          <h1 className="label text-white/80">(About Us)</h1>
+          <p className="tagline mt-5 text-[clamp(2.6rem,7.5vw,7rem)] leading-[0.95]">
+            <RiseWords text="Born of the island. Made for the world." delay={0.3} />
           </p>
         </div>
       </section>
 
-      {/* Image grid */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20 md:pb-28">
-        <div className="grid md:grid-cols-2 gap-3">
-          <div className="relative aspect-[4/3] bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1769107805511-0bb7075fca27?w=1200&q=80"
-              alt="Bright boutique interior with linen dresses on display"
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="relative aspect-square bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1780504542528-b950bc6c6b39?w=800&q=80"
-                alt="Craftsperson's hands hand-stitching a garment"
-                fill
-                sizes="(min-width: 768px) 25vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="relative aspect-square bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1509233725247-49e657c54213?w=800&q=80"
-                alt="Palm trees framing a turquoise tropical beach"
-                fill
-                sizes="(min-width: 768px) 25vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="relative aspect-[2/1] col-span-2 bg-[#F4EDE1] border border-[#E7DCC8] overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1762450322458-f6fa50c88b4f?w=1200&q=80"
-                alt="White coastal building with palm trees, elevated view"
-                fill
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What we stand for — plain text, no icons */}
-      <section className="bg-[#F4EDE1] py-20 md:py-28">
-        <div className="max-w-5xl mx-auto px-5 sm:px-8">
-          <div className="grid md:grid-cols-3 gap-10 md:gap-16">
-            {[
-              {
-                title: "Made here",
-                body: "Designed in Hikkaduwa, produced in Sri Lanka. We work with local manufacturers and craftspeople — people we've worked with since the beginning.",
-              },
-              {
-                title: "Natural fibres",
-                body: "Linen, organic cotton, TENCEL, seagrass. Materials that breathe in the heat, age well, and don't cost the environment more than they should.",
-              },
-              {
-                title: "No seasons",
-                body: "We don't release collections on a trend calendar. New pieces come out when they're ready. Our best sellers stay until they shouldn't.",
-              },
-            ].map((v) => (
-              <div key={v.title}>
-                <h3 className="font-sans text-xs tracking-[0.22em] uppercase text-[#0A0A0A] mb-4">{v.title}</h3>
-                <p className="font-sans text-sm text-[#0A0A0A]/65 leading-relaxed">{v.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-[#0A0A0A] py-16">
-        <div className="max-w-xl mx-auto px-8 text-center">
-          <h2 className="font-serif text-3xl text-white mb-4">Come in.</h2>
-          <p className="font-sans text-sm text-white/55 leading-relaxed mb-8">
-            22 Galle Road, Hikkaduwa. Open every day.
+      {/* Our story */}
+      <section className="px-4 py-24 sm:px-8 md:py-36">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <h2 className="caps text-[13px] font-medium">Our Story</h2>
+          <TideLine className="mx-auto mt-5" />
+          <p className="tagline mt-10 text-[clamp(1.6rem,3.4vw,2.5rem)] leading-snug">
+            Island Mantra began with one simple wish: to create a summer wear brand that is truly Sri Lankan –
+            one that carries the genuine spirit of island life in every piece.
           </p>
-          <Link
-            href="/contact"
-            className="inline-block font-sans text-xs tracking-[0.2em] uppercase text-white border-b border-white/40 pb-px hover:border-white transition-colors"
-          >
-            Find Us
-          </Link>
+          <p className="mx-auto mt-8 max-w-xl text-[16px] leading-[1.8] text-ink-soft">
+            Whether you are escaping on an exotic holiday or heading into an ordinary workday, our timeless
+            pieces let you stand out with an effortless, elegant island allure.
+          </p>
+        </Reveal>
+      </section>
+
+      {/* Made to move / for the elements / by island hands / slowly */}
+      <section className="px-4 pb-24 sm:px-8 md:pb-36">
+        <div className="mx-auto max-w-[1280px] space-y-20 md:space-y-32">
+          {pillars.map((p, i) => (
+            <article
+              key={p.title}
+              className={`grid items-center gap-10 md:grid-cols-2 md:gap-20 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
+            >
+              <UnrollImage className="relative aspect-[4/5] overflow-hidden bg-sand">
+                <Image src={p.image} alt={p.imageAlt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
+              </UnrollImage>
+              <Reveal className="max-w-md">
+                <span className="label text-saffron-deep">(0{i + 1})</span>
+                <h3 className="display mt-4 text-[clamp(2.4rem,4.5vw,4rem)] uppercase">{p.title}</h3>
+                <p className="mt-5 text-[16px] leading-[1.8] text-ink-soft">{p.body}</p>
+              </Reveal>
+            </article>
+          ))}
         </div>
       </section>
-    </div>
+
+      {/* Closing line */}
+      <section className="bg-sand px-4 py-24 text-center sm:px-8 md:py-32">
+        <Reveal>
+          <p className="tagline text-[clamp(2rem,5vw,4rem)] leading-tight">Sun-kissed. Salt-tested. Island-made.</p>
+          <TideLine className="mx-auto mt-8" />
+        </Reveal>
+      </section>
+    </>
   );
 }

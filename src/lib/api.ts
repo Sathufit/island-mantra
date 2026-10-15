@@ -90,12 +90,12 @@ export async function getProductsByCategory(
 
 export async function getFeaturedProducts(): Promise<Product[]> {
   const products = await getAllProducts();
-  return products.filter((p) => p.isNew).slice(0, 4);
+  return products.filter((p) => p.isNew).slice(0, 8);
 }
 
 export async function getBestSellers(): Promise<Product[]> {
   const products = await getAllProducts();
-  return products.filter((p) => p.isBestSeller).slice(0, 4);
+  return products.filter((p) => p.isBestSeller).slice(0, 8);
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {

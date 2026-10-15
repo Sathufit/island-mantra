@@ -3,42 +3,32 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { paymentMethods } from "@/src/lib/data/payments";
+import { RiseWords, Reveal } from "@/src/components/motion/Reveal";
+import TideLine from "@/src/components/motion/TideLine";
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
   const order = searchParams.get("order");
+  const pay = paymentMethods.find((m) => m.id === searchParams.get("pay"));
 
   return (
-    <div className="pt-28 pb-20 min-h-screen flex items-center justify-center">
-      <div className="max-w-md mx-auto px-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-[#F4EDE1] flex items-center justify-center mx-auto mb-6">
-          <svg
-            width="28"
-            height="28"
-            fill="none"
-            stroke="#0A0A0A"
-            strokeWidth="1.5"
-            viewBox="0 0 24 24"
-          >
-            <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#0A0A0A]/50 mb-3">
-          Order Confirmed
-        </p>
-        <h1 className="font-serif text-3xl text-[#0A0A0A] mb-4">
-          Thank you{order ? ` — order #${order}` : ""}
+    <div className="flex min-h-[80vh] items-center justify-center px-6 pb-20 pt-28">
+      <div className="max-w-lg text-center">
+        <p className="caps text-[10px] text-muted">Order confirmed{order ? ` · No. ${order}` : ""}</p>
+        <h1 className="tagline mt-5 text-[clamp(2.2rem,5vw,3.4rem)] leading-tight">
+          <RiseWords text="Thank you. Your island pieces are on their way." />
         </h1>
-        <p className="font-sans text-sm text-[#0A0A0A]/70 leading-relaxed mb-8">
-          We've received your order and will begin preparing it for islandwide
-          delivery. Pay in cash when it arrives.
-        </p>
-        <Link
-          href="/"
-          className="inline-flex items-center justify-center bg-[#0A0A0A] text-white font-sans text-xs tracking-widest uppercase px-6 py-3 hover:bg-[#2A2A2A] transition-colors"
-        >
-          Continue Shopping
-        </Link>
+        <TideLine className="mx-auto mt-8" />
+        <Reveal delay={0.6}>
+          <p className="mt-8 text-[15px] leading-relaxed text-ink-soft">
+            We’ve received your order and will be in touch soon.
+            {pay?.note ? ` ${pay.note}` : ""}
+          </p>
+          <Link href="/" className="btn btn-solid mt-10">
+            <span>Continue Shopping</span>
+          </Link>
+        </Reveal>
       </div>
     </div>
   );

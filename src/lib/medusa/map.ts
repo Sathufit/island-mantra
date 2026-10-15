@@ -3,7 +3,7 @@ import type { CartItem } from "@/src/store/cart";
 import type { MedusaCart, MedusaProduct } from "./client";
 
 const SHIPPING_NOTE =
-  "Islandwide delivery in 2–4 business days. Free shipping on orders over Rs 5,000.";
+  "We deliver island-wide, to every part of Sri Lanka — delivery time and charges are shown at checkout. Prefer to collect? Choose store pickup at checkout. Returns and exchanges are accepted within 7 days of delivery.";
 
 function getOptionValues(product: MedusaProduct, title: string): string[] {
   return (
@@ -17,7 +17,7 @@ function getColorHex(product: MedusaProduct, color: string): string {
     v.options.some((o) => o.option.title === "Color" && o.value === color)
   );
   const hex = variant?.metadata?.color_hex;
-  return typeof hex === "string" ? hex : "#0A0A0A";
+  return typeof hex === "string" ? hex : "#1f1b16";
 }
 
 function getVariantMap(product: MedusaProduct): Record<string, string> {
@@ -71,6 +71,7 @@ export function mapCart(cart: MedusaCart): CartItem[] {
     const [size, color] = item.variant_title.split(" / ");
     return {
       id: item.id,
+      variantId: item.variant_id,
       productSlug: item.product_handle,
       productName: item.product_title,
       price: item.unit_price,

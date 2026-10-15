@@ -1,86 +1,90 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import ContactForm from "@/src/components/ui/ContactForm";
+import { storeInfo } from "@/src/lib/data/store-info";
+import { Reveal } from "@/src/components/motion/Reveal";
+import TideLine from "@/src/components/motion/TideLine";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Get in touch with Island Mantra — visit us in Hikkaduwa or reach out via WhatsApp.",
+  description: "Questions about sizing, an order on its way or where to find the best sunset — the Island Mantra team is here to help.",
 };
 
 export default function ContactPage() {
+  const { contact, instagram } = storeInfo;
+
+  const details = [
+    {
+      label: "Email",
+      value: (
+        <>
+          <a href={`mailto:${contact.email}`} className="link-draw break-all">
+            {contact.email}
+          </a>
+          <span className="mt-1 block text-[13px] text-muted">We reply within one working day.</span>
+        </>
+      ),
+    },
+    {
+      label: "Phone / WhatsApp",
+      value: (
+        <a href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer" className="link-draw">
+          {contact.whatsappDisplay}
+        </a>
+      ),
+    },
+    {
+      label: "Flagship store",
+      value: (
+        <a href={storeInfo.mapsUrl} target="_blank" rel="noopener noreferrer" className="link-draw">
+          {storeInfo.address}
+        </a>
+      ),
+    },
+    { label: "Opening hours", value: storeInfo.hours },
+    {
+      label: "Instagram",
+      value: (
+        <a href={instagram.url} target="_blank" rel="noopener noreferrer" className="link-draw">
+          {instagram.handle}
+        </a>
+      ),
+    },
+  ];
+
   return (
-    <div className="pt-28 pb-20 min-h-screen">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="mb-12">
-          <p className="font-sans text-xs tracking-[0.3em] uppercase text-[#0A0A0A]/50 mb-3">
-            Get in Touch
+    <div className="px-4 pb-24 pt-28 sm:px-8 md:pt-40">
+      <div className="mx-auto max-w-6xl">
+        <Reveal className="max-w-2xl">
+          <h1 className="display text-[clamp(2.9rem,8vw,6.5rem)] uppercase">Contact Us</h1>
+          <TideLine className="mt-5" />
+          <p className="tagline mt-6 text-2xl leading-snug text-ink-soft md:text-[28px]">
+            We’d love to hear from you. Whether it’s a question about sizing, an order on its way or simply
+            where to find the best sunset, our team is here to help.
           </p>
-          <h1 className="font-serif text-4xl md:text-5xl text-[#0A0A0A]">
-            Contact Us
-          </h1>
-        </div>
+        </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-14">
-          {/* Form */}
-          <div>
-            <h2 className="font-serif text-xl text-[#0A0A0A] mb-6">
-              Send a Message
-            </h2>
+        <div className="mt-14 grid gap-4 md:grid-cols-[5fr_7fr] md:gap-6">
+          {/* Contact details */}
+          <Reveal className="border border-line bg-sand p-7 sm:p-10">
+            <h2 className="caps text-[12px] font-medium">Contact Details</h2>
+            <dl className="mt-8 space-y-7 text-[15px]">
+              {details.map((d) => (
+                <div key={d.label}>
+                  <dt className="caps text-[10px] text-muted">{d.label}</dt>
+                  <dd className="mt-1.5">{d.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-10 border-t border-line pt-6 text-[13px] leading-relaxed text-ink-soft">
+              For order questions, please include your order number so we can help you faster.
+            </p>
+          </Reveal>
+
+          {/* Contact form */}
+          <Reveal delay={0.12} className="border border-line bg-paper p-7 sm:p-10">
+            <h2 className="caps mb-8 text-[12px] font-medium">Send Us a Message</h2>
             <ContactForm />
-          </div>
-
-          {/* Info */}
-          <div className="space-y-10">
-            {/* WhatsApp */}
-            <div>
-              <h2 className="font-serif text-xl text-[#0A0A0A] mb-4">
-                WhatsApp
-              </h2>
-              <p className="font-sans text-sm text-[#0A0A0A]/70 mb-4">
-                The fastest way to reach us. We&apos;re available on WhatsApp for order enquiries, custom requests, and anything else.
-              </p>
-              <a
-                href="https://wa.me/94771234567"
-                className="inline-flex items-center gap-2 border border-[#0A0A0A] text-[#0A0A0A] font-sans text-xs tracking-widest uppercase px-5 py-3 hover:bg-[#0A0A0A] hover:text-white transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
-                +94 77 123 4567
-              </a>
-            </div>
-
-            {/* Visit */}
-            <div>
-              <h2 className="font-serif text-xl text-[#0A0A0A] mb-4">
-                Visit the Store
-              </h2>
-              <address className="font-sans text-sm text-[#0A0A0A]/70 not-italic leading-relaxed mb-4">
-                <strong className="text-[#0A0A0A] font-semibold">Island Mantra</strong><br />
-                22 Galle Road<br />
-                Hikkaduwa, Galle District<br />
-                Sri Lanka 80240
-              </address>
-              <div className="font-sans text-sm text-[#0A0A0A]/70 space-y-1">
-                <p>Monday–Friday: 10:00 AM – 7:00 PM</p>
-                <p>Saturday–Sunday: 9:00 AM – 8:00 PM</p>
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <h2 className="font-serif text-xl text-[#0A0A0A] mb-4">
-                Email
-              </h2>
-              <a
-                href="mailto:hello@islandmantra.lk"
-                className="font-sans text-sm text-[#0A0A0A] underline underline-offset-2 hover:text-[#2A2A2A] transition-colors"
-              >
-                hello@islandmantra.lk
-              </a>
-            </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </div>

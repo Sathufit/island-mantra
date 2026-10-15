@@ -133,6 +133,7 @@ export interface MedusaAddress {
 
 export interface MedusaLineItem {
   id: string;
+  variant_id: string;
   product_handle: string;
   product_title: string;
   variant_title: string;
@@ -219,11 +220,20 @@ export async function removeLineItem(
 export async function setCartAddressAndEmail(
   cartId: string,
   email: string,
-  address: MedusaAddress
+  address: MedusaAddress,
+  metadata?: Record<string, string>
 ): Promise<MedusaCart> {
   const data = await medusaFetch<{ cart: MedusaCart }>(
     `/store/carts/${cartId}`,
-    { method: "POST", body: { email, shipping_address: address } }
+    {
+      method: "POST",
+      body: {
+        email,
+        shipping_address: address,
+        billing_address: address,
+        ...(metadata ? { metadata } : {}),
+      },
+    }
   );
   return data.cart;
 }

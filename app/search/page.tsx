@@ -5,91 +5,74 @@ import { useSearchParams } from "next/navigation";
 import { searchProducts, getProducts } from "@/src/lib/api";
 import { type Product } from "@/src/lib/data/products";
 import ProductCard from "@/src/components/product/ProductCard";
+import SunsetLoader from "@/src/components/ui/SunsetLoader";
+import TideLine from "@/src/components/motion/TideLine";
+
+const TITLES: Record<string, string> = { new: "New Arrivals", bestseller: "Best Sellers" };
 
 function SearchContent() {
   const searchParams = useSearchParams();
-  const q = searchParams.get("q") ?? "";
   const filter = searchParams.get("filter") ?? "";
-
-  const [query, setQuery] = useState(q);
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    const search = async () => {
-      if (filter === "new") {
-        const all = await getProducts();
-        setResults(all.filter((p) => p.isNew));
-      } else if (filter === "bestseller") {
-        const all = await getProducts();
-        setResults(all.filter((p) => p.isBestSeller));
-      } else if (query.trim()) {
-        setResults(await searchProducts(query));
-      } else {
-        setResults(await getProducts());
+    const run = async () => {
+      try {
+        if (filter === "new") setResults((await getProducts()).filter((p) => p.isNew));
+        else if (filter === "bestseller") setResults((await getProducts()).filter((p) => p.isBestSeller));
+        else if (query.trim()) setResults(await searchProducts(query));
+        else setResults(await getProducts());
+      } catch {
+        setResults([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    const timer = setTimeout(search, 200);
+    const timer = setTimeout(run, 200);
     return () => clearTimeout(timer);
   }, [query, filter]);
 
   return (
-    <div className="pt-28 pb-20 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h1 className="font-serif text-3xl md:text-4xl text-[#0A0A0A] mb-8">
-          {filter === "new"
-            ? "New Arrivals"
-            : filter === "bestseller"
-            ? "Best Sellers"
-            : "Search"}
-        </h1>
+    <div className="px-4 pb-24 pt-28 sm:px-8 md:pt-36">
+      <div className="mx-auto max-w-[1440px]">
+        <h1 className="display text-[clamp(2.9rem,8vw,6.5rem)] uppercase">{TITLES[filter] ?? "Search"}</h1>
+        <TideLine className="mt-5" />
 
         {!filter && (
-          <div className="relative max-w-xl mb-10">
+          <div className="relative mt-10 max-w-2xl">
+            <label htmlFor="search" className="sr-only">
+              Search the shop
+            </label>
             <input
+              id="search"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products…"
-              className="w-full border-b-2 border-[#0A0A0A] bg-transparent font-sans text-xl text-[#0A0A0A] placeholder:text-[#0A0A0A]/30 py-3 pr-10 focus:outline-none"
+              placeholder="Linen, dresses, Galle…"
               autoFocus
+              className="tagline w-full border-0 border-b border-ink bg-transparent py-3 pr-10 text-3xl placeholder:text-muted/50 focus:outline-none md:text-4xl"
             />
-            <svg
-              width="20"
-              height="20"
-              fill="none"
-              stroke="#0A0A0A"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-              className="absolute right-0 top-1/2 -translate-y-1/2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-            </svg>
           </div>
         )}
 
         {loading ? (
-          <p className="font-sans text-sm text-[#0A0A0A]/50">Searching…</p>
+          <SunsetLoader label="Searching" />
         ) : results.length === 0 ? (
-          <div className="py-16 text-center">
-            <p className="font-serif text-2xl text-[#0A0A0A] mb-3">
-              No results found
-            </p>
-            <p className="font-sans text-sm text-[#0A0A0A]/60">
-              Try a different search term or browse our collections.
-            </p>
+          <div className="py-24 text-center">
+            <p className="tagline text-3xl">Nothing washed up for that search.</p>
+            <p className="mt-3 text-[15px] text-ink-soft">Try a different word, or browse the shop from the menu.</p>
           </div>
         ) : (
           <>
-            <p className="font-sans text-xs text-[#0A0A0A]/50 mb-6">
-              {results.length} {results.length === 1 ? "result" : "results"}
+            <p className="caps mb-8 mt-10 text-[10px] text-muted">
+              {results.length} {results.length === 1 ? "piece" : "pieces"}
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-5 lg:grid-cols-4">
               {results.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} sizes="(min-width: 1024px) 24vw, (min-width: 768px) 32vw, 48vw" />
               ))}
             </div>
           </>

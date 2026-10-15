@@ -10,46 +10,46 @@ import HeroCarousel from "@/src/components/home/HeroCarousel";
 import ProductCarousel from "@/src/components/home/ProductCarousel";
 import CategoryBanner from "@/src/components/home/CategoryBanner";
 import FlagshipStore from "@/src/components/home/FlagshipStore";
-import NewsletterForm from "@/src/components/ui/NewsletterForm";
+
+// A cold or unreachable backend shouldn't take the whole homepage down —
+// the product sections just hide themselves when they come back empty.
+async function safe<T>(promise: Promise<T[]>): Promise<T[]> {
+  try {
+    return await promise;
+  } catch {
+    return [];
+  }
+}
 
 export default async function HomePage() {
   const [newIn, bestSellers, categories, accessories] = await Promise.all([
-    getFeaturedProducts(),
-    getBestSellers(),
+    safe(getFeaturedProducts()),
+    safe(getBestSellers()),
     getCategories(),
-    getProductsByCategory("accessories"),
+    safe(getProductsByCategory("accessories")),
   ]);
 
   return (
     <>
+      {/* Section 2 */}
       <HeroCarousel />
 
+      {/* Section 3 */}
       <ProductCarousel title="New Arrivals" products={newIn} viewAllHref="/search?filter=new" />
 
-      <ProductCarousel title="Best Sellers" products={bestSellers} viewAllHref="/search?filter=bestseller" />
+      {/* Section 4 */}
+      <ProductCarousel title="Best Sellers" products={bestSellers} viewAllHref="/search?filter=bestseller" tone="paper" />
 
-      <CategoryBanner categories={categories} />
+      {/* Section 5 */}
+      <div className="pt-20 md:pt-28">
+        <CategoryBanner categories={categories} />
+      </div>
 
-      <ProductCarousel
-        title="Featured Accessories"
-        products={accessories.slice(0, 8)}
-        viewAllHref="/accessories"
-      />
+      {/* Section 6 */}
+      <ProductCarousel title="Featured Accessories" products={accessories.slice(0, 8)} viewAllHref="/accessories" />
 
+      {/* Section 7 */}
       <FlagshipStore />
-
-      {/* ── NEWSLETTER ───────────────────────────────── */}
-      <section className="bg-[#0A0A0A] py-20">
-        <div className="max-w-md mx-auto px-5 sm:px-8 text-center">
-          <h2 className="font-serif text-3xl text-white mb-2">
-            New things, occasionally.
-          </h2>
-          <p className="font-sans text-sm text-white/50 mb-8">
-            New arrivals and stories from Hikkaduwa, in your inbox.
-          </p>
-          <NewsletterForm />
-        </div>
-      </section>
     </>
   );
 }

@@ -13,6 +13,7 @@ import { mapCart } from "@/src/lib/medusa/map";
 
 export interface CartItem {
   id: string;
+  variantId: string;
   productSlug: string;
   productName: string;
   price: number;
@@ -26,7 +27,9 @@ export interface CartItem {
 interface CartStore {
   cartId: string | null;
   items: CartItem[];
-  isOpen: boolean;
+  /** The line item that was most recently added, for the "added to your
+   * bag" toast. Cleared when the toast is dismissed. */
+  justAdded: CartItem | null;
   /** True once zustand's localStorage rehydration has resolved. `cartId` is
    * `null` until then even for a visitor with an existing cart. */
   hasHydrated: boolean;
@@ -42,11 +45,13 @@ interface CartStore {
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   clearCart: () => void;
   hydrateCart: () => Promise<void>;
-  openCart: () => void;
-  closeCart: () => void;
-  toggleCart: () => void;
+  dismissAdded: () => void;
   totalItems: () => number;
   subtotal: () => number;
+}
+
+function findAdded(items: CartItem[], variantId: string): CartItem | null {
+  return items.find((i) => i.variantId === variantId) ?? items[items.length - 1] ?? null;
 }
 
 export const useCart = create<CartStore>()(
@@ -54,7 +59,7 @@ export const useCart = create<CartStore>()(
     (set, get) => ({
       cartId: null,
       items: [],
-      isOpen: false,
+      justAdded: null,
       hasHydrated: false,
       setHasHydrated: (value) => set({ hasHydrated: value }),
       cartLoaded: false,
@@ -65,7 +70,8 @@ export const useCart = create<CartStore>()(
           const targetCartId = cartId ?? (await createCart()).id;
           if (!cartId) set({ cartId: targetCartId });
           const cart = await addLineItem(targetCartId, variantId, quantity);
-          set({ items: mapCart(cart), isOpen: true });
+          const items = mapCart(cart);
+          set({ items, justAdded: findAdded(items, variantId) });
         } catch {
           // cartId was stale (e.g. left over from a different environment,
           // or the cart expired) — start a fresh cart and retry once before
@@ -74,7 +80,8 @@ export const useCart = create<CartStore>()(
           const cart = await createCart();
           set({ cartId: cart.id });
           const updated = await addLineItem(cart.id, variantId, quantity);
-          set({ items: mapCart(updated), isOpen: true });
+          const items = mapCart(updated);
+          set({ items, justAdded: findAdded(items, variantId) });
         }
       },
 
@@ -124,9 +131,7 @@ export const useCart = create<CartStore>()(
         }
       },
 
-      openCart: () => set({ isOpen: true }),
-      closeCart: () => set({ isOpen: false }),
-      toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+      dismissAdded: () => set({ justAdded: null }),
 
       totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
       subtotal: () =>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCustomer } from "@/src/store/customer";
 import { getOrder, type MedusaOrder } from "@/src/lib/medusa/client";
 import { formatPrice } from "@/src/lib/utils";
+import SunsetLoader from "@/src/components/ui/SunsetLoader";
 
 const STEPS = [
   { key: "pending", label: "Order Placed" },
@@ -48,7 +49,7 @@ export default function OrderDetailPage({
   if (!order) {
     return (
       <div className="pt-32 pb-20 min-h-screen flex items-center justify-center">
-        <p className="font-sans text-sm text-[#0A0A0A]/50">Loading…</p>
+        <SunsetLoader />
       </div>
     );
   }
@@ -60,12 +61,12 @@ export default function OrderDetailPage({
     <div className="pt-28 pb-20 min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between mb-10">
-          <h1 className="font-serif text-3xl text-[#0A0A0A]">
+          <h1 className="tagline text-4xl text-ink">
             Order #{order.display_id}
           </h1>
           <Link
             href="/account/orders"
-            className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A]/60 hover:text-[#0A0A0A] transition-colors"
+            className="font-sans text-xs caps text-ink/60 hover:text-ink transition-colors"
           >
             Back to Orders
           </Link>
@@ -77,12 +78,12 @@ export default function OrderDetailPage({
             <div key={s.key} className="flex-1 text-center">
               <div
                 className={`h-1 mb-2 ${
-                  i <= step ? "bg-[#0A0A0A]" : "bg-[#E7DCC8]"
+                  i <= step ? "bg-ink" : "bg-line"
                 }`}
               />
               <p
-                className={`font-sans text-[10px] tracking-widest uppercase ${
-                  i <= step ? "text-[#0A0A0A]" : "text-[#0A0A0A]/40"
+                className={`font-sans text-[10px] caps ${
+                  i <= step ? "text-ink" : "text-ink/40"
                 }`}
               >
                 {s.label}
@@ -96,35 +97,35 @@ export default function OrderDetailPage({
             {order.items.map((item) => (
               <div
                 key={item.id}
-                className="flex justify-between border-b border-[#E7DCC8] pb-4"
+                className="flex justify-between border-b border-line pb-4"
               >
                 <div>
-                  <p className="font-serif text-sm text-[#0A0A0A]">
+                  <p className="font-serif text-sm text-ink">
                     {item.title}
                   </p>
-                  <p className="font-sans text-xs text-[#0A0A0A]/50 mt-1">
+                  <p className="font-sans text-xs text-ink/50 mt-1">
                     {item.variant_title} × {item.quantity}
                   </p>
                 </div>
-                <p className="font-sans text-sm text-[#0A0A0A]">
+                <p className="font-sans text-sm text-ink">
                   {formatPrice(item.unit_price * item.quantity)}
                 </p>
               </div>
             ))}
             <div className="flex justify-between pt-2 font-medium">
-              <span className="font-sans text-sm text-[#0A0A0A]">Total</span>
-              <span className="font-serif text-lg text-[#0A0A0A]">
+              <span className="font-sans text-sm text-ink">Total</span>
+              <span className="font-serif text-lg text-ink">
                 {formatPrice(order.total)}
               </span>
             </div>
           </div>
 
-          <div className="bg-[#F4EDE1] p-6 h-fit">
-            <h2 className="font-sans text-xs tracking-widest uppercase text-[#0A0A0A] mb-3">
+          <div className="bg-sand p-6 h-fit">
+            <h2 className="font-sans text-xs caps text-ink mb-3">
               Shipping Address
             </h2>
             {address ? (
-              <p className="font-sans text-sm text-[#0A0A0A]/80 leading-relaxed">
+              <p className="font-sans text-sm text-ink/80 leading-relaxed">
                 {address.first_name} {address.last_name}
                 <br />
                 {address.address_1}
@@ -134,7 +135,7 @@ export default function OrderDetailPage({
                 {address.phone}
               </p>
             ) : (
-              <p className="font-sans text-sm text-[#0A0A0A]/50">—</p>
+              <p className="font-sans text-sm text-ink/50">—</p>
             )}
           </div>
         </div>

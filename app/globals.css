@@ -1,76 +1,235 @@
 @import "tailwindcss";
 
+/* ── DESIGN TOKENS ───────────────────────────────────────────────
+   "Golden hour on Galle Road": limewash walls and warm ink, a deep
+   lagoon teal for immersive moments, and one signature accent —
+   thambili, the king-coconut orange — used sparingly. */
 @theme inline {
-  --color-ink: #0A0A0A;
-  --color-paper: #FFFFFF;
-  --color-sand: #F4EDE1;
-  --color-sand-dark: #E7DCC8;
-  --font-serif: var(--font-playfair);
-  --font-sans: var(--font-inter);
+  --color-ink: #16130f;
+  --color-ink-soft: #3b352d;
+  --color-linen: #f2ede4;      /* limewash — page background */
+  --color-paper: #fbf8f3;      /* strips, cards, panels */
+  --color-sand: #e8e0d3;
+  --color-sand-deep: #dcd2c2;
+  --color-line: rgba(22, 19, 15, 0.13);
+  --color-muted: #6c6458;
+  --color-lagoon: #0d3634;
+  --color-lagoon-soft: #154846;
+  --color-saffron: #e8772e;    /* thambili */
+  --color-saffron-deep: #c85d17;
+  --color-terracotta: #b0431f; /* errors / warnings */
+
+  --font-serif: var(--font-instrument);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+
+  --ease-tide: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Lenis owns smooth scrolling */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
 
 body {
-  background: #ffffff;
-  color: #0A0A0A;
-  font-family: var(--font-inter), system-ui, sans-serif;
+  background: var(--color-linen);
+  color: var(--color-ink);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-.font-serif { font-family: var(--font-playfair), Georgia, serif; }
+h1, h2, h3 { text-wrap: balance; }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #F4EDE1; }
-::-webkit-scrollbar-thumb { background: #0A0A0A; border-radius: 3px; }
+::selection { background: var(--color-saffron); color: var(--color-ink); }
 
-/* ── ANIMATIONS ──────────────────────────────── */
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
+:focus-visible {
+  outline: 2px solid var(--color-saffron);
+  outline-offset: 3px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+/* Film grain — keeps the flat limewash from looking digital. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Preloader is only shown when the head script flags a first visit. */
+.preload-cover { display: none; }
+html[data-preload="1"] .preload-cover { display: flex; }
+
+/* ── TYPE HELPERS ────────────────────────────────────────────── */
+
+/* Spaced capitals: wordmark, headings, buttons. */
+.caps {
+  font-family: var(--font-geist), system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* Editorial serif for taglines and display lines. */
+.tagline {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.display {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+}
+
+/* Mono metadata: counters, coordinates, live time. */
+.label {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── BUTTONS ─────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 50px;
+  padding: 0 2.1rem;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.5s var(--ease-tide), border-color 0.5s var(--ease-tide), opacity 0.2s;
+}
+
+/* Thambili fill rises from the bottom like the tide. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+  transform: translateY(102%);
+  transition: transform 0.6s var(--ease-tide), border-radius 0.6s var(--ease-tide);
+}
+.btn:hover::before { transform: translateY(0); border-radius: 0; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:disabled::before { transform: translateY(102%); }
+
+.btn-solid { background: var(--color-ink); color: var(--color-paper); }
+.btn-solid::before { background: var(--color-saffron); }
+.btn-solid:hover { color: var(--color-ink); }
+
+.btn-outline-light { border: 1px solid rgba(255, 255, 255, 0.8); color: #fff; }
+.btn-outline-light::before { background: var(--color-saffron); }
+.btn-outline-light:hover { color: var(--color-ink); border-color: var(--color-saffron); }
+
+.btn-outline { border: 1px solid var(--color-ink); color: var(--color-ink); }
+.btn-outline::before { background: var(--color-ink); }
+.btn-outline:hover { color: var(--color-paper); }
+
+/* Text link with an underline that draws in from the left. */
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.6s var(--ease-tide);
+  padding-bottom: 2px;
+}
+.link-draw:hover, .link-draw[data-active="true"] { background-size: 100% 1px; }
+
+/* ── FORM FIELDS ─────────────────────────────────────────────── */
+
+.field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.75rem 0;
+  font-size: 16px;
+  color: var(--color-ink);
+  border-radius: 0;
+  transition: border-color 0.3s;
+}
+.field::placeholder { color: color-mix(in srgb, var(--color-muted) 70%, transparent); }
+.field:focus { outline: none; border-bottom-color: var(--color-saffron); }
+
+.field-box {
+  width: 100%;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  padding: 0.9rem 1rem;
+  font-size: 16px;
+  color: var(--color-ink);
+  border-radius: 0;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.field-box::placeholder { color: color-mix(in srgb, var(--color-muted) 70%, transparent); }
+.field-box:focus { outline: none; border-color: var(--color-ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-saffron) 25%, transparent); }
+
+/* ── ANIMATIONS ──────────────────────────────────────────────── */
+
+@keyframes kenBurns {
+  0%   { transform: scale(1.06) translate3d(0, 0, 0); }
+  100% { transform: scale(1.16) translate3d(-1.5%, -1%, 0); }
+}
+
+@keyframes sunset {
+  0%   { transform: translateY(-6px); }
+  50%  { transform: translateY(10px); }
+  100% { transform: translateY(-6px); }
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideProgress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 @keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-@keyframes kenBurns {
-  0%   { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.07) translate(-1%, -0.5%); }
-}
+.ken-burns    { animation: kenBurns 9s linear both; }
+.animate-pop  { animation: pop 0.5s var(--ease-tide); }
 
-@keyframes scrollBounce {
-  0%, 100% { transform: translateY(0); opacity: 0.7; }
-  50%       { transform: translateY(8px); opacity: 0.2; }
-}
-
-/* Utility animation classes */
-.animate-fade-up  { animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-fade-in  { animation: fadeIn 1s ease both; }
-.ken-burns        { animation: kenBurns 18s ease-in-out infinite alternate; }
-.marquee-track    { animation: marquee 36s linear infinite; will-change: transform; }
-.scroll-bounce    { animation: scrollBounce 1.8s ease-in-out infinite; }
-
-/* Animation delay helpers */
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-600 { animation-delay: 600ms; }
-.delay-700 { animation-delay: 700ms; }
-
-/* Hide scrollbar for horizontal carousels */
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

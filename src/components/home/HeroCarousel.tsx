@@ -1,142 +1,194 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { RiseWords } from "@/src/components/motion/Reveal";
+import { EASE } from "@/src/lib/hooks";
 
 interface Slide {
-  heading: string;
-  subheading: string;
-  href: string;
-  cta: string;
+  name: string;
+  tagline: string;
   image: string;
   imageAlt: string;
+  /** object-position so the subject stays in frame on tall phone screens */
+  focus: string;
 }
 
 const slides: Slide[] = [
   {
-    heading: "Wear the Island.",
-    subheading: "Coastal fashion born in Hikkaduwa, on the beach at sunrise.",
-    href: "/women",
-    cta: "Shop Women",
-    image: "https://images.unsplash.com/photo-1779323539338-dc302420495c?w=1800&q=80",
-    imageAlt: "Woman in a flowing white dress and hat walking on a tropical beach",
+    name: "Beach",
+    tagline: "Dressed for island time.",
+    image: "https://images.unsplash.com/photo-1779323539338-dc302420495c?w=2000&q=75",
+    imageAlt: "Woman in a white linen outfit and sun hat walking along the beach",
+    focus: "50% 40%",
   },
   {
-    heading: "Made for the Coast.",
-    subheading: "Relaxed silhouettes for long lunches and longer evenings.",
-    href: "/men",
-    cta: "Shop Men",
-    image: "https://images.unsplash.com/photo-1772583435283-b07bc9950497?w=1800&q=80",
-    imageAlt: "Man in a white linen shirt standing on a tropical beach",
+    name: "Outdoor sitting",
+    tagline: "Slow mornings. Easy linen.",
+    image: "https://images.unsplash.com/photo-1783113298856-8b644c9cf7ce?w=2000&q=75",
+    imageAlt: "Woman in a white linen shirt relaxing on a wooden lounger in a tropical garden",
+    focus: "70% 50%",
   },
   {
-    heading: "Galle Fort, Sunset.",
-    subheading: "Handcrafted accessories from artisans on the south coast.",
-    href: "/accessories",
-    cta: "Shop Accessories",
-    image: "https://images.unsplash.com/photo-1566812548394-f6396d8bac5c?w=1800&q=80",
-    imageAlt: "Handwoven straw bag hanging beachside with the ocean in view",
+    name: "Galle Fort",
+    tagline: "Old walls. New summers.",
+    image: "https://images.unsplash.com/photo-1743585826344-aea35e952642?w=2000&q=75",
+    imageAlt: "Galle Fort ramparts with the lighthouse overlooking the ocean",
+    focus: "60% 50%",
   },
   {
-    heading: "New In.",
-    subheading: "The latest arrivals, straight from the atelier.",
-    href: "/search?filter=new",
-    cta: "Shop New In",
-    image: "https://images.unsplash.com/photo-1596433904500-97b901c5d274?w=1800&q=80",
-    imageAlt: "Stack of folded linen garments in natural tones",
+    name: "Sunset",
+    tagline: "Carry the golden hour home.",
+    image: "https://images.unsplash.com/photo-1599302592205-d7d683c83eea?w=2000&q=75",
+    imageAlt: "Palm tree silhouetted against a golden sunset over the sea",
+    focus: "50% 50%",
   },
 ];
 
+const SLIDE_MS = 6500;
+
 export default function HeroCarousel() {
   const [index, setIndex] = useState(0);
+  const [prev, setPrev] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const reduce = useReducedMotion();
+  const dragStart = useRef<number | null>(null);
+  const ref = useRef<HTMLElement>(null);
+
+  // Scroll parallax: the picture sinks slower than the page, the words drift up and fade.
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-40%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+
+  const goTo = useCallback(
+    (i: number) => {
+      const next = (i + slides.length) % slides.length;
+      if (next === index) return;
+      setPrev(index);
+      setIndex(next);
+    },
+    [index]
+  );
 
   useEffect(() => {
-    if (paused) return;
-    timerRef.current = setInterval(() => {
-      setIndex((i) => (i + 1) % slides.length);
-    }, 5500);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [paused]);
+    if (paused || reduce) return;
+    const t = setTimeout(() => goTo(index + 1), SLIDE_MS);
+    return () => clearTimeout(t);
+  }, [index, paused, reduce, goTo]);
 
-  const goTo = (i: number) => setIndex((i + slides.length) % slides.length);
+  useEffect(() => {
+    const onVis = () => setPaused(document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragStart.current = e.clientX;
+  };
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (dragStart.current === null) return;
+    const dx = e.clientX - dragStart.current;
+    dragStart.current = null;
+    if (Math.abs(dx) > 50) goTo(index + (dx < 0 ? 1 : -1));
+  };
 
   return (
     <section
-      className="relative h-screen min-h-[560px] overflow-hidden bg-[#0A0A0A]"
+      ref={ref}
+      aria-roledescription="carousel"
+      aria-label="Island Mantra"
+      className="relative h-[100svh] min-h-[560px] touch-pan-y select-none overflow-hidden bg-lagoon"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
     >
-      {slides.map((slide, i) => (
-        <div
-          key={slide.href + i}
-          className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-          style={{ opacity: i === index ? 1 : 0, pointerEvents: i === index ? "auto" : "none" }}
-        >
-          <Image
-            src={slide.image}
-            alt={slide.imageAlt}
-            fill
-            priority={i === 0}
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/20" />
-          <div className="relative z-10 h-full flex flex-col items-start justify-end px-6 sm:px-10 md:px-16 pb-24 md:pb-28">
-            <h1 className="font-serif text-white leading-[0.95]" style={{ fontSize: "clamp(2.75rem, 6vw, 5.5rem)" }}>
-              {slide.heading}
-            </h1>
-            <p className="font-sans text-sm text-white/75 mt-4 mb-7 max-w-sm leading-relaxed">
-              {slide.subheading}
-            </p>
-            <Link
-              href={slide.href}
-              className="font-sans text-xs tracking-[0.22em] uppercase text-white border-b border-white/60 pb-1 hover:border-white transition-colors"
+      <motion.div className="absolute inset-0" style={{ y: reduce ? 0 : imageY }}>
+        {slides.map((slide, i) => {
+          const active = i === index;
+          const behind = i === prev;
+          return (
+            <motion.div
+              key={active ? `active-${index}` : slide.name}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${slides.length}: ${slide.name}`}
+              aria-hidden={!active}
+              className="absolute inset-0 overflow-hidden"
+              style={{ zIndex: active ? 2 : behind ? 1 : 0, visibility: active || behind ? "visible" : "hidden" }}
+              // The incoming picture washes up over the last one like the tide.
+              initial={active && prev !== null && !reduce ? { clipPath: "inset(100% 0% 0% 0%)" } : false}
+              animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+              transition={{ duration: 1.4, ease: EASE }}
             >
-              {slide.cta}
-            </Link>
-          </div>
+              <div className={`absolute inset-0 ${active ? "ken-burns" : ""}`}>
+                <Image
+                  src={slide.image}
+                  alt={slide.imageAlt}
+                  fill
+                  priority={i === 0}
+                  sizes="100vw"
+                  className="object-cover"
+                  style={{ objectPosition: slide.focus }}
+                />
+              </div>
+            </motion.div>
+          );
+        })}
+        <div className="absolute inset-0 z-[3] bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.38)_0%,rgba(0,0,0,0.12)_60%,rgba(0,0,0,0.34)_100%)]" />
+      </motion.div>
+
+      {/* Only the tagline, with ISLAND MANTRA in small letters below it */}
+      <motion.div
+        style={{ y: reduce ? 0 : textY, opacity: textOpacity }}
+        className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center px-5 text-center text-white"
+      >
+        <h1 key={index} className="tagline max-w-[14ch] text-[clamp(3rem,9vw,8.5rem)] leading-[0.95] sm:max-w-none">
+          <RiseWords text={slides[index].tagline} delay={prev === null ? 0.5 : 0.35} stagger={0.08} />
+        </h1>
+        <motion.p
+          key={`brand-${index}`}
+          className="caps mt-7 pl-[0.55em] text-[10px] tracking-[0.55em] text-white/85 sm:text-[11px]"
+          initial={reduce ? false : { opacity: 0, letterSpacing: "1em" }}
+          animate={{ opacity: 1, letterSpacing: "0.55em" }}
+          transition={{ duration: 1.6, ease: EASE, delay: 0.8 }}
+        >
+          Island Mantra
+        </motion.p>
+      </motion.div>
+
+      {/* Slide controls */}
+      <div className="absolute inset-x-0 bottom-7 z-10 mx-auto flex w-[min(380px,78vw)] items-center gap-4 text-white">
+        <span className="label w-10 text-white/80">{String(index + 1).padStart(2, "0")}</span>
+        <div className="flex flex-1 gap-2">
+          {slides.map((slide, i) => (
+            <button
+              key={slide.name}
+              onClick={() => goTo(i)}
+              aria-label={`Show slide ${i + 1}: ${slide.name}`}
+              aria-current={i === index}
+              className="group relative h-6 flex-1"
+            >
+              <span className="absolute inset-x-0 top-1/2 h-px bg-white/30 transition-colors group-hover:bg-white/60" />
+              <span
+                key={i === index ? `fill-${index}` : "idle"}
+                className="absolute inset-x-0 top-1/2 h-px origin-left bg-saffron"
+                style={
+                  i === index
+                    ? {
+                        animation: reduce ? "none" : `slideProgress ${SLIDE_MS}ms linear both`,
+                        animationPlayState: paused ? "paused" : "running",
+                        transform: reduce ? "scaleX(1)" : undefined,
+                      }
+                    : { transform: "scaleX(0)" }
+                }
+              />
+            </button>
+          ))}
         </div>
-      ))}
-
-      {/* Manual arrows */}
-      <button
-        onClick={() => goTo(index - 1)}
-        aria-label="Previous slide"
-        className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 text-white/70 hover:text-white transition-colors"
-      >
-        <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-          <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-      <button
-        onClick={() => goTo(index + 1)}
-        aria-label="Next slide"
-        className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 text-white/70 hover:text-white transition-colors"
-      >
-        <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-          <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-
-      {/* Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className="w-2 h-2 rounded-full transition-all"
-            style={{
-              backgroundColor: i === index ? "#fff" : "rgba(255,255,255,0.4)",
-              transform: i === index ? "scale(1.2)" : "scale(1)",
-            }}
-          />
-        ))}
+        <span className="label w-10 text-right text-white/50">{String(slides.length).padStart(2, "0")}</span>
       </div>
     </section>
   );

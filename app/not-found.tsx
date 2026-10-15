@@ -1,35 +1,18 @@
 import Link from "next/link";
+import TideLine from "@/src/components/motion/TideLine";
 
 export default function NotFound() {
   return (
-    <div className="pt-16 min-h-screen flex flex-col">
-      <div className="relative flex-1 flex items-end bg-[#0A0A0A]">
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pb-24 w-full">
-          <p className="font-sans text-8xl md:text-[140px] font-serif text-white/20 leading-none mb-0 select-none">
-            404
-          </p>
-          <h1 className="font-serif text-3xl md:text-4xl text-white mt-2 mb-4">
-            Lost at sea?
-          </h1>
-          <p className="font-sans text-base text-white/70 leading-relaxed mb-8 max-w-md">
-            The page you&apos;re looking for has drifted away. Let&apos;s get you back to the island.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/"
-              className="inline-block bg-white text-[#0A0A0A] font-sans text-xs tracking-widest uppercase px-8 py-4 hover:bg-[#F4EDE1] transition-colors"
-            >
-              Back to Home
-            </Link>
-            <Link
-              href="/collections/linen-edit"
-              className="inline-block border border-white text-white font-sans text-xs tracking-widest uppercase px-8 py-4 hover:bg-white/10 transition-colors"
-            >
-              Shop Collections
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div className="flex min-h-[80vh] flex-col items-center justify-center px-6 pb-20 pt-28 text-center">
+      <p className="tagline select-none text-[clamp(6rem,20vw,11rem)] leading-none text-saffron/60">404</p>
+      <TideLine className="mt-2" />
+      <h1 className="tagline mt-8 text-3xl md:text-4xl">This page has drifted out to sea.</h1>
+      <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-soft">
+        Let’s get you back to the island.
+      </p>
+      <Link href="/" className="btn btn-solid mt-10">
+        <span>Back to Home</span>
+      </Link>
     </div>
   );
 }

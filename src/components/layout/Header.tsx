@@ -1,45 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { motion, useReducedMotion } from "framer-motion";
 import { useCart } from "@/src/store/cart";
 import { useCustomer } from "@/src/store/customer";
-import MobileNav from "./MobileNav";
+import MenuDrawer from "./MenuDrawer";
 
-export const navCategories = [
-  { name: "Women", slug: "women" },
-  { name: "Men", slug: "men" },
-  { name: "Kids", slug: "kids" },
-  { name: "Accessories", slug: "accessories" },
-];
+const HERO_CATEGORY_PAGES = ["/women", "/men", "/kids", "/accessories"];
 
-// Pages that have a full-bleed hero — header starts transparent (white text) here
+// Pages that open on a full-bleed picture — the header starts transparent with
+// white letters there, per the layout guide.
 function isHeroPage(pathname: string) {
   return (
     pathname === "/" ||
-    pathname.startsWith("/collections/") ||
     pathname === "/about" ||
-    navCategories.some((c) => pathname === `/${c.slug}`)
+    pathname.startsWith("/collections/") ||
+    HERO_CATEGORY_PAGES.includes(pathname)
   );
 }
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const { toggleCart, totalItems } = useCart();
-  const { isLoggedIn, hydrateCustomer } = useCustomer();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { totalItems, hasHydrated, hydrateCart } = useCart();
+  const { hydrateCustomer } = useCustomer();
   const pathname = usePathname();
+  const reduce = useReducedMotion();
   const count = totalItems();
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  const hero = isHeroPage(pathname);
-  // Transparent, white text over the hero image until scrolled — then solid white bg, black text
-  const transparent = hero && !scrolled;
+  const overImage = isHeroPage(pathname) && !scrolled && !menuOpen;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    // Reset scroll state on route change
-    setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
@@ -49,130 +45,78 @@ export default function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (hasHydrated) hydrateCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasHydrated]);
+
   return (
     <>
       <header
-        className={`transition-all duration-300 ${
-          transparent
-            ? "bg-gradient-to-b from-black/40 to-transparent"
-            : "bg-white border-b border-[#E7DCC8]"
+        className={`fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,color] duration-500 ${
+          overImage
+            ? "border-b border-transparent bg-transparent text-white"
+            : "border-b border-line bg-paper text-ink"
         }`}
       >
+        {/* Soft shade behind white letters so they stay readable on bright photos */}
         <div
-          className={`max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 ${
-            transparent ? "text-white" : "text-[#0A0A0A]"
+          aria-hidden
+          className={`pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/35 to-transparent transition-opacity duration-500 ${
+            overImage ? "opacity-100" : "opacity-0"
           }`}
-        >
-          {/* Mobile menu toggle */}
+        />
+
+        <div className="relative mx-auto grid h-16 max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-8">
+          {/* Left — menu */}
           <button
-            className="md:hidden p-1"
-            onClick={() => setMobileNavOpen(true)}
+            onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
+            aria-expanded={menuOpen}
+            className="group -ml-2 flex h-11 w-11 flex-col items-start justify-center gap-[5px] pl-2 justify-self-start"
           >
-            <svg
-              width="22"
-              height="22"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-            >
-              <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
-            </svg>
+            <span className="h-px w-[22px] bg-current transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-[14px]" />
+            <span className="h-px w-[22px] bg-current" />
+            <span className="h-px w-[22px] bg-current transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-[18px]" />
           </button>
 
-          {/* Logo */}
-          <Link
-            href="/"
-            className="font-serif text-xl tracking-widest uppercase absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0"
-          >
-            Island Mantra
+          {/* Centre — wordmark, doubles as the Home button */}
+          <Link href="/" aria-label="Island Mantra — home" className="justify-self-center">
+            <motion.span
+              className="block whitespace-nowrap pl-[0.42em] text-[clamp(11px,3.4vw,15px)] font-medium uppercase"
+              initial={reduce ? false : { letterSpacing: "0.8em", opacity: 0 }}
+              animate={{ letterSpacing: "0.42em", opacity: 1 }}
+              transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Island Mantra
+            </motion.span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8 text-xs tracking-widest uppercase font-sans">
-            <Link href="/" className="hover:opacity-60 transition-opacity">
-              Home
-            </Link>
-            {navCategories.map((c) => (
-              <Link
-                key={c.slug}
-                href={`/${c.slug}`}
-                className="hover:opacity-60 transition-opacity"
-              >
-                {c.name}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Right icons */}
-          <div className="flex items-center gap-4">
-            <Link
-              href="/search"
-              className="hover:opacity-60 transition-opacity"
-              aria-label="Search"
-            >
-              <svg
-                width="20"
-                height="20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-              </svg>
-            </Link>
-            <Link
-              href="/account"
-              className="hover:opacity-60 transition-opacity"
-              aria-label={isLoggedIn ? "Your account" : "Sign in"}
-            >
-              <svg
-                width="20"
-                height="20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" strokeLinecap="round" />
-              </svg>
-            </Link>
-            <button
-              onClick={toggleCart}
-              className="relative hover:opacity-60 transition-opacity"
-              aria-label="Open cart"
-            >
-              <svg
-                width="20"
-                height="20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                viewBox="0 0 24 24"
-              >
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 01-8 0" />
+          {/* Right — bag, opens the Shopping Bag page */}
+          <Link
+            href="/cart"
+            aria-label={count > 0 ? `Shopping bag, ${count} item${count === 1 ? "" : "s"}` : "Shopping bag"}
+            className="-mr-2 flex h-11 w-11 items-center justify-center justify-self-end"
+          >
+            <span className="relative block h-[24px] w-[20px]">
+              <svg viewBox="0 0 20 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="absolute inset-0" aria-hidden>
+                <path d="M6.5 7.5V5a3.5 3.5 0 0 1 7 0v2.5" />
+                <rect x="1.5" y="7.5" width="17" height="15" />
               </svg>
               {count > 0 && (
                 <span
-                  className={`absolute -top-2 -right-2 text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center ${
-                    transparent ? "bg-white text-[#0A0A0A]" : "bg-[#0A0A0A] text-white"
-                  }`}
+                  key={count}
+                  className="animate-pop absolute inset-x-0 bottom-[3px] text-center text-[9px] font-medium leading-none"
                 >
                   {count}
                 </span>
               )}
-            </button>
-          </div>
+            </span>
+          </Link>
         </div>
       </header>
 
-      <MobileNav isOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+      <MenuDrawer open={menuOpen} onClose={closeMenu} />
     </>
   );
 }
