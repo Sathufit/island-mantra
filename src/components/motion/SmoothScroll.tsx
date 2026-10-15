@@ -17,12 +17,16 @@ export function lockScroll(locked: boolean) {
   }
 }
 
-/** Lenis smooth scrolling for the whole site; skipped for reduced motion. */
+/** Lenis smooth scrolling on desktop; skipped on touch devices and for reduced motion. */
 export default function SmoothScroll() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Mouse and trackpad only. Phones already scroll smoothly natively, and
+    // Lenis's touch listeners make the browser wait on JavaScript before every
+    // scroll frame — that was the lag on mobile.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     lenis = new Lenis({ lerp: 0.12, wheelMultiplier: 1 });
     let frame = 0;
     const raf = (time: number) => {

@@ -77,7 +77,7 @@ export default function ProductListing({ title, tagline, image, imageAlt, produc
         ) : (
           <>
             {/* Toolbar */}
-            <div className="sticky top-16 z-20 -mx-4 flex flex-wrap items-center justify-between gap-4 border-b border-line bg-linen/95 px-4 py-4 backdrop-blur sm:-mx-8 sm:px-8">
+            <div className="sticky top-16 z-20 -mx-4 flex flex-wrap items-center justify-between gap-4 border-b border-line bg-linen px-4 py-4 sm:-mx-8 sm:px-8 md:bg-linen/95 md:backdrop-blur">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="caps mr-2 text-[10px] text-muted">
                   {visible.length} {visible.length === 1 ? "piece" : "pieces"}

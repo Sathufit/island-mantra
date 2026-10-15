@@ -2,7 +2,7 @@ services:
   - type: web
     name: island-mantra-backend
     runtime: node
-    plan: free
+    plan: starter
     rootDir: backend
     buildFilter:
       paths:

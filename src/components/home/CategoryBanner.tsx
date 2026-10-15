@@ -28,7 +28,7 @@ export default function CategoryBanner({ categories }: { categories: Category[] 
             </UnrollImage>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
             {/* Thambili glow that warms the tile on hover — golden hour */}
-            <div className="absolute inset-0 bg-gradient-to-t from-saffron/45 via-saffron/0 to-transparent opacity-0 mix-blend-soft-light transition-opacity duration-700 group-hover:opacity-100" />
+            <div className="absolute inset-0 hidden bg-gradient-to-t from-saffron/45 via-saffron/0 to-transparent opacity-0 mix-blend-soft-light transition-opacity duration-700 group-hover:opacity-100 [@media(hover:hover)]:block" />
 
             <div className="absolute inset-x-0 top-0 flex justify-between p-6 text-white/75 sm:p-8">
               <span className="label">({String(i + 1).padStart(2, "0")})</span>

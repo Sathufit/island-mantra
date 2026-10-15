@@ -1,33 +1,35 @@
-"use client";
-
-import { useEffect, useState, use } from "react";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getCollection, getProductsByCollection } from "@/src/lib/api";
-import { type Product } from "@/src/lib/data/products";
-import { type Collection } from "@/src/lib/data/collections";
 import ProductListing from "@/src/components/product/ProductListing";
 
-export default function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const [collection, setCollection] = useState<Collection | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+// Rendered on the server and cached; refreshed in the background every 60s.
+export const revalidate = 60;
 
-  useEffect(() => {
-    getCollection(slug).then((c) => setCollection(c ?? null));
-    getProductsByCollection(slug)
-      .then(setProducts)
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
-  }, [slug]);
+export async function generateStaticParams() {
+  return [];
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const collection = await getCollection(slug);
+  return collection ? { title: collection.name, description: collection.description } : {};
+}
+
+export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const collection = await getCollection(slug);
+  if (!collection) notFound();
+  const products = await getProductsByCollection(slug);
 
   return (
     <ProductListing
-      title={collection?.name ?? "Collection"}
-      tagline={collection?.description}
-      image={collection?.image}
-      imageAlt={collection?.imageAlt}
+      title={collection.name}
+      tagline={collection.description}
+      image={collection.image}
+      imageAlt={collection.imageAlt}
       products={products}
-      loading={loading}
+      loading={false}
     />
   );
 }

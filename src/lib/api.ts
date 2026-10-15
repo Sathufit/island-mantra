@@ -23,6 +23,21 @@ function relatedSlugsFor(product: MedusaProduct, all: MedusaProduct[]): string[]
 // triggered it 3x in parallel for its different sections. Cache it in
 // memory so repeat calls within the window reuse one in-flight/settled
 // fetch instead of hitting the backend again.
+/**
+ * During `next build` an unreachable backend (CI, or a cold start) shouldn't
+ * fail the build, so fall back to `fallback`. At runtime, rethrow instead: a
+ * failed background refresh then keeps serving the last good cached page
+ * rather than caching an empty one.
+ */
+export async function fallbackDuringBuild<T>(promise: Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await promise;
+  } catch (err) {
+    if (process.env.NEXT_PHASE === "phase-production-build") return fallback;
+    throw err;
+  }
+}
+
 let productsCache: { promise: Promise<Product[]>; timestamp: number } | null = null;
 const PRODUCTS_CACHE_TTL_MS = 60_000;
 

@@ -1,6 +1,9 @@
-export const dynamic = "force-dynamic";
+// Served from cache and refreshed in the background every 60 seconds, so
+// visitors never wait on the backend for the homepage.
+export const revalidate = 60;
 
 import {
+  fallbackDuringBuild,
   getFeaturedProducts,
   getBestSellers,
   getCategories,
@@ -11,22 +14,12 @@ import ProductCarousel from "@/src/components/home/ProductCarousel";
 import CategoryBanner from "@/src/components/home/CategoryBanner";
 import FlagshipStore from "@/src/components/home/FlagshipStore";
 
-// A cold or unreachable backend shouldn't take the whole homepage down —
-// the product sections just hide themselves when they come back empty.
-async function safe<T>(promise: Promise<T[]>): Promise<T[]> {
-  try {
-    return await promise;
-  } catch {
-    return [];
-  }
-}
-
 export default async function HomePage() {
   const [newIn, bestSellers, categories, accessories] = await Promise.all([
-    safe(getFeaturedProducts()),
-    safe(getBestSellers()),
+    fallbackDuringBuild(getFeaturedProducts(), []),
+    fallbackDuringBuild(getBestSellers(), []),
     getCategories(),
-    safe(getProductsByCategory("accessories")),
+    fallbackDuringBuild(getProductsByCategory("accessories"), []),
   ]);
 
   return (

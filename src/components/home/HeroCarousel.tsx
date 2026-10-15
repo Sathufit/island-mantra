@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { RiseWords } from "@/src/components/motion/Reveal";
-import { EASE } from "@/src/lib/hooks";
+import { EASE, useFinePointer } from "@/src/lib/hooks";
 
 interface Slide {
   name: string;
@@ -61,7 +61,9 @@ export default function HeroCarousel() {
   const inView = useInView(ref, { amount: 0.2 });
   const paused = tabHidden || !inView;
 
-  // Scroll parallax: the picture sinks slower than the page, the words drift up and fade.
+  // Scroll parallax (desktop only): the picture sinks slower than the page and
+  // the words drift up and fade. On phones it's a per-frame cost during scroll.
+  const parallax = useFinePointer() && !reduce;
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-40%"]);
@@ -107,27 +109,33 @@ export default function HeroCarousel() {
       className="relative h-[100svh] min-h-[560px] touch-pan-y select-none overflow-hidden bg-lagoon"
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
+      onPointerCancel={() => (dragStart.current = null)}
     >
-      <motion.div className="absolute inset-0" style={{ y: reduce ? 0 : imageY }}>
+      <motion.div className="absolute inset-0" style={{ y: parallax ? imageY : 0 }}>
         {slides.map((slide, i) => {
           const active = i === index;
           const behind = i === prev;
+          // Every slide stays mounted, so its photo is decoded once and never
+          // flashes blank. The incoming slide washes up over the last one like
+          // the tide; slides further back are clipped away instantly, unseen.
+          const wipe = active && prev !== null && !reduce;
           return (
             <motion.div
-              key={active ? `active-${index}` : slide.name}
+              key={slide.name}
               role="group"
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${slides.length}: ${slide.name}`}
               aria-hidden={!active}
               className="absolute inset-0 overflow-hidden"
-              style={{ zIndex: active ? 2 : behind ? 1 : 0, visibility: active || behind ? "visible" : "hidden" }}
-              // The incoming picture washes up over the last one like the tide.
-              initial={active && prev !== null && !reduce ? { clipPath: "inset(100% 0% 0% 0%)" } : false}
-              animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
-              transition={{ duration: WIPE_S, ease: EASE }}
+              style={{ zIndex: active ? 2 : behind ? 1 : 0 }}
+              initial={{ clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)" }}
+              animate={{ clipPath: active || behind ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)" }}
+              transition={wipe ? { duration: WIPE_S, ease: EASE } : { duration: 0 }}
             >
+              {/* The slow zoom keeps running while a slide sits underneath the
+                  incoming one, so nothing jumps during the wipe. */}
               <div
-                className={`absolute inset-0 ${active ? "ken-burns" : ""}`}
+                className={`absolute inset-0 ${active || behind ? "ken-burns" : ""}`}
                 style={{ animationDuration: `${SLIDE_MS + 1500}ms` }}
               >
                 <Image
@@ -135,6 +143,8 @@ export default function HeroCarousel() {
                   alt={slide.imageAlt}
                   fill
                   priority={i === 0}
+                  loading={i === 0 ? undefined : "eager"}
+                  fetchPriority={i === 0 ? "high" : "low"}
                   sizes="100vw"
                   className="object-cover"
                   style={{ objectPosition: slide.focus }}
@@ -148,7 +158,7 @@ export default function HeroCarousel() {
 
       {/* Only the tagline, with ISLAND MANTRA in small letters below it */}
       <motion.div
-        style={{ y: reduce ? 0 : textY, opacity: textOpacity }}
+        style={{ y: parallax ? textY : 0, opacity: parallax ? textOpacity : 1 }}
         className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center px-5 text-center text-white"
       >
         <h1 key={index} className="tagline max-w-[14ch] text-[clamp(3rem,9vw,8.5rem)] leading-[0.95] sm:max-w-none">

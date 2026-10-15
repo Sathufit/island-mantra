@@ -1,11 +1,12 @@
-"use client";
-
-import { useEffect, useState, use } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCategory, getProductsByCategory } from "@/src/lib/api";
-import { type Product } from "@/src/lib/data/products";
-import { type Category } from "@/src/lib/data/categories";
+import { fallbackDuringBuild, getCategory, getProductsByCategory } from "@/src/lib/api";
 import ProductListing from "@/src/components/product/ProductListing";
+
+// Rendered on the server and cached; refreshed in the background every 60s.
+export const revalidate = 60;
+// Only the four categories exist; anything else is a 404.
+export const dynamicParams = false;
 
 const VALID_SLUGS = ["women", "men", "kids", "accessories"] as const;
 type ValidSlug = (typeof VALID_SLUGS)[number];
@@ -14,21 +15,24 @@ function isValidSlug(slug: string): slug is ValidSlug {
   return (VALID_SLUGS as readonly string[]).includes(slug);
 }
 
-export default function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
-  const { category: slug } = use(params);
+export async function generateStaticParams() {
+  return VALID_SLUGS.map((category) => ({ category }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const { category: slug } = await params;
+  const category = isValidSlug(slug) ? await getCategory(slug) : undefined;
+  return category ? { title: category.name, description: category.tagline } : {};
+}
+
+export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+  const { category: slug } = await params;
   if (!isValidSlug(slug)) notFound();
 
-  const [category, setCategory] = useState<Category | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getCategory(slug).then((c) => setCategory(c ?? null));
-    getProductsByCategory(slug)
-      .then(setProducts)
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
-  }, [slug]);
+  const [category, products] = await Promise.all([
+    getCategory(slug),
+    fallbackDuringBuild(getProductsByCategory(slug), []),
+  ]);
 
   return (
     <ProductListing
@@ -37,7 +41,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
       image={category?.image}
       imageAlt={category?.imageAlt}
       products={products}
-      loading={loading}
+      loading={false}
     />
   );
 }

@@ -117,8 +117,14 @@ export default function ProductCarousel({ title, products, viewAllHref, tone = "
           </div>
         </div>
 
-        <div
+        {/* The row reveals once, when the section scrolls into view vertically.
+            Cards used to animate individually as they entered on a sideways
+            swipe, which made them jump under the finger on phones. */}
+        <motion.div
           ref={scrollerRef}
+          initial={reduce ? false : "hidden"}
+          whileInView="shown"
+          viewport={{ once: true, margin: "0px 0px -10% 0px" }}
           onScroll={update}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -126,7 +132,7 @@ export default function ProductCarousel({ title, products, viewAllHref, tone = "
           onPointerLeave={endDrag}
           onClickCapture={onClickCapture}
           onDragStart={(e) => e.preventDefault()}
-          className={`scrollbar-hide -mx-4 flex gap-5 overflow-x-auto px-4 sm:-mx-8 sm:scroll-px-8 sm:px-8 ${
+          className={`scrollbar-hide -mx-4 flex gap-5 overflow-x-auto overscroll-x-contain px-4 sm:-mx-8 sm:scroll-px-8 sm:px-8 ${
             dragging ? "snap-none" : "snap-x snap-mandatory scroll-px-4"
           }`}
         >
@@ -135,15 +141,15 @@ export default function ProductCarousel({ title, products, viewAllHref, tone = "
               key={p.id}
               data-card
               className="w-[72vw] flex-shrink-0 snap-start sm:w-[calc((100%-20px)/2.3)] md:w-[calc((100%-40px)/3.2)] lg:w-[calc((100%-60px)/4)]"
-              initial={reduce ? false : { opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-              transition={{ duration: 1.1, ease: EASE, delay: Math.min(i, 4) * 0.09 }}
+              variants={{
+                hidden: { opacity: 0, y: 40 },
+                shown: { opacity: 1, y: 0, transition: { duration: 1, ease: EASE, delay: Math.min(i, 4) * 0.08 } },
+              }}
             >
               <ProductCard product={p} index={i + 1} />
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Scroll position, as a thin tide line */}
         <div className="mt-8 h-px w-full bg-line">

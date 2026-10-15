@@ -57,9 +57,10 @@ export default function ProductCard({ product, sizes, index }: Props) {
             className="object-cover transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
           />
         )}
-        {/* Second photo washes up over the first on hover */}
+        {/* Second photo washes up over the first on hover. Not rendered on
+            touch screens (display: none), so phones don't download it. */}
         {secondary && (
-          <div className="absolute inset-0 transition-[clip-path] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] [clip-path:inset(100%_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)]">
+          <div className="absolute inset-0 hidden transition-[clip-path] [@media(hover:hover)]:block duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] [clip-path:inset(100%_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)]">
             <Image src={secondary.src} alt="" aria-hidden fill sizes={imgSizes} draggable={false} className="object-cover" />
           </div>
         )}

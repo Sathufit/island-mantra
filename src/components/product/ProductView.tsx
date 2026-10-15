@@ -1,51 +1,30 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { getProduct, getRelatedProducts } from "@/src/lib/api";
 import { type Product } from "@/src/lib/data/products";
 import { useCart } from "@/src/store/cart";
 import { formatPrice } from "@/src/lib/utils";
 import ProductGallery from "@/src/components/product/ProductGallery";
 import ProductCard from "@/src/components/product/ProductCard";
 import SizeGuideModal from "@/src/components/product/SizeGuideModal";
-import SunsetLoader from "@/src/components/ui/SunsetLoader";
 import { PlusMinus } from "@/src/components/ui/icons";
 import { Reveal } from "@/src/components/motion/Reveal";
 
 const ONE_SIZE = "One Size";
 
-export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const [product, setProduct] = useState<Product | null>(null);
-  const [missing, setMissing] = useState(false);
-  const [related, setRelated] = useState<Product[]>([]);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
+/** Interactive product page body; the data is loaded and cached on the server. */
+export default function ProductView({ product, related }: { product: Product; related: Product[] }) {
+  const [selectedSize, setSelectedSize] = useState(product.sizes[0] ?? "");
+  const [selectedColor, setSelectedColor] = useState(product.variants[0]?.color ?? "");
   const [quantity, setQuantity] = useState(1);
   const [openPanel, setOpenPanel] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "adding" | "added" | "error">("idle");
 
   const { addItem } = useCart();
 
-  useEffect(() => {
-    getProduct(slug)
-      .then((p) => {
-        if (!p) {
-          setMissing(true);
-          return;
-        }
-        setProduct(p);
-        setSelectedSize(p.sizes[0] ?? "");
-        setSelectedColor(p.variants[0]?.color ?? "");
-        getRelatedProducts(p.relatedSlugs).then(setRelated);
-      })
-      .catch(() => setMissing(true));
-  }, [slug]);
-
   const handleAddToBag = async () => {
-    if (!product) return;
     const variantId = product.variantMap[`${selectedSize}|${selectedColor}`];
     if (!variantId) return;
     setStatus("adding");
@@ -57,25 +36,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       setStatus("error");
     }
   };
-
-  if (missing) {
-    return (
-      <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 pt-16 text-center">
-        <p className="tagline text-3xl">This piece has drifted out to sea.</p>
-        <Link href="/" className="btn btn-solid mt-8">
-          <span>Back to the Shop</span>
-        </Link>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="min-h-[70vh] pt-28">
-        <SunsetLoader />
-      </div>
-    );
-  }
 
   const oneSize = !product.sizes.length || product.sizes[0] === ONE_SIZE;
   const panels = [
