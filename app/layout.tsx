@@ -6,6 +6,7 @@ import Footer from "@/src/components/layout/Footer";
 import AddedToast from "@/src/components/layout/AddedToast";
 import SmoothScroll from "@/src/components/motion/SmoothScroll";
 import Preloader from "@/src/components/motion/Preloader";
+import Cursor from "@/src/components/motion/Cursor";
 
 const instrument = Instrument_Serif({
   subsets: ["latin"],
@@ -71,6 +72,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <AddedToast />
+        <Cursor />
       </body>
     </html>
   );

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { RiseWords } from "@/src/components/motion/Reveal";
 import { EASE } from "@/src/lib/hooks";
 
@@ -46,15 +46,20 @@ const slides: Slide[] = [
   },
 ];
 
-const SLIDE_MS = 6500;
+const SLIDE_MS = 6000;
+const WIPE_S = 0.9;
 
 export default function HeroCarousel() {
   const [index, setIndex] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
-  const [paused, setPaused] = useState(false);
+  const [tabHidden, setTabHidden] = useState(false);
   const reduce = useReducedMotion();
   const dragStart = useRef<number | null>(null);
   const ref = useRef<HTMLElement>(null);
+  // Only pause while the hero is scrolled off-screen or the tab is hidden —
+  // hover-pausing got stuck after scrolling, when mouseleave never fired.
+  const inView = useInView(ref, { amount: 0.2 });
+  const paused = tabHidden || !inView;
 
   // Scroll parallax: the picture sinks slower than the page, the words drift up and fade.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -79,7 +84,7 @@ export default function HeroCarousel() {
   }, [index, paused, reduce, goTo]);
 
   useEffect(() => {
-    const onVis = () => setPaused(document.hidden);
+    const onVis = () => setTabHidden(document.hidden);
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
   }, []);
@@ -100,8 +105,6 @@ export default function HeroCarousel() {
       aria-roledescription="carousel"
       aria-label="Island Mantra"
       className="relative h-[100svh] min-h-[560px] touch-pan-y select-none overflow-hidden bg-lagoon"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
     >
@@ -121,9 +124,12 @@ export default function HeroCarousel() {
               // The incoming picture washes up over the last one like the tide.
               initial={active && prev !== null && !reduce ? { clipPath: "inset(100% 0% 0% 0%)" } : false}
               animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
-              transition={{ duration: 1.4, ease: EASE }}
+              transition={{ duration: WIPE_S, ease: EASE }}
             >
-              <div className={`absolute inset-0 ${active ? "ken-burns" : ""}`}>
+              <div
+                className={`absolute inset-0 ${active ? "ken-burns" : ""}`}
+                style={{ animationDuration: `${SLIDE_MS + 1500}ms` }}
+              >
                 <Image
                   src={slide.image}
                   alt={slide.imageAlt}
@@ -146,14 +152,14 @@ export default function HeroCarousel() {
         className="pointer-events-none relative z-10 flex h-full flex-col items-center justify-center px-5 text-center text-white"
       >
         <h1 key={index} className="tagline max-w-[14ch] text-[clamp(3rem,9vw,8.5rem)] leading-[0.95] sm:max-w-none">
-          <RiseWords text={slides[index].tagline} delay={prev === null ? 0.5 : 0.35} stagger={0.08} />
+          <RiseWords text={slides[index].tagline} delay={prev === null ? 0.5 : 0.2} stagger={0.06} />
         </h1>
         <motion.p
           key={`brand-${index}`}
           className="caps mt-7 pl-[0.55em] text-[10px] tracking-[0.55em] text-white/85 sm:text-[11px]"
           initial={reduce ? false : { opacity: 0, letterSpacing: "1em" }}
           animate={{ opacity: 1, letterSpacing: "0.55em" }}
-          transition={{ duration: 1.6, ease: EASE, delay: 0.8 }}
+          transition={{ duration: 1.2, ease: EASE, delay: 0.5 }}
         >
           Island Mantra
         </motion.p>

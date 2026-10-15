@@ -45,7 +45,7 @@ export default function ProductCard({ product, sizes, index }: Props) {
   };
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block" draggable={false}>
+    <Link href={`/products/${product.slug}`} className="group block" data-cursor="View" draggable={false}>
       <div className="relative aspect-[3/4] overflow-hidden bg-sand">
         {primary && (
           <Image
@@ -81,7 +81,7 @@ export default function ProductCard({ product, sizes, index }: Props) {
             e.stopPropagation();
           }}
         >
-          <div className="bg-paper/95 backdrop-blur-sm">
+          <div className="bg-paper/95 backdrop-blur-sm" data-cursor="">
             {!oneSize && (
               <div className="flex flex-wrap justify-center gap-1 px-2 pt-2">
                 {product.sizes.slice(0, 6).map((size) => (

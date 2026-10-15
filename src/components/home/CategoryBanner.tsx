@@ -12,6 +12,7 @@ export default function CategoryBanner({ categories }: { categories: Category[] 
           <Link
             key={c.slug}
             href={`/${c.slug}`}
+            data-cursor={c.cta}
             className="group relative block aspect-[4/5] overflow-hidden bg-lagoon sm:aspect-[16/11] md:aspect-[5/4]"
           >
             <UnrollImage className="absolute inset-0" delay={(i % 2) * 0.12}>
