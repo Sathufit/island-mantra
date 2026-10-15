@@ -7,6 +7,20 @@ if (!BACKEND_URL || !PUBLISHABLE_KEY) {
   );
 }
 
+/** A failed backend call. `status` is 0 for timeouts and network failures. */
+export class MedusaRequestError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = "MedusaRequestError";
+  }
+}
+
+/** True only when the backend says the resource itself is gone or unusable —
+ * not for timeouts or server hiccups, which are worth retrying. */
+export function isGone(err: unknown): boolean {
+  return err instanceof MedusaRequestError && (err.status === 404 || err.status === 400);
+}
+
 interface MedusaFetchOptions {
   method?: "GET" | "POST" | "DELETE";
   params?: Record<string, string>;
@@ -49,15 +63,15 @@ async function medusaFetch<T>(
     });
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {
-      throw new Error(`Medusa request timed out after ${MEDUSA_TIMEOUT_MS}ms: ${url.pathname}`);
+      throw new MedusaRequestError(`Medusa request timed out after ${MEDUSA_TIMEOUT_MS}ms: ${url.pathname}`, 0);
     }
-    throw err;
+    throw new MedusaRequestError(`Medusa request failed: ${url.pathname}`, 0);
   } finally {
     clearTimeout(timeout);
   }
 
   if (!res.ok) {
-    throw new Error(`Medusa request failed (${res.status}): ${url.pathname}`);
+    throw new MedusaRequestError(`Medusa request failed (${res.status}): ${url.pathname}`, res.status);
   }
 
   return res.json() as Promise<T>;
@@ -150,6 +164,7 @@ export interface MedusaShippingMethod {
 
 export interface MedusaCart {
   id: string;
+  completed_at?: string | null;
   email: string | null;
   items: MedusaLineItem[];
   shipping_methods: MedusaShippingMethod[];
@@ -165,7 +180,7 @@ export interface MedusaShippingOption {
 }
 
 const CART_FIELDS =
-  "*items,*shipping_methods,+subtotal,+shipping_total,+total";
+  "*items,*shipping_methods,+subtotal,+shipping_total,+total,+completed_at";
 
 export async function createCart(): Promise<MedusaCart> {
   const region_id = await getRegionId();

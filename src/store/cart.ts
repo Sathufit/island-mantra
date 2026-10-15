@@ -8,6 +8,7 @@ import {
   updateLineItem,
   removeLineItem,
   getCart,
+  isGone,
 } from "@/src/lib/medusa/client";
 import { mapCart } from "@/src/lib/medusa/map";
 
@@ -50,6 +51,17 @@ interface CartStore {
   subtotal: () => number;
 }
 
+/** False only when the backend confirms the cart is gone or already ordered. */
+async function cartIsUsable(cartId: string): Promise<boolean> {
+  try {
+    const cart = await getCart(cartId);
+    return !cart.completed_at;
+  } catch (err) {
+    if (isGone(err)) return false;
+    throw err;
+  }
+}
+
 function findAdded(items: CartItem[], variantId: string): CartItem | null {
   return items.find((i) => i.variantId === variantId) ?? items[items.length - 1] ?? null;
 }
@@ -65,24 +77,21 @@ export const useCart = create<CartStore>()(
       cartLoaded: false,
 
       addItem: async (variantId, quantity = 1) => {
-        const { cartId } = get();
+        let targetId = get().cartId ?? (await createCart()).id;
+        let cart;
         try {
-          const targetCartId = cartId ?? (await createCart()).id;
-          if (!cartId) set({ cartId: targetCartId });
-          const cart = await addLineItem(targetCartId, variantId, quantity);
-          const items = mapCart(cart);
-          set({ items, justAdded: findAdded(items, variantId) });
-        } catch {
-          // cartId was stale (e.g. left over from a different environment,
-          // or the cart expired) — start a fresh cart and retry once before
-          // giving up, so a bad cached cart ID self-heals silently instead
-          // of the button just doing nothing.
-          const cart = await createCart();
-          set({ cartId: cart.id });
-          const updated = await addLineItem(cart.id, variantId, quantity);
-          const items = mapCart(updated);
-          set({ items, justAdded: findAdded(items, variantId) });
+          cart = await addLineItem(targetId, variantId, quantity);
+        } catch (err) {
+          // Start a fresh cart only if the old one is truly gone or already
+          // ordered; a timeout must not throw away what's in the bag.
+          if (await cartIsUsable(targetId)) throw err;
+          targetId = (await createCart()).id;
+          cart = await addLineItem(targetId, variantId, quantity);
         }
+        // Always store the id together with the items it produced, so the bag
+        // can never show items without a cart to check out.
+        const items = mapCart(cart);
+        set({ cartId: targetId, items, justAdded: findAdded(items, variantId), cartLoaded: true });
       },
 
       removeItem: async (id) => {
@@ -90,10 +99,8 @@ export const useCart = create<CartStore>()(
         if (!cartId) return;
         try {
           await removeLineItem(cartId, id);
-          const cart = await getCart(cartId);
-          set({ items: mapCart(cart) });
-        } catch {
-          set({ cartId: null, items: [] });
+        } finally {
+          await get().hydrateCart();
         }
       },
 
@@ -106,9 +113,10 @@ export const useCart = create<CartStore>()(
         if (!cartId) return;
         try {
           const cart = await updateLineItem(cartId, id, quantity);
-          set({ items: mapCart(cart) });
+          if (get().cartId === cartId) set({ items: mapCart(cart) });
         } catch {
-          set({ cartId: null, items: [] });
+          // Leave the bag as the backend has it rather than wiping it.
+          await get().hydrateCart();
         }
       },
 
@@ -122,12 +130,24 @@ export const useCart = create<CartStore>()(
         }
         try {
           const cart = await getCart(cartId);
-          set({ items: mapCart(cart), cartLoaded: true });
-        } catch {
-          // Stale/invalid cart id (e.g. from a different environment) —
-          // drop it rather than leaving the app stuck on a cart that will
-          // 404 on every subsequent operation.
-          set({ cartId: null, items: [], cartLoaded: true });
+          // Ignore the answer if the bag moved to another cart meanwhile.
+          if (get().cartId !== cartId) return;
+          if (cart.completed_at) {
+            // Already turned into an order (e.g. in another tab) — start fresh.
+            set({ cartId: null, items: [], cartLoaded: true });
+          } else {
+            set({ items: mapCart(cart), cartLoaded: true });
+          }
+        } catch (err) {
+          if (get().cartId !== cartId) return;
+          if (isGone(err)) {
+            // The cart no longer exists (expired, or from another environment).
+            set({ cartId: null, items: [], cartLoaded: true });
+          } else {
+            // Timeout or server hiccup: keep the cart id and whatever we
+            // already show; a later load will fill it in.
+            set({ cartLoaded: true });
+          }
         }
       },
 

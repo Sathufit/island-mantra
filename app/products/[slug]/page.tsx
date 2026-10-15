@@ -91,8 +91,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] gap-8 px-4 sm:px-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-14 md:pt-8 lg:gap-20">
         <ProductGallery images={product.images} productName={product.name} />
 
-        {/* Details — sticky beside the gallery on desktop */}
-        <div className="md:sticky md:top-24 md:self-start md:py-8">
+        {/* Details */}
+        <div className="md:py-2">
           <Reveal>
             <nav aria-label="Breadcrumb" className="caps flex flex-wrap gap-2 text-[10px] text-muted">
               <Link href="/" className="hover:text-ink">Home</Link>
