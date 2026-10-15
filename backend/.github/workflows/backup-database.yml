@@ -1,0 +1,48 @@
+name: Backup Supabase database
+
+on:
+  schedule:
+    # Daily at 02:00 UTC. This also touches the DB, which prevents Supabase's
+    # free-tier auto-pause after 7 days of inactivity.
+    - cron: "0 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install postgresql-client
+        # Ubuntu's default postgresql-client is v16, but pg_dump refuses to
+        # dump from a newer server (Supabase runs Postgres 17). Pull the
+        # client from the official PGDG apt repo to match.
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+
+      - name: Dump database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DATABASE_URL secret is not set — see repo Settings > Secrets and variables > Actions"
+            exit 1
+          fi
+          # The runner image ships its own postgresql-client ahead on PATH,
+          # so the plain `pg_dump` still resolved to v16 even with v17
+          # installed. Call the versioned binary directly.
+          /usr/lib/postgresql/17/bin/pg_dump "$DATABASE_URL" --no-owner --no-privileges -F c -f backup.dump
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: island-mantra-db-backup-${{ github.run_id }}
+          path: backup.dump
+          # Free-tier GitHub Actions artifact storage isn't unlimited — keep
+          # a rolling 30 days of daily backups rather than accumulating
+          # forever.
+          retention-days: 30
