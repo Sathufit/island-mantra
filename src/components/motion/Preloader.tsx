@@ -76,7 +76,11 @@ export default function Preloader() {
             </div>
 
             {/* Sunrise */}
-            <div className="relative mx-auto h-[28vw] max-h-[220px] w-[56vw] max-w-[440px] overflow-hidden">
+            {/* Clipped only at the horizon, so the sun's glow isn't boxed in */}
+            <div
+              className="relative mx-auto h-[28vw] max-h-[220px] w-[56vw] max-w-[440px]"
+              style={{ clipPath: "inset(-50vh -50vw 0 -50vw)" }}
+            >
               <div
                 className="absolute left-1/2 aspect-square w-[44%] -translate-x-1/2 rounded-full bg-saffron shadow-[0_0_120px_30px_rgba(232,119,46,0.35)]"
                 style={{ bottom: 0, transform: `translate(-50%, ${sunY}%)` }}

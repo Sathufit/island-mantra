@@ -90,8 +90,12 @@ export default function ProductGallery({ images, productName }: Props) {
             <motion.div
               key={active}
               className="absolute inset-0"
+              // The new photo washes up over the old one, which stays put underneath
+              // until it's covered (instead of leaving a blank frame).
+              style={{ zIndex: 2 }}
               initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
               animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+              exit={{ zIndex: 1, transition: { duration: 0.7 } }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
               <Image
